@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="clear">Очистить</string>
+  <string name="repost_confirm_message">Чтобы отобразить эту страницу, AxTVBrowser должен повторно отправить данные, что приведёт к повтору ранее выполненного действия (например, поиска или подтверждения заказа).</string>
+  <string name="repost_confirm_title">Вы уверены?</string>
+  <string name="repost_confirm_resend">Отправить повторно</string>
+  <string name="before_unload_message">Эта страница просит подтвердить, что вы хотите её покинуть, — введённые данные могут не сохраниться</string>
+  <string name="before_unload_title">Вы уверены?</string>
+  <string name="before_unload_leave_page">Покинуть страницу</string>
+  <string name="before_unload_stay">Остаться на странице</string>
+  <string name="wait">Подождать</string>
+  <string name="stop">Остановить</string>
+  <string name="slow_script">Скрипт на этой странице замедляет работу браузера</string>
+  <string name="request_storage">Разрешить доступ к хранилищу устройства для «%1$s»?</string>
+  <string name="request_storage_access">Разрешить третьим сторонам доступ к собственному хранилищу «%1$s»?</string>
+  <string name="request_geolocation">Поделиться местоположением с «%1$s»?</string>
+  <string name="request_notification">Разрешить уведомления для «%1$s»?</string>
+  <string name="request_video">Поделиться видео с «%1$s»</string>
+  <string name="request_audio">Поделиться аудио с «%1$s»</string>
+  <string name="request_media">Поделиться видео и аудио с «%1$s»</string>
+  <string name="request_xr">Поделиться дисплеями WebXR с «%1$s»?</string>
+  <string name="request_media_key_system_access">Разрешить доступ к системе ключей мультимедиа для «%1$s»?</string>
+  <string name="media_back_camera">Задняя камера</string>
+  <string name="media_front_camera">Передняя камера</string>
+  <string name="media_microphone">Микрофон</string>
+  <string name="media_other">Неизвестный источник</string>
+</resources>

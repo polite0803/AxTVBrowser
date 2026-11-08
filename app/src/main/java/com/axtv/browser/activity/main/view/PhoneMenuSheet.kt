@@ -1,0 +1,153 @@
+package com.axtv.browser.activity.main.view
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
+import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
+import com.axtv.browser.AppContext
+import com.axtv.browser.R
+import com.axtv.browser.browser.CurrentTabState
+import com.axtv.browser.databinding.ViewPhoneMenuSheetBinding
+
+/**
+ * The menu of the phone UI, a sheet from the bottom over a scrim. It holds what the TV bar has and the
+ * phone bar does not: quick buttons (Forward, New tab, Incognito, Bookmark: adds the page, or opens its
+ * bookmark when it has one), the settings of the current site (they keep the sheet open; their header
+ * opens the site sheet, which also has Clear site data), then Find in page, History, Bookmarks, Downloads, Send to TV
+ * and Settings.
+ * A tap on the scrim or Back ([backCallback]) closes it.
+ */
+class PhoneMenuSheet @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
+) : FrameLayout(context, attrs) {
+    interface Callback {
+        fun goForward()
+        fun openNewTab()
+        fun toggleIncognitoMode()
+        /** Adds the current page to the bookmarks, or opens its bookmark */
+        fun bookmarkPage()
+        /** Opens the find bar of the page */
+        fun findInPage()
+        fun showHistory()
+        /** The tabs closed in this run, which can be opened again */
+        fun showRecentlyClosedTabs()
+        fun showBookmarks()
+        fun showDownloads()
+        /** The page that sends tabs and bookmarks to TVs */
+        fun showSendToTv()
+        fun showSettings()
+    }
+
+    var callback: Callback? = null
+    private val vb = ViewPhoneMenuSheetBinding.inflate(LayoutInflater.from(context), this)
+    private var canGoForward = false
+    private val sheetPaddingBottom = resources.getDimensionPixelSize(R.dimen.ds_phone_sheet_padding_bottom)
+
+    /** The site section of the sheet */
+    val siteSettings: SiteSettingsView get() = vb.vSiteSettings
+
+    /** Enabled while the sheet is open */
+    val backCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() = hide()
+    }
+
+    val isOpen: Boolean get() = isVisible
+
+    init {
+        visibility = GONE
+        vb.vScrim.setOnClickListener { hide() }
+        vb.llIncognito.isActivated = AppContext.provideConfig().incognitoMode
+        onRow(vb.llForward) { if (canGoForward) callback?.goForward() }
+        onRow(vb.llNewTab) { callback?.openNewTab() }
+        onRow(vb.llIncognito) { callback?.toggleIncognitoMode() }
+        onRow(vb.llBookmark) { callback?.bookmarkPage() }
+        onRow(vb.llFindInPage) { callback?.findInPage() }
+        onRow(vb.llHistory) { callback?.showHistory() }
+        onRow(vb.llClosedTabs) { callback?.showRecentlyClosedTabs() }
+        onRow(vb.llBookmarks) { callback?.showBookmarks() }
+        onRow(vb.llDownloads) { callback?.showDownloads() }
+        onRow(vb.llSendToTv) { callback?.showSendToTv() }
+        onRow(vb.llSettings) { callback?.showSettings() }
+    }
+
+    /** These rows close the sheet first */
+    private fun onRow(row: View, action: () -> Unit) {
+        row.setOnClickListener {
+            hide()
+            action()
+        }
+    }
+
+    /** On a page that is bookmarked the Bookmark button is selected, and it opens the bookmark */
+    fun setBookmarked(bookmarked: Boolean) {
+        vb.llBookmark.isActivated = bookmarked
+        vb.ivBookmark.setImageResource(if (bookmarked) R.drawable.ic_star else R.drawable.ic_favorites)
+        vb.tvBookmark.setText(if (bookmarked) R.string.bookmarked else R.string.add_bookmark)
+    }
+
+    /** The row of the closed tabs is there only while one of them can be opened again */
+    fun setClosedTabsAvailable(available: Boolean) {
+        vb.llClosedTabs.isVisible = available
+        vb.vClosedTabsSeparator.isVisible = available
+    }
+
+    private val sheetWidth = SheetWidth(context)
+
+    /** The sheet keeps out of the navigation bar; the scrim covers it */
+    fun setInsets(left: Int, right: Int, bottom: Int) {
+        sheetWidth.insetLeft = left
+        sheetWidth.insetRight = right
+        vb.llSheet.setPadding(vb.llSheet.paddingLeft, vb.llSheet.paddingTop, vb.llSheet.paddingRight,
+            sheetPaddingBottom + bottom)
+        requestLayout()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        sheetWidth.fit(vb.svSheet, MeasureSpec.getSize(widthMeasureSpec)) { left, right ->
+            vb.svSheet.setPaddingIfChanged(left, 0, right, 0)
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+
+    fun render(state: CurrentTabState) {
+        canGoForward = state.canGoForward
+        //disabled icons and labels are drawn at 40%
+        vb.llForward.alpha = if (state.canGoForward) 1f else DISABLED_ALPHA
+        vb.vSiteSettings.visibility = if (state.host.isEmpty()) GONE else VISIBLE
+        vb.vSiteSettings.render(state)
+    }
+
+    fun show() {
+        //it may be closing
+        if (backCallback.isEnabled) return
+        vb.vScrim.animate().cancel()
+        vb.svSheet.animate().cancel()
+        visibility = VISIBLE
+        backCallback.isEnabled = true
+        vb.vScrim.alpha = 0f
+        vb.vScrim.animate().alpha(1f).setDuration(ANIMATION_DURATION).start()
+        vb.svSheet.scrollTo(0, 0)
+        vb.svSheet.post {
+            vb.svSheet.translationY = vb.svSheet.height.toFloat()
+            vb.svSheet.animate().translationY(0f).setDuration(ANIMATION_DURATION)
+                .setInterpolator(DecelerateInterpolator()).start()
+        }
+    }
+
+    fun hide() {
+        if (!isOpen || !backCallback.isEnabled) return
+        backCallback.isEnabled = false
+        vb.vScrim.animate().alpha(0f).setDuration(ANIMATION_DURATION).start()
+        vb.svSheet.animate().translationY(vb.svSheet.height.toFloat()).setDuration(ANIMATION_DURATION)
+            .withEndAction { visibility = GONE }.start()
+    }
+
+    companion object {
+        private const val ANIMATION_DURATION = 200L
+        private const val DISABLED_ALPHA = 0.4f
+    }
+}

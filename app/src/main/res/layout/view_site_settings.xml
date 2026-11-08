@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+The settings of the site of the current page: its host and connection, ad blocking, pop-up blocking
+and the site view, and apart at the bottom Clear site data. SiteSettingsView sizes and shows its parts
+by its variant (the TV site panel, the phone site sheet, the site section of the phone menu sheet).
+In the TV site panel the focus does not leave its rows.
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.LinearLayout"
+    tools:orientation="vertical">
+
+  <!-- the panel and the site sheet: the host and the state of its connection -->
+  <LinearLayout
+      android:id="@+id/llHeader"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:paddingStart="@dimen/ds_space_menu_inset"
+      android:paddingEnd="@dimen/ds_space_menu_inset"
+      android:paddingTop="@dimen/ds_panel_padding_vertical"
+      android:paddingBottom="@dimen/ds_panel_padding_vertical">
+
+    <TextView
+        style="@style/Widget.TVBro.Text.MenuItem"
+        android:id="@+id/tvHost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/tbColorDsInk"
+        android:singleLine="true"
+        android:ellipsize="end"
+        tools:text="www.wikipedia.org" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ds_panel_header_gap"
+        android:orientation="horizontal">
+
+      <!-- a lock, or the warning sign in the danger color -->
+      <ImageView
+          android:id="@+id/ivConnection"
+          android:layout_width="@dimen/ds_size_icon_connection"
+          android:layout_height="@dimen/ds_size_icon_connection"
+          android:layout_marginEnd="@dimen/ds_panel_connection_icon_text"
+          android:importantForAccessibility="no"
+          android:src="@drawable/ic_lock"
+          app:tint="?attr/tbColorDsIcon" />
+
+      <LinearLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:orientation="vertical">
+
+        <TextView
+            style="@style/Widget.TVBro.Text.MenuCaption"
+            android:id="@+id/tvConnection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/tbColorDsInk"
+            tools:text="@string/connection_is_secure" />
+
+        <!-- why it is not secure -->
+        <TextView
+            style="@style/Widget.TVBro.Text.MenuCaption"
+            android:id="@+id/tvConnectionReason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_panel_header_gap"
+            android:textColor="?attr/tbColorDsInk"
+            android:visibility="gone"
+            tools:text="@string/connection_http_reason" />
+      </LinearLayout>
+    </LinearLayout>
+  </LinearLayout>
+
+  <!-- the menu sheet: sliders (or the warning sign), the host and a chevron; opens the site sheet -->
+  <LinearLayout
+      android:id="@+id/llMenuHeader"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/ds_phone_site_menu_header_height"
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      android:paddingStart="@dimen/ds_phone_site_row_padding_start"
+      android:paddingEnd="@dimen/ds_phone_site_row_padding_end"
+      android:background="@drawable/ds_menu_row_bg"
+      android:clickable="true"
+      android:focusable="true"
+      android:visibility="gone">
+
+    <ImageView
+        android:id="@+id/ivMenuSite"
+        android:layout_width="@dimen/ds_phone_site_menu_header_icon"
+        android:layout_height="@dimen/ds_phone_site_menu_header_icon"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_site" />
+
+    <TextView
+        android:id="@+id/tvMenuHost"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/ds_phone_site_menu_header_icon_text"
+        android:textSize="@dimen/ds_text_phone_site_menu_title"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/tbColorDsInk"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:importantForAccessibility="no"
+        tools:text="www.wikipedia.org" />
+
+    <ImageView
+        android:layout_width="@dimen/ds_phone_site_menu_header_icon"
+        android:layout_height="@dimen/ds_phone_site_menu_header_icon"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_chevron_right"
+        app:tint="?attr/tbColorDsIcon" />
+  </LinearLayout>
+
+  <View
+      style="@style/Widget.TVBro.MenuSeparator"
+      android:id="@+id/vHeaderSeparator" />
+
+  <!-- a section of its own in the site sheet -->
+  <LinearLayout
+      android:id="@+id/llRows"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/Widget.TVBro.PanelRow"
+        android:id="@+id/llAdBlock"
+        android:nextFocusUp="@+id/llAdBlock"
+        android:nextFocusDown="@+id/llPopups"
+        android:nextFocusLeft="@+id/llAdBlock"
+        android:nextFocusRight="@+id/llAdBlock">
+
+      <ImageView
+          style="@style/Widget.TVBro.MenuIcon"
+          android:id="@+id/ivAdBlock"
+          android:src="@drawable/ic_ad_block" />
+
+      <LinearLayout
+          android:id="@+id/llAdBlockText"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_marginStart="@dimen/ds_panel_icon_text"
+          android:orientation="vertical">
+
+        <TextView
+            style="@style/Widget.TVBro.Text.MenuItem"
+            android:id="@+id/tvAdBlockTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/tbColorDsInk"
+            android:text="@string/ad_blocking" />
+
+        <TextView
+            style="@style/Widget.TVBro.Text.MenuCaption"
+            android:id="@+id/tvAdBlockCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/tbColorDsInk"
+            android:singleLine="true"
+            tools:text="12 blocked on this page" />
+      </LinearLayout>
+
+      <TextView
+          style="@style/Widget.TVBro.Text.MenuItem"
+          android:id="@+id/tvAdBlockValue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/ds_panel_icon_text"
+          android:fontFamily="sans-serif-medium"
+          android:textColor="?attr/tbColorDsInk"
+          tools:text="@string/state_on" />
+    </LinearLayout>
+
+    <View style="@style/Widget.TVBro.MenuSeparator" />
+
+    <LinearLayout
+        style="@style/Widget.TVBro.PanelRow"
+        android:id="@+id/llPopups"
+        android:nextFocusUp="@+id/llAdBlock"
+        android:nextFocusDown="@+id/llSiteView"
+        android:nextFocusLeft="@+id/llPopups"
+        android:nextFocusRight="@+id/llPopups">
+
+      <ImageView
+          style="@style/Widget.TVBro.MenuIcon"
+          android:id="@+id/ivPopups"
+          android:src="@drawable/ic_popups" />
+
+      <LinearLayout
+          android:id="@+id/llPopupsText"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_marginStart="@dimen/ds_panel_icon_text"
+          android:orientation="vertical">
+
+        <TextView
+            style="@style/Widget.TVBro.Text.MenuItem"
+            android:id="@+id/tvPopupsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/tbColorDsInk"
+            android:text="@string/popups" />
+
+        <TextView
+            style="@style/Widget.TVBro.Text.MenuCaption"
+            android:id="@+id/tvPopupsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/tbColorDsInk"
+            android:singleLine="true"
+            tools:text="2 blocked on this page" />
+      </LinearLayout>
+
+      <TextView
+          style="@style/Widget.TVBro.Text.MenuItem"
+          android:id="@+id/tvPopupsValue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/ds_panel_icon_text"
+          android:maxWidth="@dimen/ds_panel_value_max_width"
+          android:fontFamily="sans-serif-medium"
+          android:textColor="?attr/tbColorDsInk"
+          android:singleLine="true"
+          android:ellipsize="end"
+          tools:text="Block dialogs" />
+
+      <ImageView
+          style="@style/Widget.TVBro.MenuIcon"
+          android:id="@+id/ivPopupsChevron"
+          android:src="@drawable/ic_chevron_right" />
+    </LinearLayout>
+
+    <View
+        style="@style/Widget.TVBro.MenuSeparator"
+        android:id="@+id/vSiteViewSeparator" />
+
+    <!-- desktop or mobile; the caption tells whether it is the default or set for this site -->
+    <LinearLayout
+        style="@style/Widget.TVBro.PanelRow"
+        android:id="@+id/llSiteView"
+        android:nextFocusUp="@+id/llPopups"
+        android:nextFocusDown="@+id/llPlayer"
+        android:nextFocusLeft="@+id/llSiteView"
+        android:nextFocusRight="@+id/llSiteView">
+
+      <ImageView
+          style="@style/Widget.TVBro.MenuIcon"
+          android:id="@+id/ivSiteView"
+          android:src="@drawable/ic_site_view" />
+
+      <LinearLayout
+          android:id="@+id/llSiteViewText"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_marginStart="@dimen/ds_panel_icon_text"
+          android:orientation="vertical">
+
+        <TextView
+            style="@style/Widget.TVBro.Text.MenuItem"
+            android:id="@+id/tvSiteViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/tbColorDsInk"
+            android:text="@string/site_view" />
+
+        <TextView
+            style="@style/Widget.TVBro.Text.MenuCaption"
+            android:id="@+id/tvSiteViewCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/tbColorDsInk"
+            android:singleLine="true"
+            tools:text="@string/site_view_default" />
+      </LinearLayout>
+
+      <TextView
+          style="@style/Widget.TVBro.Text.MenuItem"
+          android:id="@+id/tvSiteViewValue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/ds_panel_icon_text"
+          android:maxWidth="@dimen/ds_panel_value_max_width"
+          android:fontFamily="sans-serif-medium"
+          android:textColor="?attr/tbColorDsInk"
+          android:singleLine="true"
+          android:ellipsize="end"
+          tools:text="Desktop" />
+
+      <ImageView
+          style="@style/Widget.TVBro.MenuIcon"
+          android:id="@+id/ivSiteViewChevron"
+          android:src="@drawable/ic_chevron_right" />
+    </LinearLayout>
+
+    <View
+        style="@style/Widget.TVBro.MenuSeparator"
+        android:id="@+id/vPlayerSeparator" />
+
+    <!-- TV only: the player of the videos the site puts in fullscreen, the AxTVBrowser player or its own; the caption
+    tells whether it is the default or set for this site -->
+    <LinearLayout
+        style="@style/Widget.TVBro.PanelRow"
+        android:id="@+id/llPlayer"
+        android:nextFocusUp="@+id/llSiteView"
+        android:nextFocusDown="@+id/llClearData"
+        android:nextFocusLeft="@+id/llPlayer"
+        android:nextFocusRight="@+id/llPlayer">
+
+      <ImageView
+          style="@style/Widget.TVBro.MenuIcon"
+          android:id="@+id/ivPlayer"
+          android:src="@drawable/ic_play_circle" />
+
+      <LinearLayout
+          android:id="@+id/llPlayerText"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_marginStart="@dimen/ds_panel_icon_text"
+          android:orientation="vertical">
+
+        <TextView
+            style="@style/Widget.TVBro.Text.MenuItem"
+            android:id="@+id/tvPlayerTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/tbColorDsInk"
+            android:text="@string/settings_video_player" />
+
+        <TextView
+            style="@style/Widget.TVBro.Text.MenuCaption"
+            android:id="@+id/tvPlayerCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/tbColorDsInk"
+            android:singleLine="true"
+            tools:text="@string/site_view_default" />
+      </LinearLayout>
+
+      <TextView
+          style="@style/Widget.TVBro.Text.MenuItem"
+          android:id="@+id/tvPlayerValue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/ds_panel_icon_text"
+          android:maxWidth="@dimen/ds_panel_value_max_width"
+          android:fontFamily="sans-serif-medium"
+          android:textColor="?attr/tbColorDsInk"
+          android:singleLine="true"
+          android:ellipsize="end"
+          tools:text="AxTVBrowser" />
+
+      <ImageView
+          style="@style/Widget.TVBro.MenuIcon"
+          android:id="@+id/ivPlayerChevron"
+          android:src="@drawable/ic_chevron_right" />
+    </LinearLayout>
+  </LinearLayout>
+
+  <!-- the panel sets Clear site data apart with a thicker divider, the site sheet in a section of its own;
+  not in the menu sheet -->
+  <View
+      android:id="@+id/vClearDataSeparator"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/ds_panel_section_divider"
+      android:background="?attr/tbColorDsLine" />
+
+  <LinearLayout
+      style="@style/Widget.TVBro.PanelRow"
+      android:id="@+id/llClearData"
+      android:nextFocusUp="@+id/llPlayer"
+      android:nextFocusDown="@+id/llClearData"
+      android:nextFocusLeft="@+id/llClearData"
+      android:nextFocusRight="@+id/llClearData">
+
+    <ImageView
+        style="@style/Widget.TVBro.MenuIcon"
+        android:id="@+id/ivClearData"
+        android:src="@drawable/ic_delete" />
+
+    <LinearLayout
+        android:id="@+id/llClearDataText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/ds_panel_icon_text"
+        android:orientation="vertical">
+
+      <TextView
+          style="@style/Widget.TVBro.Text.MenuItem"
+          android:id="@+id/tvClearDataTitle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="?attr/tbColorDsInk"
+          android:text="@string/clear_site_data" />
+
+      <TextView
+          style="@style/Widget.TVBro.Text.MenuCaption"
+          android:id="@+id/tvClearDataCaption"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="?attr/tbColorDsInk"
+          android:singleLine="true"
+          android:text="@string/clear_site_data_caption" />
+    </LinearLayout>
+  </LinearLayout>
+</merge>

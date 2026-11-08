@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+The tab strip: the tabs, then the new tab button, which stays right after the last tab and stays
+visible when the tabs scroll (the tabs shrink to the room left by the button).
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rvTabs"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      app:layout_constrainedWidth="true"
+      app:layout_constraintHorizontal_chainStyle="packed"
+      app:layout_constraintHorizontal_bias="0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/btnAdd"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent" />
+
+  <ImageButton
+      style="@style/Widget.TVBro.ImageButton.Ds"
+      android:id="@+id/btnAdd"
+      android:layout_width="@dimen/ds_size_tab_height"
+      android:layout_height="@dimen/ds_size_tab_height"
+      android:layout_marginStart="@dimen/ds_new_tab_button_gap"
+      android:padding="@dimen/ds_new_tab_icon_padding"
+      android:background="@drawable/ds_new_tab_button_bg"
+      android:src="@drawable/ic_add"
+      android:contentDescription="@string/new_tab"
+      app:layout_constraintStart_toEndOf="@+id/rvTabs"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent" />
+</merge>

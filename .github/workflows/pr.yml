@@ -1,0 +1,118 @@
+name: PR checks
+
+# release.yml is manual and builds only the two generic release APKs, so nothing else in the
+# repository has ever been compiled or tested by a machine: the 108 unit test files, the
+# google/foss flavors and every debug variant. This workflow is that gate.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit-tests:
+    name: Unit tests (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: webview engine
+            tasks: :app:testGenericGeckoExcludedDebugUnitTest :app:common:testDebugUnitTest :adblock:testDebugUnitTest
+          - name: gecko engine
+            tasks: :app:testGenericGeckoIncludedDebugUnitTest :app:gecko:testDebugUnitTest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: temurin
+          cache: gradle
+
+      # the migration test reads the committed app/schemas, so it runs with the unit tests
+      - name: Run the unit tests
+        run: ./gradlew ${{ matrix.tasks }}
+
+      - name: Upload the test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ matrix.name }}
+          path: '**/build/reports/tests/'
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # the flavors and the build type that release.yml never touches: a break in one of them is
+  # found here rather than by whoever next builds it locally
+  compile-others:
+    name: Compile google and foss debug variants
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: temurin
+          cache: gradle
+
+      - name: Assemble
+        run: ./gradlew assembleGoogleGeckoExcludedDebug assembleFossGeckoExcludedDebug assembleGoogleGeckoIncludedDebug
+
+  # the version is single-sourced from app/build.gradle.kts: this checks that the update file and
+  # the store metadata agree with it, instead of leaving four places to remember by hand
+  release-metadata:
+    name: Release metadata check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check latest_version.json and metadata against the build
+        run: node tools/release-metadata-check.mjs
+
+  # a report, not yet a gate: the repository has no lint baseline, so the first run is a triage
+  # list rather than a red X that everyone learns to ignore. Drop continue-on-error once the
+  # findings are cleared or baselined.
+  lint:
+    name: Lint report
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: temurin
+          cache: gradle
+
+      - name: Lint
+        run: ./gradlew lintGenericGeckoExcludedDebug
+
+      - name: Upload the lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: |
+            app/build/reports/lint-results*.html
+            app/build/reports/lint-results*.xml
+          if-no-files-found: ignore
+          retention-days: 14

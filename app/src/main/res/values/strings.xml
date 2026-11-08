@@ -1,0 +1,793 @@
+<resources>
+    <string name="app_name">AxTVBrowser</string>
+    <string name="app_name_short" translatable="false">AxTVBrowser</string>
+    <string name="error">Error</string>
+    <string name="ok">OK</string>
+    <string name="url_prompt">Enter search text or URL</string>
+    <string name="can_not_recognize">Cannot recognize</string>
+    <string name="speak">Search query</string>
+    <string name="web_perm_request_confirmation">This web page wants to use the following resources:\n\n%s</string>
+    <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
+    <string name="location">Location</string>
+    <string name="open_in_new_tab">Open in new tab</string>
+    <string name="new_tab">New tab</string>
+    <string name="add_bookmark">Bookmark</string>
+    <!-- the quick button of the phone menu on a page that is bookmarked: it opens the bookmark -->
+    <string name="bookmarked">Bookmarked</string>
+    <!-- short labels of the quick buttons of the phone menu -->
+    <string name="forward">Forward</string>
+    <string name="incognito">Incognito</string>
+    <string name="bookmark_added">Bookmark added</string>
+    <string name="close_all">Close all</string>
+    <!-- the address pill of the phone bar on the home page -->
+    <string name="search_or_type_url">Search or type URL</string>
+    <string name="menu">Menu</string>
+    <plurals name="tab_count">
+        <item quantity="one">%d tab</item>
+        <item quantity="other">%d tabs</item>
+    </plurals>
+    <string name="close_other_tabs">Close other tabs</string>
+    <string name="new_tab_to_the_right">New tab to the right</string>
+    <string name="move_left">Move left</string>
+    <string name="move_right">Move right</string>
+    <!-- under a focused tab: Down opens its menu -->
+    <string name="tab_options">Tab options</string>
+    <!-- %s: the title of the tab -->
+    <string name="tab_closed">%s tab closed</string>
+    <string name="recently_closed_tabs">Recently closed tabs</string>
+    <string name="tab_can_not_be_reopened">The tab can not be opened again</string>
+    <string name="undo">Undo</string>
+    <string name="downloading_file">Downloading file…</string>
+    <string name="err_cant_open_file_chooser">Cannot open file chooser</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="add">Add</string>
+    <string name="edit">Edit</string>
+    <string name="no_bookmarks_yet">No bookmarks yet</string>
+    <!-- the bookmarks panel of the TV bar -->
+    <string name="add_this_page">Add this page</string>
+    <!-- %s: the name of the folder that is open -->
+    <string name="add_this_page_to">Add this page to %s</string>
+    <string name="edit_bookmark_of_this_page">Edit bookmark for this page</string>
+    <!-- %1$s: a page title, %2$s: its host -->
+    <string name="page_title_and_host">%1$s · %2$s</string>
+    <!-- %s: the host of the page -->
+    <string name="bookmarked_host">Bookmarked · %s</string>
+    <plurals name="bookmark_count">
+        <item quantity="one">%d bookmark</item>
+        <item quantity="other">%d bookmarks</item>
+    </plurals>
+    <string name="edit_bookmark">Edit bookmark</string>
+    <string name="new_folder">New folder</string>
+    <string name="rename_folder">Rename folder</string>
+    <string name="rename">Rename</string>
+    <string name="move_to_folder">Move to folder</string>
+    <!-- %s: the name of the moved bookmark or folder -->
+    <string name="move_item_to">Move “%s” to</string>
+    <!-- %s: the name of the folder -->
+    <string name="moved_to_folder">Moved to %s</string>
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
+    <string name="name">Name</string>
+    <string name="folder">Folder</string>
+    <string name="back">Back</string>
+    <string name="close_bookmarks">Close bookmarks</string>
+    <string name="more_actions">More actions</string>
+    <!-- %s: the name of a bookmark or folder -->
+    <string name="options_of">Options of %s</string>
+    <!-- %s: the name of the folder -->
+    <string name="delete_folder_with_bookmarks">Delete the folder “%s” with everything in it?</string>
+    <string name="search_bookmarks">Search bookmarks</string>
+    <string name="search_bookmarks_by_voice">Search bookmarks by voice</string>
+    <string name="end_search">End search</string>
+    <string name="clear_search">Clear search</string>
+    <string name="no_bookmarks_found">No bookmarks found</string>
+    <!-- a search result: %1$s: the name of its folder, %2$s: its host -->
+    <string name="folder_and_host">%1$s · %2$s</string>
+    <plurals name="bookmarks_found">
+        <item quantity="one">%d bookmark in all folders</item>
+        <item quantity="other">%d bookmarks in all folders</item>
+    </plurals>
+    <string name="export_bookmarks">Export bookmarks</string>
+    <!-- the name of an exported bookmarks file; %s: the date, as 2026-10-18 -->
+    <string name="bookmarks_file_name" translatable="false">axtvbrowser-bookmarks-%s.html</string>
+    <!-- %s: the name of the file -->
+    <string name="bookmarks_exported">Bookmarks saved to Downloads: %s</string>
+    <string name="bookmarks_not_exported">Could not save the bookmarks file</string>
+    <string name="import_bookmarks">Import bookmarks</string>
+    <string name="bookmark_files_in_downloads">Bookmark files in Downloads</string>
+    <string name="no_bookmark_files_in_downloads">No bookmark files in Downloads</string>
+    <string name="other_files">Other files</string>
+    <string name="other_files_caption">USB drive, other folders</string>
+    <!-- %s: the name of the file -->
+    <string name="import_file">Import %s</string>
+    <string name="import_into_new_folder">Into a new folder</string>
+    <!-- %s: the name of the new folder -->
+    <string name="import_into_new_folder_caption">Folder “%s”. Your bookmarks stay as they are; addresses you already have are skipped.</string>
+    <string name="import_merge">Merge with my bookmarks</string>
+    <string name="import_merge_caption">Folders with the same name are joined. A bookmark with an address you already have is overwritten by the one from the file.</string>
+    <plurals name="folder_count">
+        <item quantity="one">%d folder</item>
+        <item quantity="other">%d folders</item>
+    </plurals>
+    <!-- what a bookmarks file holds; %1$s: the number of bookmarks, %2$s: the number of folders -->
+    <string name="import_summary">%1$s in %2$s</string>
+    <string name="import_summary_with_home_page">%1$s in %2$s, Home page among them</string>
+    <string name="bookmarks_imported">Bookmarks imported: %1$d added, %2$d updated, %3$d skipped</string>
+    <string name="bookmarks_file_not_read">Could not read the file</string>
+    <string name="no_bookmarks_in_file">No bookmarks in this file</string>
+    <string name="no_file_picker">This device has no file picker</string>
+    <string name="new_bookmark">New bookmark</string>
+    <string name="done">Done</string>
+    <string name="title">Title</string>
+    <string name="url" translatable="false">URL</string>
+    <string name="engine">Search engine</string>
+    <string name="choose_default_search_engine">Choose default search engine</string>
+    <string name="save">Save</string>
+    <string name="search_engine_url_with_query_placeholder_query">Search engine URL with query placeholder [query]</string>
+    <string name="nothing">Nothing</string>
+    <string name="download">Download</string>
+    <string name="file_not_found">File not found</string>
+    <string name="no_app_for_file_type">No apps found to open this file type</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="msg_delete_history_all">Delete all history items?</string>
+    <plurals name="delete_history_items">
+        <item quantity="one">Delete %d history item?</item>
+        <item quantity="other">Delete %d history items?</item>
+    </plurals>
+    <string name="search_history">Search history</string>
+    <string name="search_history_by_voice">Search history by voice</string>
+    <plurals name="history_found">
+        <item quantity="one">%d found</item>
+        <item quantity="other">%d found</item>
+    </plurals>
+    <plurals name="items_selected">
+        <item quantity="one">%d selected</item>
+        <item quantity="other">%d selected</item>
+    </plurals>
+    <string name="select">Select</string>
+    <string name="select_all">Select all</string>
+    <string name="leave_selection">Leave the selection</string>
+    <string name="nothing_selected">Nothing selected</string>
+    <string name="no_history_yet">No history yet</string>
+    <string name="no_history_found">Nothing found in the history</string>
+    <string name="history_is_empty">The history is empty</string>
+    <string name="history_time_and_address" translatable="false">%1$s · %2$s</string>
+    <string name="favorites">Favorites</string>
+    <string name="history">History</string>
+    <string name="settings">Settings</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="navigate_home">Navigate home</string>
+    <string name="refresh_page">Refresh page</string>
+    <string name="stop_loading">Stop loading</string>
+    <string name="site_settings">Site settings</string>
+    <!-- the row of the site settings: the site view (desktop or mobile) of the site -->
+    <string name="site_view">Site view</string>
+    <string name="site_view_default">Default for all sites</string>
+    <string name="site_view_of_site">Set for this site</string>
+    <!-- the title of the choice of the site view, %s is the host -->
+    <string name="site_view_s">Site view (%s)</string>
+    <!-- the last row of the site settings, and its confirmation; %s is the host -->
+    <string name="clear_site_data">Clear site data…</string>
+    <string name="clear_site_data_caption">Cookies, sign-ins and stored data</string>
+    <string name="clear_site_data_title">Clear the data of %s?</string>
+    <string name="clear_site_data_message">This removes from this device:\n\n• cookies: you will be signed out of the site\n• stored data (local storage, IndexedDB and the like)\n• the cache of the site\n\nThe settings of the site and its history stay.</string>
+    <string name="clear_site_data_failed">Could not clear the site data</string>
+    <!-- the setting of the site view of sites without their own -->
+    <string name="default_site_view">Default site view</string>
+    <!-- how sites are shown: as on a desktop computer or as on a phone (the order is used by the app) -->
+    <array name="site_views">
+        <item>Desktop</item>
+        <item>Mobile</item>
+    </array>
+    <!-- the site button, for accessibility -->
+    <string name="site_settings_of">Settings of %s</string>
+    <string name="site_settings_insecure_of">Connection is not secure. Settings of %s</string>
+    <!-- the header of the site settings -->
+    <string name="connection_is_secure">Connection is secure</string>
+    <string name="connection_http_reason">Others on the network can see or change what you send and receive here. Don\'t enter passwords or payment details.</string>
+    <string name="connection_certificate_reason">The certificate of this site is not valid, so it may not be the site it claims to be. Don\'t enter passwords or payment details.</string>
+    <string name="ad_blocking">Ad blocking</string>
+    <string name="popups">Pop-ups</string>
+    <string name="state_on">On</string>
+    <string name="state_off">Off</string>
+    <!-- the second line of the ad blocking and pop-up rows of the site panel -->
+    <plurals name="blocked_on_page">
+        <item quantity="one">%d blocked on this page</item>
+        <item quantity="other">%d blocked on this page</item>
+    </plurals>
+    <!-- popup_blocking_level in short, for the site panel -->
+    <array name="popup_blocking_level_short">
+        <item>Don\'t block</item>
+        <item>Block dialogs</item>
+        <item>Block new tabs</item>
+        <item>Block all windows</item>
+    </array>
+    <string name="voice_search">Voice search</string>
+    <string name="not_set">Not set</string>
+    <string name="action">Action:</string>
+    <string name="current_key">Current key:</string>
+    <string name="clear">Clear</string>
+    <string name="install">Install</string>
+    <string name="turn_on_unknown_sources">Please turn on \"Unknown sources\" system setting</string>
+    <string name="turn_on_unknown_sources_for_app">Please allow AxTVBrowser to install apps from \"Unknown sources\" in system settings</string>
+    <string name="voice_search_not_found">Voice search not found</string>
+    <string name="new_version_dialog_title">New version available</string>
+    <string name="later">Later</string>
+    <string name="downloads">Downloads</string>
+    <string name="downloading_named_file">Downloading %s</string>
+    <string name="downloaded_of">%1$s of %2$s</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="download_speed">%s/s</string>
+    <string name="download_paused">Paused</string>
+    <string name="download_paused_reason">Paused: %s</string>
+    <string name="download_failed">Failed: %s</string>
+    <string name="download_cancelled">Cancelled</string>
+    <string name="download_error_unknown">error</string>
+    <string name="download_error_interrupted">interrupted</string>
+    <string name="download_error_connection">connection lost</string>
+    <string name="download_error_storage">can not write the file</string>
+    <string name="download_error_timeout">took too long</string>
+    <string name="time_left_seconds">%d s left</string>
+    <string name="time_left_minutes">%d min left</string>
+    <string name="time_left_hours">%1$d h %2$d min left</string>
+    <string name="link_copied">Link copied</string>
+    <string name="show">Show</string>
+    <string name="all_downloads">All downloads</string>
+    <string name="no_downloads_yet">No downloads yet</string>
+    <string name="in_progress">In progress</string>
+    <string name="back_to_browser">Back to the browser</string>
+    <string name="open_downloads_folder">Open folder</string>
+    <string name="free_space">%s free</string>
+    <string name="clear_all">Clear all</string>
+    <string name="filter_all">All</string>
+    <string name="filter_apps">Apps</string>
+    <string name="filter_video">Video</string>
+    <string name="filter_images">Images</string>
+    <string name="filter_documents">Documents</string>
+    <string name="filter_other">Other</string>
+    <string name="open">Open</string>
+    <string name="copy_link">Copy link</string>
+    <string name="show_in_all_downloads">Show in all downloads</string>
+    <string name="download_again">Download again</string>
+    <string name="pause">Pause</string>
+    <string name="play">Play</string>
+    <string name="resume">Resume</string>
+    <string name="cancel_download">Cancel download</string>
+    <string name="remove_from_list">Remove from list</string>
+    <string name="delete_file">Delete file</string>
+    <string name="clear_all_downloads_title">Clear all downloads?</string>
+    <plurals name="clear_all_downloads_message">
+        <item quantity="one">%d download will be removed from the list.</item>
+        <item quantity="other">%d downloads will be removed from the list.</item>
+    </plurals>
+    <plurals name="clear_all_downloads_active">
+        <item quantity="one">The one in progress or paused stays.</item>
+        <item quantity="other">The %d in progress or paused stay.</item>
+    </plurals>
+    <string name="also_delete_files">Also delete the files</string>
+    <string name="files_size_in_downloads">%s in Downloads</string>
+    <string name="download_complete">Download complete</string>
+    <string name="download_complete_named">Download complete: %s</string>
+    <string name="download_failed_named">Download failed: %s</string>
+    <!-- the videos of the page other apps can play (the button of the TV bar and its panel) -->
+    <string name="videos_on_page">Videos on the page</string>
+    <string name="no_videos_on_page">No videos found on this page. Videos that the page plays only itself (protected or streamed through its own code) can not be opened in other apps.</string>
+    <string name="play_in_built_in_player">Play in AxTVBrowser player</string>
+    <!-- the built-in player of the app (its name; on the seek bar of a fullscreen video, after the key cap of Down) -->
+    <string name="built_in_player">AxTVBrowser player</string>
+    <!-- on the seek bar of the built-in player, after the key cap of Down: the menu it opens -->
+    <string name="player_menu_hint">Video settings</string>
+    <!-- on the seek bar of a fullscreen video, after the key cap of Up: it shows the cursor for the controls of the page -->
+    <string name="video_osd_cursor">Cursor</string>
+    <!-- the player of the page (on the seek bar of the built-in player, after the key cap of Up: back to it) -->
+    <string name="site_player">Site player</string>
+    <!-- a toast at the top when the built-in player opens, its first few times -->
+    <string name="player_opened">Video opened in AxTVBrowser player: smoother and in the full resolution of the screen</string>
+    <!-- a toast when the built-in player that opened by itself could not start: the page plays the video on -->
+    <string name="player_fallback">The video will continue in the site player</string>
+    <!-- the video settings of the built-in player: which player gets the fullscreen videos of the site of the page -->
+    <string name="player_for_site">Player for this site</string>
+    <!-- its options; the default one tells what the default is now (player_default_built_in, player_default_site) -->
+    <string name="player_for_site_default">Default</string>
+    <!-- the short values of the row: the built-in player, the player of the site -->
+    <string name="player_for_site_built_in" translatable="false">AxTVBrowser</string>
+    <string name="player_for_site_site">Site</string>
+    <string name="player_default_built_in">Now: AxTVBrowser player</string>
+    <string name="player_default_site">Now: site player</string>
+    <!-- under the options: what each player is good for -->
+    <string name="built_in_player_summary">Smoother, in the full resolution of the screen</string>
+    <string name="site_player_summary">Site buttons, cursor control</string>
+    <!-- Settings, Sites, Videos: the default of player_for_site (built_in_player or site_player) -->
+    <string name="settings_video_player">Player for videos</string>
+    <string name="settings_video_player_summary">For videos in fullscreen. Each site can have its own in the site settings</string>
+    <string name="video_player_s">Player for videos (%s)</string>
+    <string name="video_live">Live</string>
+    <string name="player_panel_close">Close</string>
+    <string name="player_panel_back">To video settings</string>
+    <string name="player_open_in_other_app">Open in another app</string>
+    <string name="player_watch_on_site">Watch in the site player</string>
+    <string name="player_error_refused">The video server refused access (HTTP %d)</string>
+    <string name="player_error_not_found">The video is not on its server (HTTP %d)</string>
+    <string name="player_error_server">The video server answered with an error (HTTP %d)</string>
+    <string name="player_error_network">No connection to the video server</string>
+    <string name="player_error_format">This video format is not supported</string>
+    <string name="player_error_protected">The video is protected from copying</string>
+    <string name="player_error_other">Playback error: %s</string>
+    <string name="choose_video_caption">Choose the one that plays: it goes on from %s in AxTVBrowser player</string>
+    <string name="choose_video_same_length">Same length</string>
+    <string name="choose_video_stay">Stay in the site player</string>
+    <!-- the built-in player -->
+    <string name="player_error">This video can not be played</string>
+    <string name="player_back_to_page">Back to the page</string>
+    <!-- the TV hint about a found video that plays in the page -->
+    <string name="page_video_hint">Watch in AxTVBrowser player</string>
+    <!-- the name of the Back key of the remote, drawn on a key cap -->
+    <string name="key_back">Back</string>
+    <string name="key_down" translatable="false">↓</string>
+    <string name="key_up" translatable="false">↑</string>
+    <string name="playing_on_page">Playing on the page</string>
+    <string name="settings_match_frame_rate">Match the frame rate of videos</string>
+    <string name="settings_match_frame_rate_summary">AxTVBrowser player switches the TV to the frame rate of the video, so that it plays smoothly. The screen goes black for a moment when it switches.</string>
+    <!-- the video settings of the built-in player: the names of its rows and options -->
+    <string name="player_quality">Quality</string>
+    <string name="player_audio">Audio</string>
+    <string name="player_subtitles">Subtitles</string>
+    <string name="player_speed">Speed</string>
+    <string name="player_auto">Auto</string>
+    <string name="player_off">Off</string>
+    <!-- the repeat of the video in the video settings of the built-in player -->
+    <string name="player_repeat">Repeat</string>
+    <string name="player_repeat_on">On</string>
+    <string name="player_repeat_off">Off</string>
+    <string name="player_picture_in_picture">Picture in picture</string>
+    <string name="player_track">Track %d</string>
+    <string name="player_captions_in_video">Captions in the video</string>
+    <string name="err_no_video_player">No video player app is installed, for example VLC or MX Player</string>
+    <plurals name="videos_on_page_count">
+        <item quantity="one">Videos on the page, %d found</item>
+        <item quantity="other">Videos on the page, %d found</item>
+    </plurals>
+    <plurals name="downloads_in_progress">
+        <item quantity="one">Downloads, %d in progress</item>
+        <item quantity="other">Downloads, %d in progress</item>
+    </plurals>
+    <string name="share">Share</string>
+    <string name="no_app_to_share">No app to share this file with</string>
+    <string name="no_folder_app">No app to open folders, install a file manager from the store</string>
+    <string name="nothing_to_clear">No finished downloads to clear</string>
+    <plurals name="downloads_removed">
+        <item quantity="one">%d download removed from the list</item>
+        <item quantity="other">%d downloads removed from the list</item>
+    </plurals>
+    <string name="downloads_notifications_description">Notifications regarding download statuses</string>
+    <string name="auto_check_for_updates">Auto check for updates</string>
+    <string name="update">Update</string>
+    <string name="web_browser_optimized_for_tvs">Web browser optimized for TVs</string>
+    <string name="warning">Warning</string>
+    <string name="err_webview_can_not_link">Cannot link to the WebView component. Try to install the Android System WebView component first.</string>
+    <string name="open_a_new_tab_here">Open a new tab here</string>
+    <string name="tabs">Tabs</string>
+    <string name="ssl_expired">The certificate has expired</string>
+    <string name="ssl_idmismatch">Hostname mismatch</string>
+    <string name="ssl_date_invalid">The date of the certificate is invalid</string>
+    <string name="ssl_invalid">A generic error occurred</string>
+    <string name="go_im_aware">Continue. I understand the risk</string>
+    <string name="err_desk">Error description</string>
+    <string name="exit">Exit</string>
+    <string name="find_in_apps_store">Find in app store</string>
+    <string name="close_application">Close app</string>
+    <string name="close_tab">Close tab</string>
+    <string name="navigate_forward">Navigate forward</string>
+    <string name="toggle_keep_screen_on">Keep screen on</string>
+    <string name="direct_navigation_mode_title">Direct navigation mode</string>
+    <string name="direct_navigation_mode_message">Direct navigation hides the on-screen cursor and sends keys from your remote or game controller straight to the web page, so sites that support TV or keyboard focus can highlight links and controls.\n\nTo exit this mode: press Back on your TV remote, or press and hold the B button on a game controller.\n\nThis mode works best with the WebView engine: WebView supports moving focus through the page with the D-pad.</string>
+    <string name="theme">Theme</string>
+    <string name="interface_mode">Interface</string>
+    <!-- the order of Config.InterfaceMode -->
+    <string name="web_engine_debug_warning_message">Enabling web engine debugging can expose page content, cookies, and sensitive session data to anyone with device debugging access. Enable only on trusted devices for troubleshooting.</string>
+    <array name="themes">
+        <item>System</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </array>
+    <string name="incognito_mode">Incognito mode</string>
+    <string name="incognito_mode_hint">Now you can browse privately, and other people who use this device won’t see your activity. AxTVBrowser won’t save your browsing history, cookies and site data, or information entered in forms.\n\nHowever, downloads and bookmarks will be saved. Your activity might still be visible to websites you visit, your organization or internet service provider.</string>
+    <string name="don_t_show_again">Don\'t show again</string>
+    <string name="why_icon_changed">Why did the icon change?</string>
+    <string name="block_popups">Popup blocking</string>
+    <string name="block_popups_s">Popup blocking (%s)</string>
+    <string name="popup_dialog_blocked">Popup dialog blocked</string>
+    <string name="new_tab_blocked">New tab blocked</string>
+    <array name="popup_blocking_level">
+        <item>Don\'t block</item>
+        <item>Block dialogs</item>
+        <item>Also block new tabs (script-initiated)</item>
+        <item>Block any new windows (maximum blocking)</item>
+    </array>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="share_url">Share URL</string>
+    <string name="open_in_external_application">Open in external app</string>
+    <string name="external_app_open_error">Cannot find a suitable app</string>
+    <string name="home_page">Home page</string>
+    <array name="home_page_modes">
+        <item>AxTVBrowser Home</item>
+        <item>Search engine</item>
+        <item>Custom</item>
+        <item>Blank</item>
+    </array>
+
+    <array name="home_page_links_modes">
+        <item>Bookmarks</item>
+        <item>Recent history</item>
+        <item>Most visited</item>
+    </array>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="site_asks_to_open_unknown_url">Site asks to open unknown URL</string>
+    <string name="site_asks_to_open_unknown_url_message">Do you want to open this URL in an external app?</string>
+    <string name="err_no_app_to_handle_url">Cannot find a suitable app to handle this URL</string>
+    <string name="http_auth_title">Authentication required</string>
+    <string name="play_pause">Play/Pause</string>
+    <string name="media_stop">Stop media</string>
+    <string name="media_rewind">Rewind media</string>
+    <string name="media_fast_forward">Fast-forward media</string>
+    <string name="find_in_page">Find in page</string>
+    <string name="find_in_page_previous">Previous match</string>
+    <string name="find_in_page_next">Next match</string>
+    <string name="find_in_page_close">Close Find in page</string>
+    <!-- the current match and the number of matches; the second one when there are more than the engine counts -->
+    <string name="find_in_page_count" translatable="false">%1$d/%2$d</string>
+    <string name="find_in_page_count_many" translatable="false">%1$d/%2$d+</string>
+    <string name="long_press">Long press</string>
+    <string name="local_network_access_denied">Local network access denied</string>
+
+    <!-- sync of a phone with a TV: the TV side -->
+    <string name="sync_connect_phone">Connect a phone</string>
+    <!-- the row of the ⋮ menu of the TV bar that opens the pairing of phones -->
+    <string name="sync_phone_sync">Phone sync</string>
+    <string name="sync_scan_title">Scan with your phone</string>
+    <string name="sync_scan_steps">Point the camera of your phone at the code and open the link in AxTVBrowser. You can then send tabs, bookmarks and files from the phone to this TV.</string>
+    <!-- %s: the addresses of the TV -->
+    <string name="sync_same_network">The phone must be on the same network as the TV (%s).</string>
+    <string name="sync_no_network">The TV is not connected to a network.</string>
+    <string name="sync_starting">Starting…</string>
+    <string name="sync_paired_phones">Paired phones</string>
+    <string name="sync_no_paired_phones">No phones yet</string>
+    <!-- %s: a relative time, like "5 minutes ago" -->
+    <string name="sync_last_seen">Last connected %s</string>
+    <string name="sync_forget">Forget</string>
+    <!-- %s: the name of the phone -->
+    <string name="sync_forget_phone_confirm">Forget %s? It will have to scan the code again.</string>
+    <string name="sync_undo_bookmarks">Undo the last change of bookmarks</string>
+    <string name="sync_undo_bookmarks_confirm">Bring back the bookmarks as they were before the last change sent from a phone?</string>
+    <string name="sync_restore">Restore</string>
+    <string name="sync_bookmarks_restored">Bookmarks restored</string>
+    <!-- %s: the name of the phone -->
+    <string name="sync_phone_paired">%s connected</string>
+    <!-- %1$s: the name of the phone -->
+    <plurals name="sync_tabs_opened">
+        <item quantity="one">%1$s sent %2$d tab</item>
+        <item quantity="other">%1$s sent %2$d tabs</item>
+    </plurals>
+    <!-- %s: the name of the phone -->
+    <string name="sync_bookmarks_updated">%s updated the bookmarks</string>
+    <string name="sync_phone_forgotten">%s is forgotten</string>
+    <string name="sync_link_on_tv">Open this link on a phone</string>
+
+    <!-- sync of a phone with a TV: the phone side -->
+    <string name="sync_send_to_tv">Send to TV</string>
+    <string name="sync_tvs">TVs</string>
+    <string name="sync_no_tvs">No TVs yet</string>
+    <string name="sync_how_to_pair">On the TV, open AxTVBrowser, choose the phone button of its bar and scan the code with the camera of this phone.</string>
+    <!-- %s: the name of the TV -->
+    <string name="sync_pairing">Connecting to %s…</string>
+    <string name="sync_paired">%s added</string>
+    <string name="sync_pairing_failed">Cannot connect to the TV</string>
+    <string name="sync_unreachable">%s is not found</string>
+    <string name="sync_tv_forgot">%s forgot this phone</string>
+    <string name="sync_failed">Something went wrong</string>
+    <string name="sync_connecting">Connecting…</string>
+    <string name="sync_send_tabs">Send tabs</string>
+    <string name="sync_send_tabs_summary">Open pages of this phone on the TV</string>
+    <string name="sync_send_bookmarks">Send bookmarks</string>
+    <string name="sync_send_bookmarks_summary">Chosen folders replace the same folders on the TV</string>
+    <string name="sync_get_bookmarks">Get bookmarks</string>
+    <string name="sync_get_bookmarks_summary">Chosen folders of the TV replace the same folders on this phone</string>
+    <string name="sync_undo_bookmarks_phone_summary">Bring back the bookmarks of this phone as they were before</string>
+    <string name="sync_bookmarks_hint_from_tv">A folder of the TV chosen with all its contents replaces the same folder on this phone. A folder chosen in part only adds new and renamed bookmarks.</string>
+    <string name="sync_bookmarks_preview_title_phone">Update bookmarks on this phone?</string>
+    <string name="sync_bookmarks_same_phone">This phone has the same bookmarks</string>
+    <string name="sync_bookmarks_received">Bookmarks updated on this phone</string>
+    <!-- %s: the name of the TV -->
+    <string name="sync_tv_too_old">%s needs a newer AxTVBrowser</string>
+    <string name="sync_send">Send</string>
+    <string name="sync_next">Next</string>
+    <string name="sync_select_all">Select all</string>
+    <string name="sync_select_none">Select none</string>
+    <string name="sync_nothing_selected">Nothing is selected</string>
+    <plurals name="sync_tabs_sent">
+        <item quantity="one">%d tab sent</item>
+        <item quantity="other">%d tabs sent</item>
+    </plurals>
+    <string name="sync_bookmarks_hint">A folder chosen with all its contents replaces the same folder on the TV. A folder chosen in part only gets new and renamed bookmarks.</string>
+    <!-- %s: the name of the TV -->
+    <string name="sync_bookmarks_preview_title">Update bookmarks on %s?</string>
+    <string name="sync_bookmarks_preview">Added: %1$d\nRenamed: %2$d\nDeleted: %3$d</string>
+    <string name="sync_bookmarks_will_be_deleted">Will be deleted:</string>
+    <string name="sync_bookmarks_same">The TV has the same bookmarks</string>
+    <string name="sync_update">Update</string>
+    <string name="sync_bookmarks_sent">Bookmarks updated on %s</string>
+    <string name="sync_tv_changed">The TV bookmarks changed. Try again</string>
+    <string name="sync_forget_tv_confirm">Forget %s?</string>
+    <string name="sync_status_checking">Looking for it…</string>
+    <string name="sync_status_found">Ready</string>
+    <string name="sync_status_not_found">Not found: open AxTVBrowser on it</string>
+    <string name="sync_status_forgot">Does not know this phone any more</string>
+    <!-- %d: the number of chosen tabs -->
+    <string name="sync_send_count">Send (%d)</string>
+    <string name="sync_local_network_needed">Allow access to the local network</string>
+    <!-- files sent from a phone to the downloads of a TV -->
+    <string name="sync_send_files">Send files</string>
+    <string name="sync_send_files_summary">Photos, videos, apps and other files go to the downloads of the TV</string>
+    <string name="sync_no_file_picker">No app to choose files</string>
+    <!-- %1$s: the file, %2$s: 45% or 12 MB -->
+    <string name="sync_file_sending">Sending %1$s · %2$s</string>
+    <!-- %1$s: the file, %2$d of %3$d files, %4$s: 45% or 12 MB -->
+    <string name="sync_files_sending">Sending %1$s (%2$d of %3$d) · %4$s</string>
+    <plurals name="sync_files_sent">
+        <item quantity="one">%1$d file sent to %2$s</item>
+        <item quantity="other">%1$d files sent to %2$s</item>
+    </plurals>
+    <string name="sync_files_cancelled">Sending cancelled</string>
+    <string name="sync_file_unreadable">Cannot read %s</string>
+    <!-- %1$s: the file, %2$s: the TV -->
+    <string name="sync_file_interrupted">%2$s stopped receiving %1$s</string>
+    <string name="sync_file_need_permission">Allow AxTVBrowser on %s to save files, then send again</string>
+    <string name="sync_file_storage">%s cannot save the file</string>
+    <string name="sync_file_cancelled_on_tv">The file was cancelled on %s</string>
+    <!-- on the TV; %1$s: the file, %2$s: the phone -->
+    <string name="sync_file_receiving">Receiving %1$s from %2$s</string>
+    <string name="sync_file_received">%1$s received from %2$s</string>
+    <string name="sync_file_not_saved">Cannot save %s</string>
+    <!-- the settings screens: the categories -->
+    <string name="settings_search_and_home">Search and home page</string>
+    <string name="settings_sites">Sites</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_remote">Remote and cursor</string>
+    <string name="settings_advanced">Advanced</string>
+    <string name="settings_about">About</string>
+    <!-- the summaries of the categories on the phone; %1$s and %2$s: two values -->
+    <string name="settings_summary_two">%1$s · %2$s</string>
+    <string name="settings_summary_ads_blocked">Ads blocked</string>
+    <string name="settings_summary_ads_shown">Ads not blocked</string>
+    <!-- %s: Auto, Desktop or Mobile -->
+    <string name="settings_summary_site_view">Site view: %s</string>
+    <!-- %s: Auto, TV or Phone -->
+    <string name="settings_summary_interface">Interface: %s</string>
+    <!-- %s: System, Light or Dark -->
+    <string name="settings_summary_theme">Theme: %s</string>
+    <string name="settings_summary_remote">Cursor, keys of the remote</string>
+    <string name="settings_summary_advanced">Web cache, engine debugging, proxy</string>
+    <!-- "Proxy HTTP host:8080" -->
+    <string name="settings_summary_proxy_s">Proxy %s</string>
+    <!-- marks a setting that applies after a restart of the app -->
+    <string name="settings_after_restart">After restart</string>
+    <string name="settings_restart_message">Restart AxTVBrowser to apply the changes</string>
+    <string name="settings_restart_now">Restart now</string>
+    <string name="settings_turn_on">Turn on</string>
+    <!-- the state of a switch, for accessibility -->
+    <string name="settings_on">On</string>
+    <string name="settings_off">Off</string>
+    <!-- Search and home page -->
+    <string name="settings_group_search">Search</string>
+    <string name="settings_search_engine">Search engine</string>
+    <string name="settings_search_engine_summary">For searches from the address bar and voice search</string>
+    <string name="settings_custom_url">Custom URL</string>
+    <string name="settings_search_url">Search address</string>
+    <string name="settings_search_url_hint">Address with [query] in place of the words</string>
+    <string name="settings_group_home_page">Home page</string>
+    <string name="settings_home_page_summary">The page of the Home button</string>
+    <string name="settings_home_page_url">Home page address</string>
+    <string name="settings_home_page_url_hint">https://…</string>
+    <string name="settings_home_page_links">Links on the home page</string>
+    <string name="settings_home_page_links_summary">Tiles under the search bar</string>
+    <string name="settings_home_page_bookmarks_folder">Bookmarks folder</string>
+    <!-- Channels of the Android TV home screen -->
+    <string name="settings_group_home_screen">Android TV home screen</string>
+    <string name="settings_channel_bookmarks">Bookmarks row</string>
+    <string name="settings_channel_bookmarks_summary">Your bookmarks as a row on the home screen</string>
+    <string name="settings_channel_bookmarks_source">Bookmarks in the row</string>
+    <string name="settings_channel_source_home_page">Home page bookmarks</string>
+    <string name="settings_channel_source_all">All bookmarks</string>
+    <string name="settings_channel_source_choose_folder">Choose a folder…</string>
+    <string name="settings_channel_folder_top_level">Bookmarks (top level)</string>
+    <string name="settings_channel_folder_summary">Bookmarks of this folder, without its folders</string>
+    <string name="settings_channel_tabs">Open tabs row</string>
+    <string name="settings_channel_tabs_summary">Your tabs with their pictures; OK shows the tab</string>
+    <string name="settings_channel_downloads">Downloads row</string>
+    <string name="settings_channel_downloads_summary">Finished downloads; OK opens the file</string>
+    <!-- Sites -->
+    <string name="settings_group_site_view">Site view</string>
+    <string name="settings_auto">Auto</string>
+    <string name="settings_desktop">Desktop</string>
+    <string name="settings_mobile">Mobile</string>
+    <string name="settings_site_view_summary_tv">For sites without their own choice. Auto: desktop on a TV</string>
+    <string name="settings_site_view_summary_phone">For sites without their own choice. Auto: mobile on a phone</string>
+    <!-- the User-Agent sent to all sites; Auto follows the site view -->
+    <string name="settings_user_agent">User-Agent</string>
+    <string name="settings_user_agent_summary">How the browser introduces itself to sites. Auto: as fits the site view</string>
+    <string name="settings_user_agent_custom">Custom</string>
+    <string name="settings_user_agent_string">User-Agent string</string>
+    <string name="settings_autoplay">Autoplay media</string>
+    <string name="settings_autoplay_summary">Videos and sounds start without a click</string>
+    <string name="settings_web_notifications">Site notifications</string>
+    <string name="settings_web_notifications_summary">Pages can ask to show notifications on this device</string>
+    <string name="settings_group_videos">Videos</string>
+    <string name="settings_video_hint">Hint about videos found on the page</string>
+    <string name="settings_video_hint_summary">When such a video starts to play on the page, a short note tells that AxTVBrowser player can play it</string>
+    <string name="settings_group_ad_blocking">Ad blocking</string>
+    <string name="settings_block_ads">Block ads</string>
+    <string name="settings_block_ads_summary_tv">Each site can turn it off in its site panel</string>
+    <string name="settings_block_ads_summary_phone">Each site can turn it off in its site sheet</string>
+    <!-- %s: the time and the date -->
+    <string name="settings_filter_list_updated_s">Updated %s</string>
+    <string name="settings_filter_list_never_updated">Never updated</string>
+    <string name="settings_filter_list_updating">Updating…</string>
+    <string name="settings_group_third_party">Third-party components</string>
+    <string name="settings_tracking_protection">Tracking protection</string>
+    <string name="settings_tracking_protection_summary">The protection of Firefox from trackers, on all sites</string>
+    <string name="settings_group_filter_lists">Filter lists</string>
+    <string name="settings_filter_list_ads">Ads</string>
+    <string name="settings_filter_list_trackers">Trackers and analytics</string>
+    <!-- %1$s: what the list blocks, %2$s: its state (its number of filters, or that it failed) -->
+    <string name="settings_filter_list_summary">%1$s · %2$s</string>
+    <plurals name="settings_filter_count">
+        <item quantity="one">%d filter</item>
+        <item quantity="other">%d filters</item>
+    </plurals>
+    <string name="settings_filter_list_not_loaded">Not loaded yet</string>
+    <string name="settings_filter_list_failed">Could not update</string>
+    <string name="settings_regional_filter_list">Regional list</string>
+    <string name="settings_regional_filter_list_summary">Ads of the sites of one language</string>
+    <string name="settings_no_filter_list">None</string>
+    <string name="settings_custom_filter_list">Your own list</string>
+    <string name="settings_custom_filter_list_hint">Address of a filter list</string>
+    <string name="settings_custom_filter_list_add">Add a list</string>
+    <string name="settings_custom_filter_list_remove">Remove a list</string>
+    <string name="settings_custom_filter_list_remove_message">Its address and the list downloaded of it go; your other lists stay.</string>
+    <string name="settings_custom_filter_list_exists">This address is added already</string>
+    <string name="settings_update_filter_lists">Update filter lists</string>
+    <!-- %1$s: when the lists were updated, %2$d: the number of filters of the lists the browser does not support -->
+    <string name="settings_filter_lists_skipped">%1$s · unsupported filters skipped: %2$d</string>
+    <string name="settings_filter_lists_not_ready">%1$s · requests let through before the filters were ready: %2$d</string>
+    <string name="settings_filter_lists_errors">%1$s · requests a failed check left unblocked: %2$d</string>
+    <string name="filter_lists_updated">Filter lists updated</string>
+    <string name="filter_lists_update_failed">Could not update the filter lists</string>
+    <!-- Privacy -->
+    <string name="settings_privacy">Privacy</string>
+    <string name="settings_group_privacy_clear">What to clear</string>
+    <string name="settings_group_privacy_sites">Sites</string>
+    <string name="privacy_period">Period</string>
+    <string name="privacy_period_summary">The period of the history. Site data and cached files have no dates of their own and go only with All time</string>
+    <string name="privacy_period_hour">Last hour</string>
+    <string name="privacy_period_today">Today</string>
+    <string name="privacy_period_week">Last 7 days</string>
+    <string name="privacy_period_month">Last 31 days</string>
+    <string name="privacy_period_all">All time</string>
+    <string name="privacy_history">Browsing history</string>
+    <string name="privacy_history_summary">The pages visited in the period</string>
+    <string name="privacy_site_data">Site data</string>
+    <string name="privacy_site_data_summary">Cookies, sign-ins and stored data of all sites</string>
+    <string name="privacy_cache">Cached files</string>
+    <string name="privacy_cache_summary">Pages kept on the device to load faster</string>
+    <string name="privacy_clear_now">Clear browsing data</string>
+    <string name="privacy_clear_now_title">Clear browsing data?</string>
+    <string name="privacy_clear_now_message">This removes it from this device. The pages open stay as they are, but sites will ask to sign in again.</string>
+    <string name="privacy_clearing">Clearing…</string>
+    <string name="privacy_nothing_chosen">Choose what to clear</string>
+    <string name="privacy_nothing_removed">Nothing was removed</string>
+    <string name="privacy_cache_cleared">Cached files cleared</string>
+    <string name="privacy_sites">Data of one site</string>
+    <string name="privacy_sites_loading">Loading…</string>
+    <string name="privacy_no_sites">No sites yet</string>
+    <string name="privacy_site_cleared">The data of %s is removed</string>
+    <plurals name="privacy_visits_removed">
+        <item quantity="one">%d visit removed</item>
+        <item quantity="other">%d visits removed</item>
+    </plurals>
+    <plurals name="privacy_sites_cleared">
+        <item quantity="one">%d site cleared</item>
+        <item quantity="other">%d sites cleared</item>
+    </plurals>
+    <plurals name="privacy_sites_count">
+        <item quantity="one">%d site on this device</item>
+        <item quantity="other">%d sites on this device</item>
+    </plurals>
+    <!-- Appearance -->
+    <string name="settings_group_interface">Interface</string>
+    <string name="settings_interface_tv">TV</string>
+    <string name="settings_interface_phone">Phone</string>
+    <string name="settings_interface_summary">Auto: the phone interface on touch phones</string>
+    <string name="settings_theme_summary">System follows the night mode of the device</string>
+    <string name="settings_darken_pages">Darken web pages</string>
+    <string name="settings_darken_pages_summary">Pages without a dark look get one in the dark theme</string>
+    <string name="settings_group_screen">Screen</string>
+    <string name="settings_keep_screen_on_summary_tv">The TV does not go to sleep while the browser is open</string>
+    <string name="settings_keep_screen_on_summary_phone">The phone does not lock while the browser is open</string>
+    <!-- Remote and cursor -->
+    <string name="settings_group_cursor">Virtual cursor</string>
+    <string name="settings_cursor_speed">Cursor speed</string>
+    <string name="settings_cursor_speed_summary">The top speed while a key is held</string>
+    <string name="settings_cursor_acceleration">Cursor acceleration</string>
+    <string name="settings_cursor_acceleration_summary">How fast it gets to the top speed</string>
+    <!-- %d: a percent of the default -->
+    <string name="settings_percent">%d%%</string>
+    <string name="settings_joystick">Move the cursor with sticks</string>
+    <string name="settings_joystick_summary">The left stick of a game controller moves the cursor smoothly. Turn off if the cursor drifts on its own</string>
+    <string name="settings_group_keys">Keys of the remote</string>
+    <string name="settings_press_key">Press a key on the remote. Hold it to set a long press</string>
+    <!-- %s: the key of the shortcut now -->
+    <string name="settings_key_now_s">Now: %s</string>
+    <!-- Advanced -->
+    <string name="settings_default_browser">Default browser</string>
+    <string name="settings_default_browser_on">Links from other apps open here</string>
+    <string name="settings_default_browser_off">Links from other apps open in another browser</string>
+    <string name="settings_default_browser_ask">Make default</string>
+    <string name="settings_default_browser_change">Change</string>
+    <string name="settings_default_browser_failed">This device does not let apps become the default browser</string>
+    <string name="settings_web_cache">Web cache</string>
+    <string name="settings_web_cache_summary">Pages load again from the network</string>
+    <string name="settings_web_cache_cleared">Web cache cleared</string>
+    <string name="settings_engine_debug">Web engine debugging</string>
+    <string name="settings_engine_debug_summary">A computer connected for debugging can see pages and cookies</string>
+    <string name="settings_group_downloads">Downloads</string>
+    <string name="settings_download_folder">Download folder</string>
+    <string name="settings_download_folder_summary">Where new downloads are saved</string>
+    <!-- the public Downloads folder of the device, the default -->
+    <string name="settings_download_folder_default">Downloads (default)</string>
+    <string name="settings_download_folder_choose">Choose a folder…</string>
+    <string name="settings_download_folder_failed">Cannot save downloads to this folder</string>
+    <string name="download_folder_unavailable">The download folder is not available: the file goes to Downloads</string>
+    <string name="settings_group_proxy">Proxy</string>
+    <string name="settings_proxy">Use a proxy</string>
+    <string name="settings_proxy_summary">Pages, downloads and videos go through a proxy server; addresses of the local network open directly</string>
+    <string name="settings_proxy_incomplete">Not in use: enter the address and the port of the proxy</string>
+    <!-- "All pages go through HTTP host:8080" -->
+    <string name="settings_proxy_in_use_s">All pages go through %s</string>
+    <string name="settings_proxy_type">Type</string>
+    <string name="settings_proxy_http" translatable="false">HTTP</string>
+    <string name="settings_proxy_socks5" translatable="false">SOCKS5</string>
+    <string name="settings_proxy_type_http_summary">Secure sites go through it too</string>
+    <string name="settings_proxy_type_socks5_summary">The browser can not log in to a SOCKS proxy</string>
+    <string name="settings_proxy_host">Address</string>
+    <string name="settings_proxy_host_hint" translatable="false">proxy.example.com</string>
+    <string name="settings_proxy_bad_host">Not an address: a name or an IP address, without a path</string>
+    <string name="settings_proxy_port">Port</string>
+    <string name="settings_proxy_bad_port">A port is a number from %1$d to %2$d</string>
+    <string name="settings_proxy_username">User name</string>
+    <string name="settings_proxy_login_summary">Leave it empty when the proxy asks for no login</string>
+    <string name="settings_proxy_password">Password</string>
+    <!-- About; %s: the version name -->
+    <string name="settings_version_s">Version %s</string>
+    <!-- %1$s: the version name, %2$s: the build (generic, google, foss), %3$s: the web engine and its version -->
+    <string name="settings_version_line">Version %1$s (%2$s) · %3$s</string>
+    <string name="settings_group_updates">Updates</string>
+    <!-- %s: the version name -->
+    <string name="settings_new_version_s">Version %s is available</string>
+    <!-- %s: the name of the update channel -->
+    <string name="settings_channel_s">Channel: %s</string>
+    <string name="settings_update_channel">Update channel</string>
+    <string name="settings_update_channel_summary">Beta gets new versions first</string>
+    <string name="settings_group_links">Links</string>
+    <string name="settings_source_code">Source code</string>
+    <string name="settings_support_author">Support the author</string>
+    <string name="settings_license">License</string>
+    <string name="settings_privacy_policy">Privacy policy</string>
+    <string name="speak_now">Speak now</string>
+    <string name="settings_based_on_tv_bro">Based on TV Bro sources</string>
+</resources>

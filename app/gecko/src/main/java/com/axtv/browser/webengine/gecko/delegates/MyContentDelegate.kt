@@ -1,0 +1,185 @@
+package com.axtv.browser.webengine.gecko.delegates
+
+import android.util.Log
+import android.view.PointerIcon
+import com.axtv.browser.webengine.DownloadRequest
+import com.axtv.browser.webengine.gecko.GeckoViewWithVirtualCursor
+import com.axtv.browser.webengine.gecko.GeckoWebEngine
+import com.axtv.browser.webengine.gecko.R
+import org.json.JSONObject
+import org.mozilla.geckoview.GeckoResult
+import org.mozilla.geckoview.GeckoSession
+import org.mozilla.geckoview.SlowScriptResponse
+import org.mozilla.geckoview.WebResponse
+
+class MyContentDelegate(private val webEngine: GeckoWebEngine): GeckoSession.ContentDelegate {
+    private var activeAlert: Boolean = false
+
+    companion object {
+        val TAG: String = MyContentDelegate::class.java.simpleName
+    }
+
+    override fun onTitleChange(session: GeckoSession, title: String?) {
+        title?.let { webEngine.callback?.onReceivedTitle(it) }
+    }
+
+    override fun onPreviewImage(session: GeckoSession, previewImageUrl: String) {
+        super.onPreviewImage(session, previewImageUrl)
+    }
+
+    override fun onFocusRequest(session: GeckoSession) {
+        Log.i(TAG, "Content requesting focus")
+    }
+
+    override fun onCloseRequest(session: GeckoSession) {
+        Log.d(TAG, "onCloseRequest")
+        webEngine.callback?.closeWindow(session)
+    }
+
+    override fun onFullScreen(session: GeckoSession, fullScreen: Boolean) {
+        webEngine.mediaSessionDelegate.pageFullscreen = fullScreen
+        if (fullScreen) {
+            webEngine.callback?.onPrepareForFullscreen()
+        } else {
+            webEngine.callback?.onExitFullscreen()
+        }
+    }
+
+    override fun onMetaViewportFitChange(session: GeckoSession, viewportFit: String) {
+        super.onMetaViewportFitChange(session, viewportFit)
+    }
+
+    override fun onContextMenu(
+        session: GeckoSession,
+        screenX: Int,
+        screenY: Int,
+        element: GeckoSession.ContentDelegate.ContextElement
+    ) {
+        Log.d(TAG,"onContextMenu screenX="
+                    + screenX
+                    + " screenY="
+                    + screenY
+                    + " type="
+                    + element.type
+                    + " linkUri="
+                    + element.linkUri
+                    + " title="
+                    + element.title
+                    + " alt="
+                    + element.altText
+                    + " srcUri="
+                    + element.srcUri
+        )
+        val webView = webEngine.getView() as? GeckoViewWithVirtualCursor ?: return
+        //a touch is where the screen coordinates (CSS pixels) say, the cursor is where it is drawn
+        val density = webView.resources.displayMetrics.density
+        val x = if (webView.virtualCursorMode) webView.cursorDrawerDelegate.cursorPosition.x.toInt() else (screenX * density).toInt()
+        val y = if (webView.virtualCursorMode) webView.cursorDrawerDelegate.cursorPosition.y.toInt() else (screenY * density).toInt()
+        webEngine.callback?.onContextMenu(
+            webView.cursorDrawerDelegate,
+            element.baseUri,
+            element.linkUri,
+            element.srcUri,
+            element.title,
+            element.altText,
+            element.linkText,
+            x,
+            y
+        )
+    }
+
+    override fun onExternalResponse(session: GeckoSession, response: WebResponse) {
+        Log.d(TAG, "onExternalResponse: " + response.uri)
+
+        if (response.requestExternalApp) {
+            webEngine.callback?.onOpenInExternalAppRequested(response.uri)
+            return
+        }
+
+        val contentDisposition = response.headers["content-disposition"]
+        val mimetype = response.headers["content-type"]
+        val contentLength = response.headers["content-length"]?.toLongOrNull() ?: 0
+        webEngine.callback?.onDownloadRequested(DownloadRequest(
+            url = response.uri,
+            referer = webEngine.url ?: "",
+            userAgent = webEngine.userAgentString,
+            mimeType = mimetype,
+            contentDisposition = contentDisposition,
+            size = contentLength,
+            stream = response.body,
+            acceptsRanges = response.headers["accept-ranges"]?.trim().equals("bytes", ignoreCase = true),
+            etag = response.headers["etag"],
+            lastModified = response.headers["last-modified"]
+        ))
+    }
+
+    override fun onCrash(session: GeckoSession) {
+        Log.e(TAG, "Crashed, reopening session")
+        session.open(GeckoWebEngine.runtime)
+    }
+
+    override fun onKill(session: GeckoSession) {
+        if (webEngine.session != session || !webEngine.tab.selected) {
+            Log.w(TAG, "Background session killed")
+            return
+        }
+
+        Log.e(TAG, "Current session killed, reopening")
+
+        webEngine.session.open(GeckoWebEngine.runtime)
+        webEngine.progressDelegate.sessionState?.let {
+            webEngine.session.restoreState(it)
+        } ?: run {
+            webEngine.url?.let { webEngine.session.loadUri(it) }
+        }
+    }
+
+    override fun onFirstComposite(session: GeckoSession) {
+        Log.d(TAG, "onFirstComposite")
+    }
+
+    override fun onFirstContentfulPaint(session: GeckoSession) {
+        super.onFirstContentfulPaint(session)
+    }
+
+    override fun onPaintStatusReset(session: GeckoSession) {
+        super.onPaintStatusReset(session)
+    }
+
+    override fun onPointerIconChange(session: GeckoSession, icon: PointerIcon) {
+        super.onPointerIconChange(session, icon)
+    }
+
+    override fun onWebAppManifest(session: GeckoSession, manifest: JSONObject) {
+        Log.d(TAG,"onWebAppManifest: $manifest")
+    }
+
+    override fun onSlowScript(
+        geckoSession: GeckoSession,
+        scriptFileName: String
+    ): GeckoResult<SlowScriptResponse>? {
+        val prompt: MyPromptDelegate? =
+            webEngine.session.promptDelegate as? MyPromptDelegate
+        val activity = webEngine.callback?.getActivity() ?: return null
+        if (prompt != null) {
+            val result = GeckoResult<SlowScriptResponse?>()
+            if (!activeAlert) {
+                activeAlert = true
+                prompt.onSlowScriptPrompt(geckoSession, activity.getString(R.string.slow_script), result)
+            }
+            return result.then { value: SlowScriptResponse? ->
+                activeAlert = false
+                GeckoResult.fromValue(value)
+            }
+        }
+        return null
+    }
+
+    override fun onShowDynamicToolbar(geckoSession: GeckoSession) {
+        super.onShowDynamicToolbar(geckoSession)
+    }
+
+    override fun onHideDynamicToolbar(geckoSession: GeckoSession) {
+        super.onHideDynamicToolbar(geckoSession)
+    }
+}

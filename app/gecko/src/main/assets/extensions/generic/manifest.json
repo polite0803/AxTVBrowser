@@ -1,0 +1,45 @@
+{
+  "manifest_version": 2,
+  "name": "axtvbrowser-generic",
+  "version": "1.0",
+  "description": "AxTVBrowser Generic Addon",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "axtvbrowser@axtv.dev"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "js": [
+        "page_videos.js",
+        "media_controls.js",
+        "element_hiding.js",
+        "content.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "permissions": [
+    "nativeMessaging",
+    "nativeMessagingFromContent",
+    "geckoViewAddons",
+    "tabs",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ]
+}

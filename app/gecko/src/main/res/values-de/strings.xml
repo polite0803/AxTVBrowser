@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="clear">Löschen</string>
+  <string name="repost_confirm_message">Um diese Seite anzuzeigen, muss AxTVBrowser Informationen senden, die alle zuvor ausgeführten Aktionen (z. B. eine Suche oder Bestellbestätigung) wiederholen.</string>
+  <string name="repost_confirm_title">Sind Sie sicher?</string>
+  <string name="repost_confirm_resend">Erneut senden</string>
+  <string name="before_unload_message">Diese Seite bittet Sie zu bestätigen, dass Sie sie verlassen möchten – eingegebene Daten werden möglicherweise nicht gespeichert</string>
+  <string name="before_unload_title">Sind Sie sicher?</string>
+  <string name="before_unload_leave_page">Seite verlassen</string>
+  <string name="before_unload_stay">Auf Seite bleiben</string>
+  <string name="wait">Warten</string>
+  <string name="stop">Stoppen</string>
+  <string name="slow_script">Ein Skript auf dieser Seite verlangsamt Ihren Webbrowser</string>
+  <string name="request_storage">Zugriff auf Gerätespeicher für „%1$s“ zulassen?</string>
+  <string name="request_storage_access">Dritten den Zugriff auf Erstanbieterspeicher für „%1$s“ erlauben?</string>
+  <string name="request_geolocation">Standort mit „%1$s“ teilen?</string>
+  <string name="request_notification">Benachrichtigungen für „%1$s“ zulassen?</string>
+  <string name="request_video">Video mit „%1$s“ teilen</string>
+  <string name="request_audio">Audio mit „%1$s“ teilen</string>
+  <string name="request_media">Video und Audio mit „%1$s“ teilen</string>
+  <string name="request_xr">WebXR-Anzeigen mit „%1$s“ teilen?</string>
+  <string name="request_media_key_system_access">Zugriff auf das Medienschlüsselsystem für „%1$s“ zulassen?</string>
+  <string name="media_back_camera">Rückkamera</string>
+  <string name="media_front_camera">Frontkamera</string>
+  <string name="media_microphone">Mikrofon</string>
+  <string name="media_other">Unbekannte Quelle</string>
+</resources>

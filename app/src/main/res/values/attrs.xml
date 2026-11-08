@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Color tokens of the app theme (Theme.TVBro); use them as ?attr/... in layouts and drawables -->
+    <!-- Background of screens and list items -->
+    <attr name="tbColorSurface" format="color" />
+    <!-- Top bar, tabs bar and other bars -->
+    <attr name="tbColorSurfaceBar" format="color" />
+    <!-- List section headers -->
+    <attr name="tbColorSurfaceHeader" format="color" />
+    <!-- Focused (or activated) list item, tab -->
+    <attr name="tbColorSurfaceFocused" format="color" />
+    <!-- Tabs of the settings -->
+    <attr name="tbColorSurfaceTab" format="color" />
+    <!-- Primary text and content on surfaces -->
+    <attr name="tbColorOnSurface" format="color" />
+    <!-- Secondary text -->
+    <attr name="tbColorOnSurfaceVariant" format="color" />
+    <!-- List dividers -->
+    <attr name="tbColorDivider" format="color" />
+    <!-- Dividers inside forms -->
+    <attr name="tbColorDividerStrong" format="color" />
+    <!-- Shadows (under the pinned header of a list) -->
+    <attr name="tbColorShadow" format="color" />
+    <!-- Icons -->
+    <attr name="tbColorIcon" format="color" />
+    <!-- Disabled icons -->
+    <attr name="tbColorIconDisabled" format="color" />
+    <!-- Icons of less important actions (edit and delete buttons of bookmarks) -->
+    <attr name="tbColorIconSubtle" format="color" />
+    <!-- Big placeholder icons -->
+    <attr name="tbColorIconPlaceholder" format="color" />
+    <!-- Selected item text (the current tab) -->
+    <attr name="tbColorAccent" format="color" />
+    <!-- Selection indicator (the settings tab underline) -->
+    <attr name="tbColorIndicator" format="color" />
+    <!-- Progress bars -->
+    <attr name="tbColorProgress" format="color" />
+    <!-- Selected text link -->
+    <attr name="tbColorLinkSelected" format="color" />
+    <!-- Buttons -->
+    <attr name="tbColorButton" format="color" />
+    <!-- Focused button -->
+    <attr name="tbColorButtonFocused" format="color" />
+    <!-- Pressed or disabled button -->
+    <attr name="tbColorButtonPressed" format="color" />
+    <!-- Button border -->
+    <attr name="tbColorButtonStroke" format="color" />
+    <!-- Focused button border -->
+    <attr name="tbColorButtonStrokeFocused" format="color" />
+    <!-- Badges (counters) -->
+    <attr name="tbColorBadge" format="color" />
+    <!-- Badge border -->
+    <attr name="tbColorBadgeStroke" format="color" />
+
+    <!--
+    Tokens of the design system (tokens.json of the "AxTVBrowser" design system, with the same names).
+    The redesigned screens use them; the tokens above are the palette of the screens not redesigned yet.
+    -->
+    <!-- Home page background, behind the logo, search bar and tiles -->
+    <attr name="tbColorDsBgPage" format="color" />
+    <!-- The browser bar and the tab strip -->
+    <attr name="tbColorDsBgChrome" format="color" />
+    <!-- Content: the address field, the current tab, tiles, the site panel rows on the phone -->
+    <attr name="tbColorDsSurface" format="color" />
+    <!-- The focused address field and tab -->
+    <attr name="tbColorDsSurfaceFocused" format="color" />
+    <!-- Tabs that are not current -->
+    <attr name="tbColorDsTab" format="color" />
+    <!-- Menu and panel rows at rest -->
+    <attr name="tbColorDsMenu" format="color" />
+    <!-- Toolbar segments and icon buttons at rest -->
+    <attr name="tbColorDsControl" format="color" />
+    <!-- A focused toolbar segment, icon button or menu row -->
+    <attr name="tbColorDsControlFocused" format="color" />
+    <!-- A selected (activated) toolbar segment, icon button or menu row -->
+    <attr name="tbColorDsControlSelected" format="color" />
+    <!-- Toast background -->
+    <attr name="tbColorDsToast" format="color" />
+    <!-- Toast text and icon -->
+    <attr name="tbColorDsOnToast" format="color" />
+    <!-- Hairlines: menu borders, row dividers, the address field border, the tab strip edge -->
+    <attr name="tbColorDsLine" format="color" />
+    <!-- Borders and separators of toolbar groups, tab outlines -->
+    <attr name="tbColorDsLineStrong" format="color" />
+    <!-- Dividers inside the address field and the search bar -->
+    <attr name="tbColorDsDivider" format="color" />
+    <!-- Focus outline -->
+    <attr name="tbColorDsFocus" format="color" />
+    <!-- Selected (editing, current) stroke; the brand blue -->
+    <attr name="tbColorDsSelected" format="color" />
+    <!-- All text that must be read -->
+    <attr name="tbColorDsInk" format="color" />
+    <!-- Secondary text: hosts under titles, placeholders -->
+    <attr name="tbColorDsInkFaint" format="color" />
+    <!-- Icons of the bar, buttons and menus; the badge background -->
+    <attr name="tbColorDsIcon" format="color" />
+    <!-- Badge text (the surface color) -->
+    <attr name="tbColorDsOnBadge" format="color" />
+    <!-- The voice search mic of the search bar -->
+    <attr name="tbColorDsAccent" format="color" />
+    <!-- Danger only: the glyph of an insecure connection (never a fill) -->
+    <attr name="tbColorDsDanger" format="color" />
+    <!-- Behind sheets (32% black) -->
+    <attr name="tbColorDsScrim" format="color" />
+    <!-- The video under the overlays of the players: under a spinner, under an error -->
+    <attr name="tbColorDsVideoDim" format="color" />
+    <attr name="tbColorDsVideoDimStrong" format="color" />
+    <!-- The gradient under the seek bar of a video: transparent at its top, these at its middle and bottom -->
+    <attr name="tbColorDsVideoScrimMiddle" format="color" />
+    <attr name="tbColorDsVideoScrimBottom" format="color" />
+    <!-- The ring of the spinner over a video, under its arc of the selected color -->
+    <attr name="tbColorDsVideoSpinnerTrack" format="color" />
+    <!--
+    Sizes of the rows of the settings screens: the TV values are in Theme.TVBro, the phone ones in
+    ThemeOverlay.TVBro.Settings.Phone, which the phone page lays over its rows
+    -->
+    <attr name="tbSettingsRowMinHeight" format="dimension" />
+    <attr name="tbSettingsRowPadding" format="dimension" />
+    <!-- Around a row: TV rows are rounded inside the card, phone rows fill their card -->
+    <attr name="tbSettingsRowMargin" format="dimension" />
+    <attr name="tbSettingsTitleSize" format="dimension" />
+    <attr name="tbSettingsSummarySize" format="dimension" />
+    <attr name="tbSettingsGroupSize" format="dimension" />
+    <!-- The height of segments, buttons and fields in a row -->
+    <attr name="tbSettingsControlHeight" format="dimension" />
+    <attr name="tbSettingsRowBackground" format="reference" />
+    <declare-styleable name="SiteSettingsView">
+        <!-- panel: the TV site panel; sheet: the phone site sheet; menu: the site section of the phone menu sheet -->
+        <attr name="siteSettingsVariant" format="enum">
+            <enum name="panel" value="0" />
+            <enum name="sheet" value="1" />
+            <enum name="menu" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>

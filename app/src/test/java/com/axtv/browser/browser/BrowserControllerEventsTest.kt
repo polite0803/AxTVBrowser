@@ -1,0 +1,675 @@
+package com.axtv.browser.browser
+
+import android.graphics.Bitmap
+import android.os.Looper
+import androidx.room.Room
+import com.axtv.browser.AppContext
+import com.axtv.browser.Config
+import com.axtv.browser.TVBro
+import com.axtv.browser.model.BrowserTab
+import com.axtv.browser.model.HostConfig
+import com.axtv.browser.singleton.AppDatabase
+import com.axtv.browser.singleton.FaviconsPool
+import com.axtv.browser.webengine.WebEngineFactory
+import com.axtv.browser.webengine.WebEngineProvider
+import com.axtv.browser.webengine.WebEngineProviderCallback
+import com.axtv.browser.webengine.SiteDataClearingSupport
+import com.axtv.browser.webengine.WebEngineCallbacks
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.Shadows.shadowOf
+import java.time.Duration
+import java.util.concurrent.ConcurrentHashMap
+
+@RunWith(RobolectricTestRunner::class)
+class BrowserControllerEventsTest {
+    private val context get() = RuntimeEnvironment.getApplication()
+    private val config get() = AppContext.provideConfig()
+    private lateinit var db: AppDatabase
+    private lateinit var controller: BrowserController
+    private lateinit var host: FakeTabViewHost
+    private val events = ArrayList<BrowserUiEvent>()
+    private val eventsScope = CoroutineScope(Dispatchers.Unconfined)
+
+    /** Waits for the history writes: they are delayed by the logger and done on Room threads */
+    private fun storedHistory(expectedSize: Int): List<String> {
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(VisitedHistoryLogger.MIN_VISITED_INTERVAL + 100))
+        val deadline = System.currentTimeMillis() + 5000
+        while (true) {
+            shadowOf(Looper.getMainLooper()).idle()
+            val rows = db.query("SELECT title, url FROM history ORDER BY id", null).use { c ->
+                generateSequence { if (c.moveToNext()) "${c.getString(0)} ${c.getString(1)}" else null }.toList()
+            }
+            if (rows.size >= expectedSize || System.currentTimeMillis() > deadline) {
+                //let the logger finish (it marks the item as saved on the main thread)
+                Thread.sleep(20)
+                shadowOf(Looper.getMainLooper()).idle()
+                return rows
+            }
+            Thread.sleep(5)
+        }
+    }
+
+    @Before
+    fun setUp() {
+        db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).allowMainThreadQueries().build()
+        AppDatabase.setInstanceForTests(db)
+        WebEngineFactory.initializeForTests(FakeWebEngine.provider)
+        controller = BrowserController()
+        host = FakeTabViewHost(context)
+        controller.viewHost = host
+        eventsScope.launch { controller.uiEvents.collect { events += it } }
+    }
+
+    @After
+    fun tearDown() {
+        eventsScope.cancel()
+        val container = TVBro.container
+        val job = container.appScope.launch { container.tabWrites.awaitPending() }
+        while (!job.isCompleted) {
+            shadowOf(Looper.getMainLooper()).idle()
+            Thread.sleep(1)
+        }
+        controller.clear()
+        AppDatabase.setInstanceForTests(null)
+        db.close()
+    }
+
+    private fun awaitWrite(job: Job?) {
+        while (job != null && !job.isCompleted) {
+            shadowOf(Looper.getMainLooper()).idle()
+            Thread.sleep(1)
+        }
+    }
+
+    private fun open(url: String): BrowserTab =
+        controller.openInNewTab(url, controller.tabsStates.size, navigateImmediately = true)!!
+
+    private val BrowserTab.callback: WebEngineCallbacks get() = fakeEngine.callback!!
+
+    /** What an engine does when the process that draws its view dies: it drops the view */
+    private fun loseView(tab: BrowserTab, callback: WebEngineCallbacks) {
+        tab.fakeEngine.engineView = null
+        tab.fakeEngine.callback = null
+        tab.fakeEngine.log.clear()
+        callback.onEngineViewLost()
+    }
+    private val state get() = controller.currentTabState.value
+
+    @Test
+    fun stateFollowsTheCurrentTab() {
+        assertFalse(state.hasTab)
+        val a = open("https://a.com/")
+        a.fakeEngine.canGoBackValue = true
+        val b = open("https://b.com/")
+        assertEquals("https://b.com/", state.url)
+        assertFalse(state.canGoBack)
+
+        controller.changeTab(a)
+        assertTrue(state.hasTab)
+        assertEquals("https://a.com/", state.url)
+        assertTrue(state.canGoBack)
+
+        controller.closeTab(a)
+        assertSame(b, controller.currentTab.value)
+        assertEquals("https://b.com/", state.url)
+    }
+
+    @Test
+    fun pageStartUpdatesTheUrlAndResetsCounters() {
+        val tab = open("https://a.com/")
+        tab.blockedAds = 3
+        tab.blockedPopups = 2
+        tab.fakeEngine.loadedUrls += "https://a.com/page"
+        tab.callback.onPageStarted("https://ignored.com/")
+        assertEquals("https://a.com/page", tab.url)
+        assertEquals("https://a.com/page", state.url)
+        assertEquals(0, state.blockedAds)
+        assertEquals(0, state.blockedPopups)
+    }
+
+    private fun download(tab: BrowserTab, url: String) =
+        tab.callback.onDownloadRequested(com.axtv.browser.webengine.DownloadRequest(url, referer = "", userAgent = null))
+
+    @Test
+    fun aTabOpenedForADownloadDoesNotKeepItsLink() {
+        //the link redirects to the file: the download has another url
+        val tab = open("https://a.com/archive.zip")
+        assertEquals("https://a.com/archive.zip", tab.url)
+        download(tab, "https://files.a.com/archive.zip")
+        assertEquals(BrowserController.BLANK_URL, tab.url)
+        assertEquals(BrowserController.BLANK_URL, state.url)
+        //the UI still gets the download
+        assertTrue("onDownloadRequested" in host.uiHostCalls)
+    }
+
+    @Test
+    fun aDownloadTypedOnAPageKeepsThePage() {
+        val tab = open("https://a.com/")
+        tab.callback.onPageStarted("https://a.com/")
+        controller.navigate("https://b.com/file.zip")
+        assertEquals("https://b.com/file.zip", tab.url)
+        download(tab, "https://b.com/file.zip")
+        assertEquals("https://a.com/", tab.url)
+        assertEquals("https://a.com/", state.url)
+    }
+
+    @Test
+    fun aDownloadOfALinkOfThePageChangesNothing() {
+        val tab = open("https://a.com/")
+        tab.fakeEngine.loadedUrls += "https://a.com/page"
+        tab.callback.onPageStarted("https://a.com/page")
+        download(tab, "https://a.com/file.zip")
+        assertEquals("https://a.com/page", tab.url)
+    }
+
+    @Test
+    fun currentTabGetsANewViewWhenItsViewIsLost() {
+        val tab = open("https://a.com/")
+        val loaded = tab.fakeEngine.loadedUrls.toList()
+        loseView(tab, tab.callback)
+        assertTrue(tab.fakeEngine.engineView != null)
+        assertEquals(listOf("attach"), tab.fakeEngine.log)
+        assertSame(host.tabsContainer, tab.fakeEngine.parent)
+        //the engine shows what it shows after such a loss: the core neither restores nor loads a page
+        assertEquals(loaded, tab.fakeEngine.loadedUrls)
+        assertTrue(state.hasTab)
+    }
+
+    @Test
+    fun backgroundTabGetsItsNewViewWhenShown() {
+        val a = open("https://a.com/")
+        val aCallback = a.callback
+        open("https://b.com/")
+        loseView(a, aCallback)
+        assertNull(a.fakeEngine.engineView)
+        assertTrue(a.fakeEngine.log.isEmpty())
+
+        controller.changeTab(a)
+        assertTrue(a.fakeEngine.engineView != null)
+        assertTrue(a.fakeEngine.log.contains("attach"))
+    }
+
+    @Test
+    fun pageFinishUpdatesTheUrl() {
+        val tab = open("https://a.com/")
+        tab.fakeEngine.loadedUrls += "https://a.com/redirected"
+        tab.callback.onPageFinished("https://a.com/")
+        assertEquals("https://a.com/redirected", state.url)
+    }
+
+    @Test
+    fun blockedAdsAreCountedWhenAdBlockingIsEnabled() {
+        config.adBlockEnabled = true
+        val tab = open("https://a.com/")
+        tab.callback.onBlockedAd("https://ads.com/1")
+        tab.callback.onBlockedAd("https://ads.com/2")
+        assertEquals(2, state.blockedAds)
+
+        config.adBlockEnabled = false
+        tab.callback.onBlockedAd("https://ads.com/3")
+        assertEquals(2, tab.blockedAds)
+    }
+
+    @Test
+    fun blockedAdsFollowTheSettingOfTheSiteNotTheGlobalOne() {
+        config.adBlockEnabled = false
+        val tab = open("https://a.com/")
+        awaitWrite(controller.setSiteAdBlock(tab, true))
+        tab.callback.onBlockedAd("https://ads.com/1")
+        assertEquals(1, state.blockedAds)
+    }
+
+    @Test
+    fun stateHasTheSiteAndItsPopupBlocking() {
+        val tab = open("https://a.com/page")
+        assertEquals("a.com", state.host)
+        assertEquals(HostConfig.DEFAULT_BLOCK_POPUPS_VALUE, state.popupBlockLevel)
+        runBlocking { controller.changePopupBlockingLevel(HostConfig.POPUP_BLOCK_NONE, tab) }
+        assertEquals(HostConfig.POPUP_BLOCK_NONE, state.popupBlockLevel)
+    }
+
+    @Test
+    fun homePageSearchBarIsReportedToTheUi() {
+        val tab = open(Config.HOME_URL_ALIAS)
+        tab.callback.onHomePageSearchBarLocated(10, 20)
+        assertEquals(BrowserUiEvent.HomePageSearchBarLocated(tab, 10, 20), events.last())
+    }
+
+    @Test
+    fun pageWithoutHostHasNoSite() {
+        open(Config.HOME_URL_ALIAS)
+        assertEquals("", state.host)
+    }
+
+    @Test
+    fun pageLoadingIsShownFromStartToFinish() {
+        val tab = open("https://a.com/")
+        assertFalse(state.loading)
+        tab.callback.onPageStarted("https://a.com/")
+        assertTrue(state.loading)
+        tab.callback.onPageFinished("https://a.com/")
+        assertFalse(state.loading)
+    }
+
+    @Test
+    fun progressShowsALoadThatStartedBeforeTheTabWasShown() {
+        val tab = open("https://a.com/")
+        tab.callback.onProgressChanged(40)
+        assertTrue(state.loading)
+        tab.callback.onProgressChanged(100)
+        assertFalse(state.loading)
+    }
+
+    @Test
+    fun stopEndsTheLoading() {
+        val tab = open("https://a.com/")
+        tab.callback.onPageStarted("https://a.com/")
+        controller.stopLoading()
+        assertEquals("stopLoading", tab.fakeEngine.log.last())
+        assertFalse(state.loading)
+    }
+
+    @Test
+    fun loadingOfATabEndsWhenItIsNoLongerShown() {
+        val a = open("https://a.com/")
+        a.callback.onPageStarted("https://a.com/")
+        open("https://b.com/")
+        assertFalse(state.loading)
+        assertFalse(a.loading)
+    }
+
+    @Test
+    fun blockedDialogIsCountedAndReported() {
+        val tab = open("https://a.com/")
+        events.clear()
+        tab.callback.onBlockedDialog(false)
+        assertEquals(1, state.blockedPopups)
+        assertEquals(listOf(BrowserUiEvent.PopupBlocked(false)), events)
+    }
+
+    @Test
+    fun connectionFollowsTheScheme() {
+        val tab = open("https://a.com/")
+        assertEquals(SiteConnection.SECURE, state.connection)
+        controller.navigate("http://b.com/")
+        tab.callback.onPageStarted("http://b.com/")
+        assertEquals(SiteConnection.HTTP, state.connection)
+        controller.navigate(Config.HOME_URL_ALIAS)
+        tab.callback.onPageStarted(Config.HOME_URL_ALIAS)
+        assertEquals(SiteConnection.NONE, state.connection)
+    }
+
+    @Test
+    fun certificateErrorStaysWithItsHostUntilNavigation() {
+        val tab = open("https://a.com/")
+        tab.callback.onPageCertificateError("https://a.com/")
+        assertEquals(SiteConnection.CERTIFICATE_ERROR, state.connection)
+        //the warning page, then the page itself after the user went on
+        tab.callback.onPageStarted(null)
+        assertEquals(SiteConnection.CERTIFICATE_ERROR, state.connection)
+        controller.navigate("https://a.com/other")
+        assertEquals(SiteConnection.SECURE, state.connection)
+    }
+
+    @Test
+    fun certificateErrorEndsOnAnotherHost() {
+        val tab = open("https://a.com/")
+        tab.callback.onPageCertificateError("https://a.com/")
+        //a link of the page
+        tab.fakeEngine.loadedUrls += "https://b.com/"
+        tab.callback.onPageStarted("https://b.com/")
+        assertEquals(SiteConnection.SECURE, state.connection)
+    }
+
+    @Test
+    fun certificateErrorBelongsToItsTab() {
+        val a = open("https://a.com/")
+        a.callback.onPageCertificateError("https://a.com/")
+        open("https://b.com/")
+        assertEquals(SiteConnection.SECURE, state.connection)
+        controller.changeTab(a)
+        assertEquals(SiteConnection.CERTIFICATE_ERROR, state.connection)
+    }
+
+    @Test
+    fun siteViewFollowsTheInterfaceByDefault() {
+        controller.interfaceDesktopView = false
+        val tab = open("https://a.com/")
+        assertFalse(tab.fakeEngine.desktopView)
+        assertFalse(state.desktopView)
+        assertTrue(state.siteViewIsDefault)
+        controller.interfaceDesktopView = true
+        controller.navigate("https://b.com/")
+        assertTrue(tab.fakeEngine.desktopView)
+    }
+
+    @Test
+    fun siteViewOfAHostIsKeptOnlyWhileItDiffersFromTheDefault() {
+        val tab = open("https://a.com/")
+        assertTrue(tab.fakeEngine.desktopView)
+        tab.fakeEngine.log.clear()
+        awaitWrite(controller.setSiteView(tab, desktop = false))
+        assertFalse(tab.fakeEngine.desktopView)
+        assertEquals(listOf("reload"), tab.fakeEngine.log)
+        assertFalse(state.desktopView)
+        assertFalse(state.siteViewIsDefault)
+        assertEquals(false, runBlocking { db.hostsDao().findByHostName("a.com") }!!.desktopView)
+
+        awaitWrite(controller.setSiteView(tab, desktop = true))
+        assertTrue(tab.fakeEngine.desktopView)
+        assertTrue(state.siteViewIsDefault)
+        assertNull(runBlocking { db.hostsDao().findByHostName("a.com") }!!.desktopView)
+    }
+
+    @Test
+    fun defaultSiteViewSettingWinsOverTheInterface() {
+        val tab = open("https://a.com/")
+        assertTrue(tab.fakeEngine.desktopView)
+        tab.fakeEngine.log.clear()
+        config.defaultDesktopView = false
+        controller.onSiteViewSettingsChanged()
+        assertFalse(tab.fakeEngine.desktopView)
+        assertEquals(listOf("reload"), tab.fakeEngine.log)
+        assertFalse(state.desktopView)
+        config.defaultDesktopView = null
+    }
+
+    @Test
+    fun userAgentSettingReachesAllTabsAndReloadsTheCurrentOne() {
+        val first = open("https://a.com/")
+        val current = open("https://b.com/")
+        assertNull(current.fakeEngine.userAgentOverride)
+        first.fakeEngine.log.clear()
+        current.fakeEngine.log.clear()
+        config.userAgent = "MyAgent/1.0"
+        try {
+            controller.onSiteViewSettingsChanged()
+            assertEquals("MyAgent/1.0", current.fakeEngine.userAgentOverride)
+            assertEquals("MyAgent/1.0", first.fakeEngine.userAgentOverride)
+            assertEquals(listOf("reload"), current.fakeEngine.log)
+            assertFalse("reload" in first.fakeEngine.log)
+            //the site view stays
+            assertTrue(current.fakeEngine.desktopView)
+        } finally {
+            config.userAgent = null
+        }
+        controller.onSiteViewSettingsChanged()
+        assertNull(current.fakeEngine.userAgentOverride)
+    }
+
+    @Test
+    fun blankAndLegacyUserAgentsAreAuto() {
+        config.userAgent = "  "
+        assertNull(config.userAgent)
+        config.prefs.edit().putString(Config.USER_AGENT_KEY, "AxTVBrowser/1.0 Mozilla/5.0").commit()
+        assertNull(config.userAgent)
+        config.userAgent = null
+    }
+
+    @Test
+    fun clearingSiteDataClearsTheHostAndReloads() {
+        FakeWebEngine.clearedSites.clear()
+        val tab = open("https://www.a.com/page")
+        runBlocking { db.hostsDao().setDesktopView("www.a.com", false) }
+        tab.fakeEngine.log.clear()
+        runBlocking { controller.clearSiteData(tab) }
+        assertEquals(listOf("www.a.com"), FakeWebEngine.clearedSites)
+        assertEquals(listOf("reload"), tab.fakeEngine.log)
+        assertTrue(state.siteDataClearable)
+        //the settings of the site stay
+        assertEquals(false, runBlocking { db.hostsDao().findByHostName("www.a.com") }!!.desktopView)
+    }
+
+    @Test
+    fun anEngineThatCanNotClearSiteDataClearsAndReloadsNothing() {
+        WebEngineFactory.initializeForTests(WebEngineProvider("NoSiteData",
+            object : WebEngineProviderCallback by FakeWebEngine.provider.callback {
+                override val siteDataClearing: SiteDataClearingSupport? = null
+            }))
+        FakeWebEngine.clearedSites.clear()
+        val tab = open("https://www.a.com/page")
+        assertFalse(state.siteDataClearable)
+        tab.fakeEngine.log.clear()
+        runBlocking { controller.clearSiteData(tab) }
+        runBlocking { controller.clearSitesData(listOf("www.a.com", "www.b.com")) }
+        assertTrue(FakeWebEngine.clearedSites.isEmpty())
+        assertTrue(tab.fakeEngine.log.isEmpty())
+    }
+
+    @Test
+    fun pageInTheViewOfAnotherHostLoadsAgainOnce() {
+        val tab = open("https://a.com/")
+        awaitWrite(controller.setSiteView(tab, desktop = false))
+        //going back to a page of another host, which the engine did not switch the view for
+        tab.fakeEngine.loadedUrls += "https://b.com/"
+        tab.fakeEngine.log.clear()
+        tab.callback.onPageStarted("https://b.com/")
+        assertTrue(tab.fakeEngine.desktopView)
+        assertEquals(listOf("reload"), tab.fakeEngine.log)
+        //the page loaded again redirects back by its view: no second reload
+        tab.fakeEngine.loadedUrls += "https://a.com/"
+        tab.callback.onPageStarted("https://a.com/")
+        assertTrue(tab.fakeEngine.desktopView)
+        assertEquals(listOf("reload"), tab.fakeEngine.log)
+    }
+
+    @Test
+    fun titleUpdatesTheTabAndTheHistory() {
+        val tab = open("https://a.com/")
+        events.clear()
+        tab.callback.onReceivedTitle("Title A")
+        assertEquals("Title A", tab.title)
+        assertEquals("Title A", state.title)
+        assertEquals(listOf<BrowserUiEvent>(BrowserUiEvent.TabUpdated(tab)), events)
+    }
+
+    @Test
+    fun titleOfASavedVisitIsUpdated() {
+        val tab = open("https://a.com/")
+        tab.title = "Loading"
+        tab.callback.onVisited("https://a.com/")
+        assertEquals(listOf("Loading https://a.com/"), storedHistory(1))
+        tab.callback.onReceivedTitle("Title A")
+        val deadline = System.currentTimeMillis() + 5000
+        var rows = storedHistory(1)
+        while (rows != listOf("Title A https://a.com/") && System.currentTimeMillis() < deadline) {
+            Thread.sleep(5)
+            rows = storedHistory(1)
+        }
+        assertEquals(listOf("Title A https://a.com/"), rows)
+    }
+
+    @Test
+    fun visitsGetTheTitlesOfTheirOwnPages() {
+        val tab = open("https://a.com/")
+        tab.callback.onPageStarted("https://a.com/")
+        tab.callback.onVisited("https://a.com/")
+        tab.callback.onReceivedTitle("A")
+        tab.callback.onPageFinished("https://a.com/")
+        assertEquals(listOf("A https://a.com/"), storedHistory(1))
+        //the page changes its url itself (history.pushState): the engine reports no page load
+        tab.fakeEngine.loadedUrls += "https://a.com/watch"
+        tab.callback.onVisited("https://a.com/watch")
+        tab.callback.onReceivedTitle("Video")
+        assertEquals(listOf("A https://a.com/", "Video https://a.com/watch"), storedHistory(2))
+    }
+
+    @Test
+    fun visitOfAPageStillLoadingDoesNotTakeTheTitleOfThePreviousOne() {
+        val tab = open("https://a.com/")
+        tab.callback.onReceivedTitle("A")
+        tab.fakeEngine.loadedUrls += "https://b.com/"
+        tab.callback.onPageStarted("https://b.com/")
+        tab.callback.onVisited("https://b.com/")
+        assertEquals(listOf(" https://b.com/"), storedHistory(1))
+    }
+
+    @Test
+    fun iconIsStoredForTheHostOfThePageShownNow() {
+        val stored = ConcurrentHashMap<String, String>()
+        val originalDelegate = FaviconsPool.databaseDelegate
+        val originalFetcher = FaviconsPool.fetcher
+        FaviconsPool.clear()
+        FaviconsPool.databaseDelegate = object : FaviconsPool.DatabaseDelegate {
+            override suspend fun setFavicon(host: String, fileName: String) { stored[host] = fileName }
+        }
+        //the page has no icon of its own: the one of the engine is kept
+        FaviconsPool.fetcher = FaviconsPool.Fetcher { null }
+        try {
+            val tab = open("https://a.com/")
+            //a redirect or history.pushState to another host: tab.url stays
+            tab.fakeEngine.loadedUrls += "https://www.a.com/"
+            tab.callback.onReceivedIcon(Bitmap.createBitmap(16, 16, Bitmap.Config.ARGB_8888))
+            val deadline = System.currentTimeMillis() + 5000
+            while (stored.isEmpty() && System.currentTimeMillis() < deadline) {
+                shadowOf(Looper.getMainLooper()).idle()
+                Thread.sleep(5)
+            }
+            assertEquals(setOf("www.a.com"), stored.keys)
+        } finally {
+            FaviconsPool.databaseDelegate = originalDelegate
+            FaviconsPool.fetcher = originalFetcher
+            FaviconsPool.clear()
+        }
+    }
+
+    @Test
+    fun progressIsReported() {
+        val tab = open("https://a.com/")
+        events.clear()
+        tab.callback.onProgressChanged(42)
+        assertEquals(listOf<BrowserUiEvent>(BrowserUiEvent.Progress(42)), events)
+    }
+
+    @Test
+    fun windowsWithoutUserGestureAreBlocked() {
+        val tab = open("https://a.com/")
+        events.clear()
+        assertNull(tab.callback.onCreateWindow(dialog = false, userGesture = false))
+        assertEquals(1, controller.tabsStates.size)
+        assertEquals(1, state.blockedPopups)
+        assertEquals(listOf<BrowserUiEvent>(BrowserUiEvent.PopupBlocked(true)), events)
+    }
+
+    @Test
+    fun windowsOpenedByUserGestureGetTheirTab() {
+        val a = open("https://a.com/")
+        val b = open("https://b.com/")
+        controller.changeTab(a)
+        val view = a.callback.onCreateWindow(dialog = false, userGesture = true)
+        val windowTab = controller.tabsStates[1]
+        assertSame(view, windowTab.fakeEngine.engineView)
+        assertEquals(listOf(a, windowTab, b), controller.tabsStates.toList())
+    }
+
+    @Test
+    fun pageCanOpenATabAfterItsOwn() {
+        val a = open("https://a.com/")
+        val b = open("https://b.com/")
+        controller.changeTab(a)
+        events.clear()
+        val engine = a.callback.onOpenInNewTabRequested("https://new.com/", navigateImmediately = true)
+        val newTab = controller.tabsStates[1]
+        assertSame(newTab.webEngine, engine)
+        assertEquals(listOf(a, newTab, b), controller.tabsStates.toList())
+        assertEquals("https://new.com/", newTab.fakeEngine.url)
+        assertEquals(listOf<BrowserUiEvent>(BrowserUiEvent.TabOpenedByPage), events)
+    }
+
+    @Test
+    fun pageCanCloseItsTab() {
+        val a = open("https://a.com/")
+        val b = open("https://b.com/")
+        events.clear()
+        b.callback.closeWindow(b.fakeEngine)
+        assertEquals(listOf(a), controller.tabsStates.toList())
+        assertEquals(listOf<BrowserUiEvent>(BrowserUiEvent.TabClosedByPage), events)
+    }
+
+    @Test
+    fun urlsAreRouted() {
+        val tab = open("https://a.com/")
+        events.clear()
+        assertFalse(tab.callback.shouldOverrideUrlLoading("https://b.com/"))
+
+        assertTrue(tab.callback.shouldOverrideUrlLoading("no-scheme"))
+        assertTrue(events.isEmpty())
+
+        assertTrue(tab.callback.shouldOverrideUrlLoading("intent://scan/#Intent;end"))
+        assertEquals(BrowserUiEvent.OpenInExternalApp("intent://scan/#Intent;end"), events.last())
+
+        assertTrue(tab.callback.shouldOverrideUrlLoading("unknown-scheme://x"))
+        assertEquals(BrowserUiEvent.NoAppToOpenUrl, events.last())
+    }
+
+    @Test
+    fun visitsAreLoggedWithTheTitleOfTheirTab() {
+        val a = open("https://a.com/")
+        a.title = "A"
+        //engines stop calling the callback when their tab is detached, but the event may be late
+        val aCallback = a.callback
+        val b = open("https://b.com/")
+        b.title = "B"
+        aCallback.onVisited("https://a.com/")
+        assertEquals(listOf("A https://a.com/"), storedHistory(1))
+    }
+
+    @Test
+    fun visitsAreNotLoggedInIncognitoMode() {
+        config.incognitoMode = true
+        open("https://a.com/").callback.onVisited("https://a.com/")
+        assertTrue(storedHistory(0).isEmpty())
+    }
+
+    @Test
+    fun homePageLinksAreGivenToTheEngine() {
+        runBlocking { controller.homePageLinks.load() }
+        val tab = open("https://a.com/")
+        assertTrue(controller.homePageLinks.links.value.isNotEmpty())
+        assertEquals(controller.homePageLinks.links.value, tab.callback.getHomePageLinks())
+    }
+
+    @Test
+    fun siteAdBlockSettingUpdatesTheState() {
+        config.adBlockEnabled = true
+        val tab = open("https://a.com/")
+        assertTrue(state.adBlockEnabled)
+        awaitWrite(controller.setSiteAdBlock(tab, false))
+        assertFalse(state.adBlockEnabled)
+    }
+
+    @Test
+    fun pageOfAnotherHostShowsItsSettingOnStart() {
+        config.adBlockEnabled = true
+        val tab = open("https://a.com/")
+        awaitWrite(controller.setSiteAdBlock(tab, false))
+        assertFalse(state.adBlockEnabled)
+
+        tab.fakeEngine.loadedUrls += "https://b.com/"
+        tab.callback.onPageStarted("https://b.com/")
+        assertTrue(state.adBlockEnabled)
+    }
+
+    @Test
+    fun uiHostCallsGoToTheViewHost() {
+        val tab = open("https://a.com/")
+        tab.callback.initiateVoiceSearch()
+        assertEquals(listOf("initiateVoiceSearch"), host.uiHostCalls)
+    }
+}

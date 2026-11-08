@@ -1,0 +1,138 @@
+<resources>
+
+    <style name="Theme.TVBroBase" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowEnterTransition">@android:transition/fade</item>
+        <item name="android:windowExitTransition">@android:transition/fade</item>
+        <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+        <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="Theme.TVBro" parent="Theme.TVBroBase">
+        <item name="tbColorSurface">@color/surface</item>
+        <item name="tbColorSurfaceBar">@color/surface_bar</item>
+        <item name="tbColorSurfaceHeader">@color/surface_header</item>
+        <item name="tbColorSurfaceFocused">@color/surface_focused</item>
+        <item name="tbColorSurfaceTab">@color/surface_tab</item>
+        <item name="tbColorOnSurface">@color/on_surface</item>
+        <item name="tbColorOnSurfaceVariant">@color/on_surface_variant</item>
+        <item name="tbColorDivider">@color/divider</item>
+        <item name="tbColorDividerStrong">@color/divider_strong</item>
+        <item name="tbColorShadow">@color/shadow</item>
+        <item name="tbColorIcon">@color/icon</item>
+        <item name="tbColorIconDisabled">@color/icon_disabled</item>
+        <item name="tbColorIconSubtle">@color/icon_subtle</item>
+        <item name="tbColorIconPlaceholder">@color/icon_placeholder</item>
+        <item name="tbColorAccent">@color/accent</item>
+        <item name="tbColorIndicator">@color/indicator</item>
+        <item name="tbColorProgress">@color/progress</item>
+        <item name="tbColorLinkSelected">@color/link_selected</item>
+        <item name="tbColorButton">@color/button</item>
+        <item name="tbColorButtonFocused">@color/button_focused</item>
+        <item name="tbColorButtonPressed">@color/button_pressed</item>
+        <item name="tbColorButtonStroke">@color/button_stroke</item>
+        <item name="tbColorButtonStrokeFocused">@color/button_stroke_focused</item>
+        <item name="tbColorBadge">@color/badge</item>
+        <item name="tbColorBadgeStroke">@color/badge_stroke</item>
+        <item name="tbColorDsBgPage">@color/ds_bg_page</item>
+        <item name="tbColorDsBgChrome">@color/ds_bg_chrome</item>
+        <item name="tbColorDsSurface">@color/ds_surface</item>
+        <item name="tbColorDsSurfaceFocused">@color/ds_surface_focused</item>
+        <item name="tbColorDsTab">@color/ds_tab</item>
+        <item name="tbColorDsMenu">@color/ds_menu</item>
+        <item name="tbColorDsControl">@color/ds_control</item>
+        <item name="tbColorDsControlFocused">@color/ds_control_focused</item>
+        <item name="tbColorDsControlSelected">@color/ds_control_selected</item>
+        <item name="tbColorDsToast">@color/ds_toast</item>
+        <item name="tbColorDsOnToast">@color/ds_on_toast</item>
+        <item name="tbColorDsLine">@color/ds_line</item>
+        <item name="tbColorDsLineStrong">@color/ds_line_strong</item>
+        <item name="tbColorDsDivider">@color/ds_divider</item>
+        <item name="tbColorDsFocus">@color/ds_focus</item>
+        <item name="tbColorDsSelected">@color/ds_selected</item>
+        <item name="tbColorDsInk">@color/ds_ink</item>
+        <item name="tbColorDsInkFaint">@color/ds_ink_faint</item>
+        <item name="tbColorDsIcon">@color/ds_icon</item>
+        <item name="tbColorDsOnBadge">@color/ds_on_badge</item>
+        <item name="tbColorDsAccent">@color/ds_accent</item>
+        <item name="tbColorDsDanger">@color/ds_danger</item>
+        <item name="tbColorDsScrim">@color/ds_scrim</item>
+        <item name="tbColorDsVideoDim">@color/ds_video_dim</item>
+        <item name="tbColorDsVideoDimStrong">@color/ds_video_dim_strong</item>
+        <item name="tbColorDsVideoScrimMiddle">@color/ds_video_scrim_middle</item>
+        <item name="tbColorDsVideoScrimBottom">@color/ds_video_scrim_bottom</item>
+        <item name="tbColorDsVideoSpinnerTrack">@color/ds_video_spinner_track</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.TVBro.Dialog.Alert</item>
+        <item name="tbSettingsRowMinHeight">@dimen/ds_settings_row_min_height</item>
+        <item name="tbSettingsRowPadding">@dimen/ds_settings_row_padding</item>
+        <item name="tbSettingsRowMargin">@dimen/ds_settings_row_margin</item>
+        <item name="tbSettingsTitleSize">@dimen/ds_text_settings_title</item>
+        <item name="tbSettingsSummarySize">@dimen/ds_text_settings_summary</item>
+        <item name="tbSettingsGroupSize">@dimen/ds_text_settings_group</item>
+        <item name="tbSettingsControlHeight">@dimen/ds_settings_control_height</item>
+        <item name="tbSettingsRowBackground">@drawable/ds_settings_row_bg</item>
+    </style>
+
+    <!--
+    The overlays of the players over a video (the seek bar of the video mode, the built-in player, its panels, the choice
+    of a stream): always the dark tokens, also in the light theme, set with android:theme on their views
+    -->
+    <style name="ThemeOverlay.TVBro.Video" parent="">
+        <item name="tbColorDsBgPage">@color/ds_dark_bg_page</item>
+        <item name="tbColorDsBgChrome">@color/ds_dark_bg_chrome</item>
+        <item name="tbColorDsSurface">@color/ds_dark_surface</item>
+        <item name="tbColorDsSurfaceFocused">@color/ds_dark_surface_focused</item>
+        <item name="tbColorDsTab">@color/ds_dark_tab</item>
+        <item name="tbColorDsMenu">@color/ds_dark_menu</item>
+        <item name="tbColorDsControl">@color/ds_dark_control</item>
+        <item name="tbColorDsControlFocused">@color/ds_dark_control_focused</item>
+        <item name="tbColorDsControlSelected">@color/ds_dark_control_selected</item>
+        <item name="tbColorDsLine">@color/ds_dark_line</item>
+        <item name="tbColorDsLineStrong">@color/ds_dark_line_strong</item>
+        <item name="tbColorDsDivider">@color/ds_dark_divider</item>
+        <item name="tbColorDsInk">@color/ds_dark_ink</item>
+        <item name="tbColorDsInkFaint">@color/ds_dark_ink_faint</item>
+        <item name="tbColorDsIcon">@color/ds_dark_icon</item>
+        <item name="tbColorDsOnBadge">@color/ds_dark_on_badge</item>
+        <item name="tbColorDsDanger">@color/ds_dark_danger</item>
+    </style>
+
+    <!-- The rows of the phone settings page: bigger touch targets and text, the pressed look -->
+    <style name="ThemeOverlay.TVBro.Settings.Phone" parent="">
+        <item name="tbSettingsRowMinHeight">@dimen/ds_phone_settings_row_min_height</item>
+        <item name="tbSettingsRowPadding">@dimen/ds_phone_settings_row_padding</item>
+        <item name="tbSettingsRowMargin">0dp</item>
+        <item name="tbSettingsTitleSize">@dimen/ds_text_phone_settings_title</item>
+        <item name="tbSettingsSummarySize">@dimen/ds_text_phone_settings_summary</item>
+        <item name="tbSettingsGroupSize">@dimen/ds_text_phone_settings_group</item>
+        <item name="tbSettingsControlHeight">@dimen/ds_phone_settings_control_height</item>
+        <item name="tbSettingsRowBackground">@drawable/ds_phone_button_bg</item>
+    </style>
+
+    <!--
+    Alert dialogs (androidx.appcompat.app.AlertDialog) in the design system: a surface window, ink
+    text, buttons with the focused look of the bar, list rows with the focused look of menus. It is
+    laid over the activity theme, so the tokens resolve to their day or night values.
+    -->
+    <style name="ThemeOverlay.TVBro.Dialog.Alert" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/ds_dialog_bg</item>
+        <item name="colorBackgroundFloating">?attr/tbColorDsSurface</item>
+        <item name="android:colorBackground">?attr/tbColorDsSurface</item>
+        <item name="android:textColorPrimary">?attr/tbColorDsInk</item>
+        <item name="android:textColorSecondary">?attr/tbColorDsInk</item>
+        <item name="android:textColorHint">?attr/tbColorDsInkFaint</item>
+        <item name="textColorAlertDialogListItem">?attr/tbColorDsInk</item>
+        <item name="colorAccent">?attr/tbColorDsSelected</item>
+        <item name="colorControlActivated">?attr/tbColorDsSelected</item>
+        <item name="colorControlNormal">?attr/tbColorDsIcon</item>
+        <item name="colorControlHighlight">?attr/tbColorDsControlFocused</item>
+        <item name="listChoiceBackgroundIndicator">@drawable/ds_menu_row_bg</item>
+        <item name="android:listChoiceBackgroundIndicator">@drawable/ds_menu_row_bg</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.TVBro.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.TVBro.DialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.TVBro.DialogButton</item>
+    </style>
+</resources>

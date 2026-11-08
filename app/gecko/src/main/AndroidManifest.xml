@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- the click and the dismissal of a notification a page showed (see GeckoWebNotifications) -->
+        <receiver
+            android:name="com.axtv.browser.webengine.gecko.GeckoNotificationReceiver"
+            android:exported="false" />
+    </application>
+
+</manifest>

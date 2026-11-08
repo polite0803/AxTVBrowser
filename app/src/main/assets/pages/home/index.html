@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AxTVBrowser: Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+body {
+    color:#343a3c;
+    background-color:#EDF6FF;
+}
+@media (prefers-color-scheme: dark) {
+    body {
+        color:#f8f9fa;
+        background-color:#343a3c;
+    }    
+}
+
+#suggestions {
+    width: 65vw;
+    margin: auto;
+    table-layout: fixed;
+    outline: none;
+    position: relative;
+    top: 18vh;
+    -webkit-border-horizontal-spacing: 1vw;
+    -webkit-border-vertical-spacing: 2vh !important;
+    border-spacing: 1vw;
+}
+
+td {
+    overflow: hidden;
+    white-space: nowrap;
+    word-wrap: break-word;
+    outline:none;
+}
+
+.sugg {
+    padding: 1vh 1vw;
+    white-space: nowrap;
+    word-wrap: break-word;
+    transition: .5s;
+    color: #4F4F4F;
+    background: #FFFFFF;
+    box-shadow: 0px 1px 12px rgb(134 192 255 / 16%);
+    border: 2px solid #FFFFFF;
+    border-radius: 0.5vw;
+}
+@media (prefers-color-scheme: dark) {
+    .sugg {
+        color: #f8f9fa;
+        background: #1e2122;
+        box-shadow: 0px 1px 12px rgb(0 0 0 / 16%);
+        border: 2px solid #343a3c;
+    }
+}
+.sugg:hover {
+    transition:.5s;
+    background: #F3F6FA;
+    border: 2px solid #A5D0FF;
+    border-radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+    .sugg:hover {
+        background: #343a3c;
+        border: 2px solid #A5D0FF;
+        border-radius: 12px;
+    }
+}
+.sugg:hover > div:nth-child(2) {
+    color: #6666aa;
+}
+.sugg-ico {
+    width: 4vw;
+    float: left;
+    color-scheme: only light;
+}
+.sugg-title {
+    display: block;
+    max-width: 90%;
+    margin-left: 5vw;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.3vw;
+    line-height: 2.5vw;
+    background-color: transparent;
+}
+.sugg-title.empty {
+    background-color: #fcfcfc;
+}
+@media (prefers-color-scheme: dark) {
+    .sugg-title.empty {
+        background-color: #1f2425;
+        border-radius: 12px;
+    }
+}
+.ellipsize, .sugg-title, .sugg-desk{
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.sugg-desk {
+    display: block;
+    color: #BDBDBD;
+    margin-left: 5vw;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1vw;
+    line-height: 1.5vw;
+    background-color: transparent;
+}
+@media (prefers-color-scheme: dark) {
+    .sugg-desk {
+        color: #f8f9fa;
+    }
+}
+.sugg-desk.empty {
+    background-color: #fafafa;
+    border-radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+    .sugg-desk.empty {
+        background-color: #1f2425;
+    }
+}
+.more {
+    width: 1vw;
+    float: right;
+    margin-top: 1vh;
+    cursor: pointer;
+    display: none;
+}
+.logo {
+    width: 10vw;
+    height: 7.5vw;
+    margin-top: 5vh;
+    background-image: url("logo.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    position: absolute;
+    color-scheme: only light;
+}
+
+.wrapper {
+    position: relative;
+    top: 15vh;
+    width: 63vw;
+    margin: auto;
+}
+
+.search_box{
+    background: #fff;
+    border-radius: 0.5vw;
+    height: 3vw;
+    display: flex;
+    padding: 0.5vw;
+    box-shadow: 0 8px 6px -10px #b3c6ff;
+}
+@media (prefers-color-scheme: dark) {
+    .search_box{
+        background: #1e2122;
+        box-shadow: 0 8px 6px -10px #000000;
+    }
+}
+
+.wrapper .search_box .dropdown{
+  width: 7vw;
+  border-right: 2px solid #dde2f1;
+  color: #9fa3b1;
+  position: relative;
+  cursor: pointer;
+}
+@media (prefers-color-scheme: dark) {
+    .wrapper .search_box .dropdown{
+        border-right: 2px solid #343a3c;
+        color: #f8f9fa;
+    }
+}
+
+.wrapper .search_box .dropdown .default_option{
+    display: block;
+    background: url(favicons/google.png) no-repeat;
+    width: 3vw;
+    height: 3vw;
+    margin-left: 1vw;
+    background-size: 3vw;
+    border: none;
+}
+
+.wrapper .search_box .dropdown ul{
+    z-index: 1;
+    position: absolute;
+    font-size: 2vw;
+    list-style-type: none;
+    background: #fff;
+    width: 16vw;
+    border-radius: 0.5vw;
+    padding: 1vw;
+    display: none;
+    box-shadow: 0.5vw 0.5vw 2vw -0.5vw #b3c6ff;
+}
+@media (prefers-color-scheme: dark) {
+    .wrapper .search_box .dropdown ul{
+        background: #1e2122;
+        box-shadow: 0.5vw 0.5vw 2vw -0.5vw #000000;
+    }
+}
+
+.wrapper .search_box .dropdown ul.active{
+  display: block;
+}
+
+.wrapper .search_box .dropdown ul li{
+  padding-bottom: 20px;
+}
+
+.wrapper .search_box .dropdown ul li img {
+    width: 2vw;
+    height: 2vw;
+    display: block;
+    float: left;
+    margin-right: 0.5vw;
+    color-scheme: only light;
+}
+
+.wrapper .search_box .dropdown ul li:last-child{
+  padding-bottom: 0;
+}
+
+.wrapper .search_box .dropdown ul li:hover{
+  color: #6f768d;
+}
+
+.wrapper .search_box .dropdown:before{
+    content: "";
+    position: absolute;
+    top: 1.2vw;
+    right: 1vw;
+    border: 0.45vw solid;
+    border-color: #5078ef transparent transparent transparent;
+}
+
+.wrapper .search_box .search_field{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+}
+
+.wrapper .search_box .search_field .input{
+    width: 100%;
+    height: 100%;
+    border: 0px;
+    font-size: 1.5vw;
+    padding-left: 1vw;
+    padding-right: 3vw;
+    color: #6f768d;
+    flex-grow: 1;
+}
+@media (prefers-color-scheme: dark) {
+    .wrapper .search_box .search_field .input{
+        color: #f8f9fa;
+        background-color: #1e2122;
+    }
+}
+
+.wrapper .search_box .search_field .fas{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 22px;
+  color: #5078ef;
+  cursor: pointer;
+}
+@media (prefers-color-scheme: dark) {
+    .wrapper .search_box .search_field .fas{
+        color: #f8f9fa;
+    }
+}
+
+.wrapper .search_box .search_action_container{
+    border-left: 2px solid #dde2f1;
+    width: 4vw;
+    cursor: pointer;
+    margin-left: 2px;
+}
+@media (prefers-color-scheme: dark) {
+    .wrapper .search_box .search_action_container{
+        border-left: 2px solid #343a3c;
+    }
+}
+
+.wrapper .search_box .search_action_container .mic{
+    width: 3vw;
+    height: 2.4vw;
+    margin: 0.3vw;
+    background-image: url(mic.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.wrapper .search_box .search_action_container .lenz{
+    width: 3vw;
+    height: 2.4vw;
+    margin: 0.3vw;
+    background-image: url(search.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    display: none;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #9fa3b1;
+}
+::-moz-placeholder { /* Firefox 19+ */
+    color: #9fa3b1;
+}
+
+/*
+Phones (narrow, or short in landscape): sizes in CSS pixels (dp) instead of parts of the screen,
+the logo and the search bar in the flow, the speed dial in two columns of 56px tiles.
+*/
+@media (max-width: 600px), (max-height: 420px) {
+    #suggestions {
+        width: calc(100% - 8px);
+        max-width: 600px;
+        top: 0;
+        margin: 4px auto 16px;
+        -webkit-border-horizontal-spacing: 12px;
+        -webkit-border-vertical-spacing: 12px !important;
+        border-spacing: 12px;
+    }
+    .sugg {
+        box-sizing: border-box;
+        height: 56px;
+        padding: 8px 10px;
+        border-radius: 8px;
+    }
+    .sugg:hover {
+        border-radius: 8px;
+    }
+    .sugg-ico {
+        width: 32px;
+        height: 32px;
+        margin-top: 2px;
+        border-radius: 6px;
+    }
+    .sugg-title {
+        margin-left: 42px;
+        font-size: 14px;
+        line-height: 20px;
+    }
+    .sugg-desk {
+        margin-left: 42px;
+        font-size: 12px;
+        line-height: 16px;
+    }
+    /* a bigger touch target over the right edge of the tile */
+    .more {
+        width: 16px;
+        padding: 10px 8px;
+        margin: -8px -10px 0 0;
+    }
+    .logo {
+        position: relative;
+        width: 96px;
+        height: 72px;
+        margin: 24px auto 0;
+    }
+    .wrapper {
+        top: 0;
+        width: calc(100% - 32px);
+        max-width: 576px;
+        margin: 16px auto 0;
+    }
+    .search_box {
+        height: 40px;
+        padding: 4px;
+        border-radius: 8px;
+    }
+    .wrapper .search_box .dropdown {
+        width: 56px;
+    }
+    .wrapper .search_box .dropdown .default_option {
+        width: 28px;
+        height: 28px;
+        margin: 6px 0 0 6px;
+        background-size: 28px;
+    }
+    .wrapper .search_box .dropdown:before {
+        top: 18px;
+        right: 6px;
+        border-width: 5px;
+    }
+    .wrapper .search_box .dropdown ul {
+        font-size: 16px;
+        width: 180px;
+        padding: 12px;
+        border-radius: 8px;
+        box-shadow: 4px 4px 16px -4px #b3c6ff;
+    }
+    .wrapper .search_box .dropdown ul li img {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+    .wrapper .search_box .search_field .input {
+        font-size: 16px;
+        padding-left: 12px;
+        padding-right: 8px;
+    }
+    .wrapper .search_box .search_action_container {
+        width: 44px;
+    }
+    .wrapper .search_box .search_action_container .mic,
+    .wrapper .search_box .search_action_container .lenz {
+        width: 36px;
+        height: 24px;
+        margin: 8px 4px;
+    }
+}
+/*
+Tablets (touch screens wider than phones; TVs have no coarse pointer): a bigger touch target for the menu
+of a tile, its padding taken back by margins so the tile keeps its layout.
+*/
+@media (any-pointer: coarse) and (min-width: 601px) and (min-height: 421px) {
+    .more {
+        padding: 12px 16px;
+        margin: calc(1vh - 12px) -1vw -12px -16px;
+    }
+}
+@media (prefers-color-scheme: dark) and (max-width: 600px), (prefers-color-scheme: dark) and (max-height: 420px) {
+    .wrapper .search_box .dropdown ul {
+        box-shadow: 4px 4px 16px -4px #000000;
+    }
+}
+    </style>
+</head>
+<body>
+<div style="height: 100%; width: 100%; position: absolute; left: 0; top: 0; overflow-x: hidden;">
+    <div class="logo"></div>
+    <div class="wrapper">
+        <div class="search_box">
+            <div class="dropdown">
+                <div class="default_option"></div>  
+                <ul id="search-engines-list">
+                  <li data-engine="google"><img src="favicons/google.png" /> Google</li>
+                  <li data-engine="bing"><img src="favicons/bing.png" /> Bing</li>
+                  <li data-engine="yahoo"><img src="favicons/yahoo.png" /> Yahoo!</li>
+                  <li data-engine="ddg"><img src="favicons/ddg.png" /> DuckDuckGo</li>
+                  <li data-engine="yandex"><img src="favicons/yandex.png" /> Yandex</li>
+                  <li data-engine="startpage"><img src="favicons/startpage.png" /> Startpage</li>
+                  <li data-engine="custom"><img src="favicons/custom.png" /> Custom</li>
+                </ul>
+            </div>
+            <div class="search_field">
+                <input type="text" id="search-input" class="input" placeholder="Search">
+                <div class="search_action_container">
+                    <div class="mic"></div>
+                    <div class="lenz"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table cellspacing="32" id="suggestions">
+        <tr>
+            <td data-index="0">
+                <div class="sugg" style="margin-left: 0;" id="sugg0">
+                    <img class="sugg-ico" />
+                    <img src="more.svg" class="more" />
+                    <div class="sugg-title">&nbsp;</div>
+                    <div class="sugg-desk">&nbsp;</div>                    
+                </div>
+            </td>
+            <td data-index="1">
+                <div class="sugg" style="margin-left: 0;" id="sugg1">
+                    <img class="sugg-ico" />
+                    <img src="more.svg" class="more" />
+                    <div class="sugg-title">&nbsp;</div>
+                    <div class="sugg-desk">&nbsp;</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td data-index="2">
+                <div class="sugg" style="margin-left: 0;" id="sugg2">
+                    <img class="sugg-ico" />
+                    <img src="more.svg" class="more" />
+                    <div class="sugg-title">&nbsp;</div>
+                    <div class="sugg-desk">&nbsp;</div>
+                </div>
+            </td>
+            <td data-index="3">
+                <div class="sugg" style="margin-left: 0;" id="sugg3">
+                    <img class="sugg-ico" />
+                    <img src="more.svg" class="more" />
+                    <div class="sugg-title">&nbsp;</div>
+                    <div class="sugg-desk">&nbsp;</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td data-index="4">
+                <div class="sugg" style="margin-left: 0;" id="sugg4">
+                    <img class="sugg-ico" />
+                    <img src="more.svg" class="more" />
+                    <div class="sugg-title">&nbsp;</div>
+                    <div class="sugg-desk">&nbsp;</div>
+                </div>
+            </td>
+            <td data-index="5">
+                <div class="sugg" style="margin-left: 0;" id="sugg5">
+                    <img class="sugg-ico" />
+                    <img src="more.svg" class="more" />
+                    <div class="sugg-title">&nbsp;</div>
+                    <div class="sugg-desk">&nbsp;</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td data-index="6">
+                <div class="sugg" style="margin-left: 0;" id="sugg6">
+                    <img class="sugg-ico" />
+                    <img src="more.svg" class="more" />
+                    <div class="sugg-title">&nbsp;</div>
+                    <div class="sugg-desk">&nbsp;</div>
+                </div>
+            </td>
+            <td data-index="7">
+                <div class="sugg" style="margin-left: 0;" id="sugg7">
+                    <img class="sugg-ico" />
+                    <img src="more.svg" class="more" />
+                    <div class="sugg-title">&nbsp;</div>
+                    <div class="sugg-desk">&nbsp;</div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script src="index.js"></script>
+</body>
+</html>

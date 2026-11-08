@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The palette: theme attributes (attrs.xml, themes.xml) map to these colors; layouts use the attributes -->
+<resources>
+    <color name="surface">#eee</color>
+    <color name="surface_bar">#eee</color>
+    <color name="surface_header">#ccc</color>
+    <color name="surface_focused">#ACE0F4</color>
+    <color name="surface_tab">#EBEBEB</color>
+    <color name="on_surface">#000</color>
+    <color name="on_surface_variant">#777</color>
+    <color name="divider">#DFDFDF</color>
+    <color name="divider_strong">#aaa</color>
+    <color name="shadow">#a0a0a0</color>
+    <color name="icon">#212121</color>
+    <color name="icon_disabled">#BDBDBD</color>
+    <color name="icon_subtle">#BDBDBD</color>
+    <color name="icon_placeholder">#9D9D9D</color>
+    <color name="accent">#006EC5</color>
+    <color name="indicator">#009688</color>
+    <color name="progress">#75D5FA</color>
+    <color name="link_selected">#AEBBFF</color>
+    <color name="button">#d0d9e1</color>
+    <color name="button_focused">#ade1f5</color>
+    <color name="button_pressed">#ebebeb</color>
+    <color name="button_stroke">#afafaf</color>
+    <color name="button_stroke_focused">#33add6</color>
+    <color name="badge">#E6E6E6</color>
+    <color name="badge_stroke">#afafaf</color>
+
+    <!-- Design system tokens (AxTVBrowser design system, tokens.json): the theme maps tbColorDs* attributes to them -->
+    <color name="ds_bg_page">#EDF6FF</color>
+    <color name="ds_bg_chrome">#F3F5F8</color>
+    <color name="ds_surface">#FFFFFF</color>
+    <color name="ds_surface_focused">#F3F6FA</color>
+    <color name="ds_tab">#EDF1F6</color>
+    <color name="ds_menu">#F4F6F9</color>
+    <color name="ds_control">#E6ECF4</color>
+    <color name="ds_control_focused">#E8F4F9</color>
+    <color name="ds_control_selected">#B7E5F6</color>
+    <color name="ds_toast">#59626C</color>
+    <color name="ds_on_toast">#FFFFFF</color>
+    <color name="ds_line">#CFDEEE</color>
+    <color name="ds_line_strong">#C2D2E3</color>
+    <color name="ds_divider">#E0E0E0</color>
+    <color name="ds_focus">#A5D0FF</color>
+    <color name="ds_selected">#5FACFF</color>
+    <color name="ds_ink">#4F4F4F</color>
+    <color name="ds_ink_faint">#BDBDBD</color>
+    <color name="ds_icon">#60768E</color>
+    <color name="ds_on_badge">#FFFFFF</color>
+    <color name="ds_accent">#48A0FF</color>
+    <color name="ds_danger">#C5221F</color>
+    <color name="ds_scrim">#52000000</color>
+    <!--
+    The dark values of the tokens that differ, also in the light theme: the overlays of the players over a video
+    (ThemeOverlay.TVBro.Video) and the night theme (values-night) take them
+    -->
+    <color name="ds_dark_bg_page">#343A3C</color>
+    <color name="ds_dark_bg_chrome">#272727</color>
+    <color name="ds_dark_surface">#1B1B1B</color>
+    <color name="ds_dark_surface_focused">#343A3C</color>
+    <color name="ds_dark_tab">#272727</color>
+    <color name="ds_dark_menu">#2F2F2F</color>
+    <color name="ds_dark_control">#323940</color>
+    <color name="ds_dark_control_focused">#003E4F</color>
+    <color name="ds_dark_control_selected">#5A5A5A</color>
+    <color name="ds_dark_line">#4E4E4E</color>
+    <color name="ds_dark_line_strong">#5A5A5A</color>
+    <color name="ds_dark_divider">#343A3C</color>
+    <color name="ds_dark_ink">#F8F9FA</color>
+    <color name="ds_dark_ink_faint">#BBBBBB</color>
+    <color name="ds_dark_icon">#FDFDFD</color>
+    <color name="ds_dark_on_badge">#1B1B1B</color>
+    <color name="ds_dark_danger">#FF8A80</color>
+    <!-- The video under the overlays: dimmed under a spinner (45%) and an error (60%), the gradient under the seek bar -->
+    <color name="ds_video_dim">#73000000</color>
+    <color name="ds_video_dim_strong">#99000000</color>
+    <color name="ds_video_scrim_middle">#99000000</color>
+    <color name="ds_video_scrim_bottom">#E0000000</color>
+    <!-- the ring of the spinner over a video, under its arc -->
+    <color name="ds_video_spinner_track">#38FFFFFF</color>
+</resources>

@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="clear">پاک کردن</string>
+  <string name="repost_confirm_message">برای نمایش این صفحه، AxTVBrowser باید اطلاعاتی را دوباره ارسال کند که هر اقدام انجام‌شده قبلی (مانند جستجو یا تأیید سفارش) را تکرار می‌کند.</string>
+  <string name="repost_confirm_title">مطمئن هستید؟</string>
+  <string name="repost_confirm_resend">ارسال مجدد</string>
+  <string name="before_unload_message">این صفحه از شما می‌خواهد تأیید کنید که قصد خروج دارید — ممکن است داده‌هایی که وارد کرده‌اید ذخیره نشوند</string>
+  <string name="before_unload_title">مطمئن هستید؟</string>
+  <string name="before_unload_leave_page">ترک صفحه</string>
+  <string name="before_unload_stay">ماندن در این صفحه</string>
+  <string name="wait">صبر کنید</string>
+  <string name="stop">توقف</string>
+  <string name="slow_script">یک اسکریپت در این صفحه مرورگر وب شما را کند کرده است</string>
+  <string name="request_storage">اجازه دسترسی به فضای ذخیره‌سازی دستگاه برای «%1$s» داده شود؟</string>
+  <string name="request_storage_access">به اشخاص ثالث اجازه دسترسی به فضای ذخیره‌سازی شخص اول «%1$s» داده شود؟</string>
+  <string name="request_geolocation">مکان با «%1$s» به اشتراک گذاشته شود؟</string>
+  <string name="request_notification">اعلان‌های «%1$s» مجاز شود؟</string>
+  <string name="request_video">اشتراک‌گذاری ویدیو با «%1$s»</string>
+  <string name="request_audio">اشتراک‌گذاری صدا با «%1$s»</string>
+  <string name="request_media">اشتراک‌گذاری ویدیو و صدا با «%1$s»</string>
+  <string name="request_xr">نمایشگرهای WebXR با «%1$s» به اشتراک گذاشته شود؟</string>
+  <string name="request_media_key_system_access">اجازه دسترسی به سیستم کلید رسانه برای «%1$s» داده شود؟</string>
+  <string name="media_back_camera">دوربین پشت</string>
+  <string name="media_front_camera">دوربین جلو</string>
+  <string name="media_microphone">میکروفون</string>
+  <string name="media_other">منبع نامعلوم</string>
+</resources>

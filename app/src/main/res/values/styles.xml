@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="@style/Theme.TVBro" />
+
+    <!-- The built-in player in a picture-in-picture window (PictureInPictureActivity): black around the video -->
+    <style name="Theme.TVBro.PictureInPicture" parent="AppTheme">
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <!--
+    Widget styles. Layouts set them with style="..." on each view; the theme does not set them as
+    defaults (buttonStyle and others), so views without a style keep the platform look.
+    -->
+
+    <!-- A text button with the app's button background (its padding comes from the background) -->
+    <style name="Widget.TVBro.Button" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_bg_selector</item>
+    </style>
+
+    <!-- An icon button with the app's button background -->
+    <style name="Widget.TVBro.ImageButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/button_bg_selector</item>
+    </style>
+
+    <!--
+    The browser bar of the redesign. Its buttons have fixed sizes; the paddings fit icons of any
+    intrinsic size to the board size, and the icons get the design system icon color.
+    -->
+    <style name="Widget.TVBro.ImageButton.Ds" parent="Widget.AppCompat.ImageButton">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:focusable">true</item>
+        <item name="tint">?attr/tbColorDsIcon</item>
+    </style>
+
+    <!-- A round button around the cursor in the cursor menu -->
+    <style name="Widget.TVBro.ImageButton.Ds.CursorMenu">
+        <item name="android:layout_width">@dimen/ds_cursor_menu_button</item>
+        <item name="android:layout_height">@dimen/ds_cursor_menu_button</item>
+        <item name="android:background">@drawable/ds_cursor_menu_button_bg</item>
+        <item name="android:padding">@dimen/ds_cursor_menu_icon_padding</item>
+        <item name="android:defaultFocusHighlightEnabled">false</item>
+    </style>
+
+    <!-- The grab button in the middle of the cursor menu -->
+    <style name="Widget.TVBro.ImageButton.Ds.CursorMenu.Center">
+        <item name="android:background">@drawable/ds_cursor_menu_center_bg</item>
+        <item name="android:padding">@dimen/ds_cursor_menu_center_icon_padding</item>
+    </style>
+
+    <!-- A segment of a toolbar group -->
+    <style name="Widget.TVBro.ImageButton.Ds.Segment">
+        <item name="android:layout_width">@dimen/ds_size_toolbar_segment</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/ds_control_bg</item>
+        <item name="android:paddingStart">@dimen/ds_toolbar_icon_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/ds_toolbar_icon_padding_horizontal</item>
+        <item name="android:paddingTop">@dimen/ds_toolbar_icon_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/ds_toolbar_icon_padding_vertical</item>
+    </style>
+
+    <!-- A button on its own in the bar (the close-app button) -->
+    <style name="Widget.TVBro.ImageButton.Ds.Standalone">
+        <item name="android:layout_width">@dimen/ds_size_chrome_control</item>
+        <item name="android:layout_height">@dimen/ds_size_chrome_control</item>
+        <item name="android:background">@drawable/ds_icon_button_bg</item>
+        <item name="android:padding">@dimen/ds_close_icon_padding</item>
+    </style>
+
+    <!-- A button inside the address field -->
+    <style name="Widget.TVBro.ImageButton.Ds.Field">
+        <item name="android:layout_width">@dimen/ds_size_toolbar_segment</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/ds_field_button_bg</item>
+        <item name="android:paddingStart">@dimen/ds_field_icon_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/ds_field_icon_padding_horizontal</item>
+        <item name="android:paddingTop">@dimen/ds_field_icon_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/ds_field_icon_padding_vertical</item>
+    </style>
+
+    <!-- A button of the phone bar -->
+    <style name="Widget.TVBro.ImageButton.Ds.Phone">
+        <item name="android:layout_width">@dimen/ds_phone_button_size</item>
+        <item name="android:layout_height">@dimen/ds_phone_button_size</item>
+        <item name="android:background">@drawable/ds_phone_button_bg</item>
+        <item name="android:padding">@dimen/ds_phone_button_icon_padding</item>
+    </style>
+
+    <!-- A button inside the address pill of the phone bar -->
+    <style name="Widget.TVBro.ImageButton.Ds.PhonePill">
+        <item name="android:layout_width">@dimen/ds_phone_pill_button_width</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/ds_phone_button_bg</item>
+        <item name="android:padding">@dimen/ds_phone_pill_icon_padding</item>
+    </style>
+
+    <!-- A quick button of the phone menu sheet: an icon over a label -->
+    <style name="Widget.TVBro.QuickButton" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/ds_phone_quick_button_height</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/ds_quick_button_bg</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="Widget.TVBro.QuickButtonIcon" parent="">
+        <item name="android:layout_width">@dimen/ds_phone_quick_button_icon</item>
+        <item name="android:layout_height">@dimen/ds_phone_quick_button_icon</item>
+        <item name="tint">?attr/tbColorDsIcon</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <!-- A row of the phone menu sheet: an icon and a label -->
+    <style name="Widget.TVBro.PhoneMenuRow" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/ds_phone_menu_row_height</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">@dimen/ds_phone_menu_row_padding</item>
+        <item name="android:paddingEnd">@dimen/ds_phone_menu_row_padding</item>
+        <item name="android:background">@drawable/ds_phone_button_bg</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="Widget.TVBro.PhoneMenuIcon" parent="">
+        <item name="android:layout_width">@dimen/ds_phone_quick_button_icon</item>
+        <item name="android:layout_height">@dimen/ds_phone_quick_button_icon</item>
+        <item name="tint">?attr/tbColorDsIcon</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <!-- A group of toolbar segments; the group clips them to its rounded border (ActionBar sets clipToOutline) -->
+    <style name="Widget.TVBro.ToolbarGroup" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginStart">@dimen/ds_space_gutter</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@drawable/ds_control_group_bg</item>
+        <item name="android:padding">@dimen/ds_border_hairline</item>
+    </style>
+
+    <!-- The separator between toolbar segments -->
+    <style name="Widget.TVBro.ToolbarSeparator" parent="">
+        <item name="android:layout_width">@dimen/ds_border_hairline</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">?attr/tbColorDsLineStrong</item>
+    </style>
+
+    <!-- A row of a panel: an icon, a title with a second line, a value -->
+    <style name="Widget.TVBro.PanelRow" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/ds_panel_row_height</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">@dimen/ds_space_menu_inset</item>
+        <item name="android:paddingEnd">@dimen/ds_space_menu_inset</item>
+        <item name="android:background">@drawable/ds_menu_row_bg</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <!-- A row of a menu: an icon and a label -->
+    <style name="Widget.TVBro.MenuRow" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/ds_size_menu_row</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">@dimen/ds_space_menu_inset</item>
+        <item name="android:paddingEnd">@dimen/ds_space_menu_inset</item>
+        <item name="android:background">@drawable/ds_menu_row_bg</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <!-- The icon of a menu or panel row -->
+    <style name="Widget.TVBro.MenuIcon" parent="">
+        <item name="android:layout_width">@dimen/ds_size_icon_menu</item>
+        <item name="android:layout_height">@dimen/ds_size_icon_menu</item>
+        <item name="tint">?attr/tbColorDsIcon</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <!-- A button with an icon and a label in the header of a TV screen over the window -->
+    <style name="Widget.TVBro.HeaderButton.Ds" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/ds_size_chrome_control</item>
+        <item name="android:layout_marginStart">@dimen/ds_space_gutter</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">@dimen/ds_downloads_header_button_padding</item>
+        <item name="android:paddingEnd">@dimen/ds_downloads_header_button_padding</item>
+        <item name="android:background">@drawable/ds_icon_button_bg</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <!-- The label of a header button -->
+    <style name="Widget.TVBro.Text.HeaderButton" parent="Widget.TVBro.Text.MenuItem">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/ds_downloads_header_icon_text</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- A hairline between menu or panel rows -->
+    <style name="Widget.TVBro.MenuSeparator" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/ds_border_hairline</item>
+        <item name="android:background">?attr/tbColorDsLine</item>
+    </style>
+
+    <!-- The progress of a download in a row -->
+    <style name="Widget.TVBro.DownloadProgress" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/ds_download_progress_height</item>
+        <item name="android:layout_marginTop">@dimen/ds_download_progress_margin</item>
+        <item name="android:progressDrawable">@drawable/ds_progress</item>
+        <item name="android:indeterminateTint">?attr/tbColorDsIcon</item>
+        <item name="android:max">1000</item>
+    </style>
+
+    <!-- The icon of the kind of a downloaded file, in a circle -->
+    <style name="Widget.TVBro.DownloadIcon" parent="">
+        <item name="android:layout_width">@dimen/ds_download_icon</item>
+        <item name="android:layout_height">@dimen/ds_download_icon</item>
+        <item name="android:padding">@dimen/ds_download_icon_padding</item>
+        <item name="android:background">@drawable/ds_download_icon_bg</item>
+        <item name="tint">?attr/tbColorDsIcon</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <!-- The icon of the kind of a downloaded file on the phone -->
+    <style name="Widget.TVBro.DownloadIcon.Phone">
+        <item name="android:layout_width">@dimen/ds_phone_download_icon</item>
+        <item name="android:layout_height">@dimen/ds_phone_download_icon</item>
+        <item name="android:padding">@dimen/ds_phone_download_icon_padding</item>
+    </style>
+
+    <!-- A filter chip of the phone downloads -->
+    <style name="Widget.TVBro.Chip.Ds" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/ds_phone_chip_height</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/ds_phone_chip_padding</item>
+        <item name="android:paddingEnd">@dimen/ds_phone_chip_padding</item>
+        <item name="android:background">@drawable/ds_chip_bg</item>
+        <item name="android:textSize">@dimen/ds_text_menu_item</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <!-- A text segment of a toolbar group (the filters of the downloads) -->
+    <style name="Widget.TVBro.TextSegment.Ds" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/ds_downloads_filter_padding</item>
+        <item name="android:paddingEnd">@dimen/ds_downloads_filter_padding</item>
+        <item name="android:background">@drawable/ds_control_bg</item>
+        <item name="android:textSize">@dimen/ds_text_menu_item</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <!-- An icon button of a panel: in its header, the options of a row -->
+    <style name="Widget.TVBro.ImageButton.Ds.Panel">
+        <item name="android:layout_width">@dimen/ds_panel_button_size</item>
+        <item name="android:layout_height">@dimen/ds_panel_button_size</item>
+        <item name="android:background">@drawable/ds_panel_button_bg</item>
+        <item name="android:padding">@dimen/ds_panel_button_icon_padding</item>
+    </style>
+
+    <!-- A text button of a panel form (Save, Cancel) -->
+    <style name="Widget.TVBro.TextButton.Ds" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/ds_panel_text_button_height</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/ds_panel_text_button_padding</item>
+        <item name="android:paddingEnd">@dimen/ds_panel_text_button_padding</item>
+        <item name="android:background">@drawable/ds_icon_button_bg</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textSize">@dimen/ds_text_menu_item</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- A button of an alert dialog (set by ThemeOverlay.TVBro.Dialog.Alert): a text button of a panel form -->
+    <style name="Widget.TVBro.DialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">@dimen/ds_panel_text_button_height</item>
+        <item name="android:paddingStart">@dimen/ds_panel_text_button_padding</item>
+        <item name="android:paddingEnd">@dimen/ds_panel_text_button_padding</item>
+        <item name="android:layout_marginStart">@dimen/ds_panel_buttons_gap</item>
+        <item name="android:background">@drawable/ds_icon_button_bg</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:textSize">@dimen/ds_text_menu_item</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+    </style>
+
+    <!-- A text field of a panel form -->
+    <style name="Widget.TVBro.Field.Ds" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/ds_panel_field_height</item>
+        <item name="android:paddingStart">@dimen/ds_panel_field_padding</item>
+        <item name="android:paddingEnd">@dimen/ds_panel_field_padding</item>
+        <item name="android:background">@drawable/ds_address_field_bg</item>
+        <item name="android:textSize">@dimen/ds_text_menu_item</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- A text field of the phone bookmarks form -->
+    <style name="Widget.TVBro.Field.Ds.Phone">
+        <item name="android:layout_height">@dimen/ds_phone_field_height</item>
+        <item name="android:textSize">@dimen/ds_text_phone_menu_item</item>
+    </style>
+
+    <!-- The label over a field of the phone bookmarks form -->
+    <style name="Widget.TVBro.Text.PhoneFieldLabel" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/ds_phone_form_padding</item>
+        <item name="android:layout_marginBottom">@dimen/ds_phone_field_label_gap</item>
+        <item name="android:textSize">@dimen/ds_text_phone_caption</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+    </style>
+
+    <!-- The label over a field of a panel form -->
+    <style name="Widget.TVBro.Text.FieldLabel" parent="Widget.TVBro.Text.MenuCaption">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/ds_panel_field_gap</item>
+        <item name="android:layout_marginBottom">@dimen/ds_panel_label_gap</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+    </style>
+
+    <!-- A divider inside the address field -->
+    <style name="Widget.TVBro.FieldDivider" parent="">
+        <item name="android:layout_width">@dimen/ds_border_hairline</item>
+        <item name="android:layout_height">@dimen/ds_field_divider_height</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:background">?attr/tbColorDsDivider</item>
+    </style>
+
+    <!--
+    Text sizes. These styles set only the size, so the text keeps the color of the view's default
+    appearance (a textAppearance would replace it).
+    -->
+    <style name="Widget.TVBro.Text" parent="" />
+
+    <!-- Titles of list items, list section headers, big placeholders -->
+    <style name="Widget.TVBro.Text.Headline">
+        <item name="android:textSize">@dimen/text_size_headline</item>
+    </style>
+
+    <!-- Dialog titles, tab titles, secondary lines of list items, notifications -->
+    <style name="Widget.TVBro.Text.Title">
+        <item name="android:textSize">@dimen/text_size_title</item>
+    </style>
+
+    <!-- URLs under titles, rows of the shortcuts list -->
+    <style name="Widget.TVBro.Text.Subtitle">
+        <item name="android:textSize">@dimen/text_size_subtitle</item>
+    </style>
+
+    <!-- Labels of settings, bookmark titles -->
+    <style name="Widget.TVBro.Text.Body">
+        <item name="android:textSize">@dimen/text_size_body</item>
+    </style>
+
+    <!-- Bookmark URLs, values next to settings -->
+    <style name="Widget.TVBro.Text.Caption">
+        <item name="android:textSize">@dimen/text_size_caption</item>
+    </style>
+
+    <!-- Counters on buttons -->
+    <style name="Widget.TVBro.Text.Badge">
+        <item name="android:textSize">@dimen/text_size_badge</item>
+    </style>
+
+    <!-- Text styles of the redesigned screens (design system type styles) -->
+
+    <!-- The url in the address field -->
+    <style name="Widget.TVBro.Text.Address">
+        <item name="android:textSize">@dimen/ds_text_address</item>
+    </style>
+
+    <!-- Toast messages -->
+    <style name="Widget.TVBro.Text.Toast">
+        <item name="android:textSize">@dimen/ds_text_toast</item>
+    </style>
+
+    <!-- A button of a card over a video (the error of the built-in player), in the dark tokens of the overlay -->
+    <style name="Widget.TVBro.Button.Video" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/player_button_height</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/player_button_padding</item>
+        <item name="android:paddingEnd">@dimen/player_button_padding</item>
+        <item name="android:background">@drawable/ds_video_button_bg</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">@dimen/player_text_button</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+    </style>
+
+    <!-- A key of the remote on a toast (ds_key_cap_bg): its name in an outlined cap -->
+    <style name="Widget.TVBro.KeyCap" parent="">
+        <item name="android:textSize">@dimen/ds_text_key_cap</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?attr/tbColorDsOnToast</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minWidth">@dimen/ds_key_cap_height</item>
+        <item name="android:paddingStart">@dimen/ds_key_cap_padding</item>
+        <item name="android:paddingEnd">@dimen/ds_key_cap_padding</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:background">@drawable/ds_key_cap_bg</item>
+    </style>
+
+    <!-- Rows of menus and panels -->
+    <style name="Widget.TVBro.Text.MenuItem">
+        <item name="android:textSize">@dimen/ds_text_menu_item</item>
+    </style>
+
+    <!-- Page titles on tabs -->
+    <style name="Widget.TVBro.Text.TabTitle">
+        <item name="android:textSize">@dimen/ds_text_tab_title</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- The label of a menu row -->
+    <style name="Widget.TVBro.Text.MenuItem.Row">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">@dimen/ds_space_menu_inset</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <!-- The address in the phone bar -->
+    <style name="Widget.TVBro.Text.PhoneAddress">
+        <item name="android:textSize">@dimen/ds_text_phone_address</item>
+    </style>
+
+    <!-- The label of a quick button of the phone menu sheet -->
+    <style name="Widget.TVBro.Text.QuickButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/ds_phone_quick_button_icon_text</item>
+        <item name="android:textSize">@dimen/ds_text_phone_quick_button</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <!-- The label of a row of the phone menu sheet -->
+    <style name="Widget.TVBro.Text.PhoneMenuItem">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">@dimen/ds_phone_menu_row_icon_text</item>
+        <item name="android:textSize">@dimen/ds_text_phone_menu_item</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <!-- A text button of a phone bottom row (Close all, Done) -->
+    <style name="Widget.TVBro.Text.PhoneTextButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/ds_phone_button_size</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/ds_phone_text_button_padding</item>
+        <item name="android:paddingEnd">@dimen/ds_phone_text_button_padding</item>
+        <item name="android:background">@drawable/ds_phone_button_bg</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:textSize">@dimen/ds_text_phone_menu_item</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+    </style>
+
+    <!-- The second line of a menu or panel row -->
+    <style name="Widget.TVBro.Text.MenuCaption">
+        <item name="android:textSize">@dimen/ds_text_menu_caption</item>
+    </style>
+
+    <!-- The count of active downloads on the Downloads button -->
+    <style name="Widget.TVBro.Text.CountBadge">
+        <item name="android:textSize">@dimen/ds_text_badge</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- A row of a list (RecyclerView): focusable, highlighted when focused -->
+    <style name="Widget.TVBro.ListItem" parent="">
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/list_item_bg_selector</item>
+    </style>
+
+    <!--
+    The settings screens. Sizes come from the tbSettings theme attributes: the TV values, or the phone ones
+    under ThemeOverlay.TVBro.Settings.Phone.
+    -->
+    <style name="Widget.TVBro.SettingsRow.Ds" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">?attr/tbSettingsRowMargin</item>
+        <item name="android:layout_marginEnd">?attr/tbSettingsRowMargin</item>
+        <item name="android:minHeight">?attr/tbSettingsRowMinHeight</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">?attr/tbSettingsRowPadding</item>
+        <item name="android:paddingEnd">?attr/tbSettingsRowPadding</item>
+        <item name="android:paddingTop">@dimen/ds_settings_row_vertical_padding</item>
+        <item name="android:paddingBottom">@dimen/ds_settings_row_vertical_padding</item>
+        <item name="android:background">?attr/tbSettingsRowBackground</item>
+    </style>
+
+    <!-- A row that acts as a whole (a switch, a menu, a link) -->
+    <style name="Widget.TVBro.SettingsRow.Ds.Clickable">
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="Widget.TVBro.Text.SettingsTitle" parent="">
+        <item name="android:textSize">?attr/tbSettingsTitleSize</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+    </style>
+
+    <style name="Widget.TVBro.Text.SettingsSummary" parent="">
+        <item name="android:textSize">?attr/tbSettingsSummarySize</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+    </style>
+
+    <!-- The title of a group of rows -->
+    <style name="Widget.TVBro.Text.SettingsGroup" parent="">
+        <item name="android:textSize">?attr/tbSettingsGroupSize</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.06</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <!-- A small marker: After restart, Update -->
+    <style name="Widget.TVBro.Text.SettingsTag" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/ds_settings_tag_height</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/ds_settings_tag_padding</item>
+        <item name="android:paddingEnd">@dimen/ds_settings_tag_padding</item>
+        <item name="android:background">@drawable/ds_settings_tag_bg</item>
+        <item name="android:textSize">@dimen/ds_text_settings_tag</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- The group of the segments of a choice; it clips them to its rounded border (set clipToOutline) -->
+    <style name="Widget.TVBro.SettingsSegments" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">?attr/tbSettingsControlHeight</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@drawable/ds_control_group_bg</item>
+        <item name="android:padding">@dimen/ds_border_hairline</item>
+    </style>
+
+    <style name="Widget.TVBro.Text.SettingsSegment" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:minWidth">@dimen/ds_settings_segment_min_width</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/ds_settings_segment_padding</item>
+        <item name="android:paddingEnd">@dimen/ds_settings_segment_padding</item>
+        <item name="android:background">@drawable/ds_settings_segment_bg</item>
+        <item name="android:textSize">?attr/tbSettingsTitleSize</item>
+        <item name="android:textColor">?attr/tbColorDsInk</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <!-- A button in a row of the settings -->
+    <style name="Widget.TVBro.SettingsButton" parent="Widget.TVBro.TextButton.Ds">
+        <item name="android:layout_height">?attr/tbSettingsControlHeight</item>
+        <item name="android:textSize">?attr/tbSettingsTitleSize</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- A text field in a row of the settings -->
+    <style name="Widget.TVBro.SettingsField" parent="Widget.TVBro.Field.Ds">
+        <item name="android:layout_height">?attr/tbSettingsControlHeight</item>
+        <item name="android:textSize">?attr/tbSettingsTitleSize</item>
+        <item name="android:textColorHint">?attr/tbColorDsInkFaint</item>
+        <item name="android:inputType">textUri</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:importantForAutofill">no</item>
+    </style>
+
+    <!-- The switch of a row: the row toggles it, so it takes no focus or clicks -->
+    <style name="Widget.TVBro.SettingsSwitch" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:thumb">@drawable/ds_switch_thumb</item>
+        <item name="track">@drawable/ds_switch_track</item>
+        <item name="thumbTint">@null</item>
+        <item name="trackTint">@null</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="switchMinWidth">@dimen/ds_settings_switch_width</item>
+        <item name="switchPadding">0dp</item>
+        <item name="showText">false</item>
+        <item name="android:background">@null</item>
+        <item name="android:focusable">false</item>
+        <item name="android:clickable">false</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="Widget.TVBro.SettingsSlider" parent="">
+        <item name="android:layout_width">@dimen/ds_settings_slider_width</item>
+        <item name="android:layout_height">@dimen/ds_settings_slider_thumb_focus</item>
+        <item name="android:progressDrawable">@drawable/ds_slider_progress</item>
+        <item name="android:thumb">@drawable/ds_slider_thumb</item>
+        <item name="android:splitTrack">false</item>
+        <item name="android:minHeight">@dimen/ds_settings_slider_track</item>
+        <item name="android:maxHeight">@dimen/ds_settings_slider_track</item>
+        <item name="android:paddingStart">@dimen/ds_settings_slider_thumb_padding</item>
+        <item name="android:paddingEnd">@dimen/ds_settings_slider_thumb_padding</item>
+        <item name="android:background">@null</item>
+        <item name="android:focusable">true</item>
+    </style>
+</resources>

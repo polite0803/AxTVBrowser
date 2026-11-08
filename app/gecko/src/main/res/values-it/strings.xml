@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="clear">Cancella</string>
+  <string name="repost_confirm_message">Per visualizzare questa pagina, AxTVBrowser deve inviare di nuovo informazioni che ripeteranno qualsiasi azione eseguita in precedenza (come una ricerca o una conferma d\'ordine).</string>
+  <string name="repost_confirm_title">Sei sicuro?</string>
+  <string name="repost_confirm_resend">Invia di nuovo</string>
+  <string name="before_unload_message">Questa pagina ti chiede di confermare che vuoi uscire: i dati inseriti potrebbero non essere salvati</string>
+  <string name="before_unload_title">Sei sicuro?</string>
+  <string name="before_unload_leave_page">Lascia la pagina</string>
+  <string name="before_unload_stay">Rimani sulla pagina</string>
+  <string name="wait">Attendi</string>
+  <string name="stop">Interrompi</string>
+  <string name="slow_script">Uno script in questa pagina sta rallentando il browser</string>
+  <string name="request_storage">Consentire l\'accesso alla memoria del dispositivo per “%1$s”?</string>
+  <string name="request_storage_access">Consentire a terze parti di accedere all\'archiviazione proprietaria di “%1$s”?</string>
+  <string name="request_geolocation">Condividere la posizione con “%1$s”?</string>
+  <string name="request_notification">Consentire le notifiche per “%1$s”?</string>
+  <string name="request_video">Condividere il video con “%1$s”</string>
+  <string name="request_audio">Condividere l\'audio con “%1$s”</string>
+  <string name="request_media">Condividere video e audio con “%1$s”</string>
+  <string name="request_xr">Condividere i display WebXR con “%1$s”?</string>
+  <string name="request_media_key_system_access">Consentire l\'accesso al sistema di chiavi multimediali per “%1$s”?</string>
+  <string name="media_back_camera">Fotocamera posteriore</string>
+  <string name="media_front_camera">Fotocamera frontale</string>
+  <string name="media_microphone">Microfono</string>
+  <string name="media_other">Fonte sconosciuta</string>
+</resources>

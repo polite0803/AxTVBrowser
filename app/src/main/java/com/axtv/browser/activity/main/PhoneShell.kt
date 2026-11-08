@@ -1,0 +1,664 @@
+package com.axtv.browser.activity.main
+
+import android.Manifest
+import android.content.ActivityNotFoundException
+import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.view.WindowManager
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import com.axtv.browser.AppContext
+import com.axtv.browser.model.PairedDevice
+import com.axtv.browser.sync.BookmarksBackup
+import com.axtv.browser.sync.BookmarksReplacer
+import com.axtv.browser.sync.LocalBookmarks
+import com.axtv.browser.sync.SyncClient
+import com.axtv.browser.sync.SyncDiscovery
+import com.axtv.browser.sync.SyncLink
+import com.axtv.browser.sync.SyncRequests
+import com.axtv.browser.sync.SyncSettings
+import com.axtv.browser.sync.SyncTab
+import com.axtv.browser.utils.launchForResult
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.axtv.browser.R
+import com.axtv.browser.TVBro
+import com.axtv.browser.activity.main.view.ClearDownloadsDialog
+import com.axtv.browser.activity.main.view.PhoneBar
+import com.axtv.browser.activity.main.view.PhoneFindBar
+import com.axtv.browser.activity.main.view.PhoneMenuSheet
+import com.axtv.browser.activity.main.view.PhoneTabSwitcher
+import com.axtv.browser.activity.main.view.PopupMenuView
+import com.axtv.browser.activity.main.view.ScrollAwayBar
+import com.axtv.browser.activity.main.view.SiteSettingsView
+import com.axtv.browser.browser.BrowserUiEvent
+import com.axtv.browser.browser.CurrentTabState
+import com.axtv.browser.browser.DownloadEvent
+import com.axtv.browser.browser.DownloadsModel
+import com.axtv.browser.databinding.ActivityMainPhoneBinding
+import com.axtv.browser.model.BrowserTab
+import com.axtv.browser.model.Download
+import com.axtv.browser.utils.DownloadFileActions
+import com.axtv.browser.utils.SystemBars
+import com.axtv.browser.utils.VoiceSearchHelper
+import com.axtv.browser.utils.activemodel.ActiveModelsRepository
+import com.axtv.browser.webengine.EngineUiHost
+import com.axtv.browser.webengine.findInPage
+import com.axtv.browser.webengine.virtualCursor
+import com.axtv.browser.widgets.NotificationView
+import com.axtv.browser.widgets.cursor.CursorDrawerDelegate
+import kotlinx.coroutines.launch
+
+/**
+ * The phone look: touch only (no virtual cursor), the page between the system bars, any orientation.
+ */
+class PhoneShell(private val host: BrowserShell.Host) : BrowserShell {
+    private val activity = host.activity
+    /** Recognizes speech for the bookmarks search (not for the search of the bar, which shows the page) */
+    private val bookmarksVoiceSearch = VoiceSearchHelper(activity, ::showMessage)
+    private val controller = host.controller
+    private val vb = ActivityMainPhoneBinding.inflate(activity.layoutInflater)
+
+    override val root: View get() = vb.root
+    override val tabsContainer: ViewGroup get() = vb.flWebViewContainer
+    override val screenOrientation: Int get() = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+
+    /** A fullscreen view (a video) fills the whole window, without the bar */
+    private var fullscreen = false
+    /** The bar slides away while the page scrolls down */
+    private val scrollAwayBar = ScrollAwayBar(vb.vPhoneBar, vb.flWebViewContainer)
+    /** The page and its loading state shown last: a new page or a new load shows the bar */
+    private var renderedUrl: String? = null
+    private var renderedLoading = false
+
+    init {
+        //the window is drawn edge to edge: the content keeps out of the system bars and the keyboard,
+        //the menu sheet out of the navigation bar (its scrim covers the bars), the tab switcher out of both;
+        //a fullscreen view covers the whole window
+        ViewCompat.setOnApplyWindowInsetsListener(vb.root) { _, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            val keyboard = insets.getInsets(WindowInsetsCompat.Type.ime())
+            if (fullscreen) {
+                vb.rlRoot.setPadding(0, 0, 0, 0)
+            } else {
+                vb.rlRoot.setPadding(bars.left, bars.top, bars.right, maxOf(bars.bottom, keyboard.bottom))
+            }
+            vb.vMenuSheet.setInsets(bars.left, bars.right, bars.bottom)
+            vb.vSiteSheet.setInsets(bars.left, bars.right, bars.bottom)
+            vb.vTabSwitcher.setInsets(bars.left, bars.top, bars.right, bars.bottom)
+            vb.vBookmarks.setInsets(bars.left, bars.top, bars.right, bars.bottom, keyboard.bottom)
+            vb.vDownloads.setInsets(bars.left, bars.top, bars.right, bars.bottom)
+            vb.vHistory.setInsets(bars.left, bars.top, bars.right, bars.bottom, keyboard.bottom)
+            vb.vSync.setInsets(bars.left, bars.top, bars.right, bars.bottom)
+            vb.vSettings.setInsets(bars.left, bars.top, bars.right, bars.bottom, keyboard.bottom)
+            vb.vActionsSheet.setInsets(bars.left, bars.right, bars.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+        SystemBars.matchIconsToTheme(activity.window)
+        //the page changes its size and scroll position when the screen rotates
+        vb.root.addOnLayoutChangeListener { _, left, _, right, _, oldLeft, _, oldRight, _ ->
+            if (right - left != oldRight - oldLeft) scrollAwayBar.show(animate = false)
+        }
+    }
+
+    private val barCallback = object : PhoneBar.Callback {
+        override fun navigateBack() {
+            controller.goBack()
+        }
+
+        override fun reloadOrStop() {
+            if (controller.currentTabState.value.loading) controller.stopLoading() else controller.reload()
+        }
+
+        override fun showSiteSettings() = showSiteSheet()
+
+        override fun showTabs() {
+            vb.vPhoneBar.stopEditing()
+            vb.vMenuSheet.hide()
+            vb.vTabSwitcher.show()
+        }
+
+        override fun showMenu() = showMenuSheet()
+
+        override fun search(text: String) = host.search(text)
+
+        override fun openUrl(url: String) = host.navigate(url)
+
+        override fun onEditingChanged(editing: Boolean) {
+            editingBackCallback.isEnabled = editing
+            if (editing) scrollAwayBar.show()
+        }
+    }
+
+    /** Ends the editing of the address (a first Back hides the keyboard) */
+    private val editingBackCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() = vb.vPhoneBar.stopEditing()
+    }
+
+    private val menuCallback = object : PhoneMenuSheet.Callback {
+        override fun goForward() = controller.goForward()
+
+        override fun openNewTab() {
+            host.openInNewTab(host.settingsModel.homePage, controller.tabsStates.size)
+        }
+
+        override fun toggleIncognitoMode() = host.toggleIncognitoMode()
+
+        override fun findInPage() = showFindInPage()
+
+        override fun bookmarkPage() {
+            activity.lifecycleScope.launch {
+                val page = BookmarksNavigator.PageInfo.of(controller.currentTab.value) ?: return@launch
+                val bookmark = TVBro.container.data.favorites.findByUrl(page.url)
+                if (bookmark != null) vb.vBookmarks.showForm(bookmark) else vb.vBookmarks.addPage(page)
+            }
+        }
+
+        override fun showHistory() = vb.vHistory.show()
+
+        override fun showRecentlyClosedTabs() {
+            val closed = controller.closedTabs.value
+            //the row is hidden while there is nothing to open again
+            if (closed.isEmpty()) return
+            vb.vActionsSheet.show(activity.getString(R.string.recently_closed_tabs), null,
+                closed.map { tab ->
+                    PopupMenuView.Item(R.drawable.ic_globe, tab.title) { controller.reopenClosedTab(tab) }
+                })
+        }
+
+        override fun showBookmarks() = vb.vBookmarks.show()
+
+        override fun showDownloads() = vb.vDownloads.show()
+
+        override fun showSendToTv() = vb.vSync.show()
+
+        override fun showSettings() = this@PhoneShell.showSettings(null)
+    }
+
+    override fun showSettings(category: SettingsNavigator.Category?) {
+        vb.vPhoneBar.stopEditing()
+        vb.vMenuSheet.hide()
+        vb.vSettings.show(category)
+    }
+
+    private val settingsCallback by lazy {
+        SettingsShellCallback(host) { icon, message ->
+            NotificationView.show(if (vb.vSettings.isOpen) vb.vSettings else vb.rlRoot, icon, message)
+        }
+    }
+
+    private fun showSiteSheet() {
+        if (controller.currentTabState.value.host.isEmpty()) return
+        vb.vPhoneBar.stopEditing()
+        vb.vMenuSheet.hide()
+        vb.vSiteSheet.show()
+    }
+
+    /** The Bookmark button of the sheet is selected on a page that is bookmarked */
+    private fun showMenuSheet() {
+        vb.vMenuSheet.setBookmarked(false)
+        vb.vMenuSheet.setClosedTabsAvailable(controller.closedTabs.value.isNotEmpty())
+        vb.vMenuSheet.show()
+        val page = BookmarksNavigator.PageInfo.of(controller.currentTab.value) ?: return
+        activity.lifecycleScope.launch {
+            vb.vMenuSheet.setBookmarked(TVBro.container.data.favorites.findByUrl(page.url) != null)
+        }
+    }
+
+    private val bookmarksCallback = object : BookmarksNavigator.ShellCallback {
+        override fun currentPage() = BookmarksNavigator.PageInfo.of(controller.currentTab.value)
+
+        override fun openBookmark(url: String) = host.navigate(url)
+
+        override fun openBookmarkInNewTab(url: String) {
+            host.openInNewTab(url, controller.tabsStates.size)
+        }
+
+        //the home page shows the bookmarks of its folder
+        override fun onBookmarksChanged() {
+            controller.modelScope.launch { controller.homePageLinks.load() }
+        }
+
+        override fun showMessage(icon: Int, message: String) {
+            NotificationView.show(vb.rlRoot, icon, message)
+        }
+
+        override fun confirm(message: String, action: () -> Unit) {
+            AlertDialog.Builder(activity)
+                .setMessage(message)
+                .setPositiveButton(R.string.delete) { _, _ -> action() }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+
+        override fun startVoiceSearch(onResult: (String) -> Unit) = bookmarksVoiceSearch.recognize(onResult)
+
+        override val bookmarkFiles = DeviceBookmarkFiles(activity)
+    }
+
+    private val historyCallback = object : HistoryNavigator.ShellCallback {
+        override fun open(url: String) = host.navigate(url)
+
+        override fun openInNewTab(url: String) {
+            host.openInNewTab(url, controller.tabsStates.size)
+        }
+
+        override fun showMessage(icon: Int, message: String) {
+            NotificationView.show(vb.rlRoot, icon, message)
+        }
+
+        override fun confirm(message: String, action: () -> Unit) {
+            AlertDialog.Builder(activity)
+                .setMessage(message)
+                .setPositiveButton(R.string.delete) { _, _ -> action() }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+
+        override fun startVoiceSearch(onResult: (String) -> Unit) = bookmarksVoiceSearch.recognize(onResult)
+    }
+
+    /** The switcher stays open when tabs are closed, it closes when a tab is chosen or opened */
+    private val tabSwitcherCallback = object : PhoneTabSwitcher.Callback {
+        override fun selectTab(tab: BrowserTab) {
+            controller.changeTab(tab)
+            vb.vTabSwitcher.hide()
+        }
+
+        override fun closeTab(tab: BrowserTab) {
+            controller.closeTab(tab)
+            showUndoClosedTab(tab.url)
+        }
+
+        /** Leaves one tab with the home page */
+        override fun closeAllTabs() {
+            val tab = host.openInNewTab(host.settingsModel.homePage, controller.tabsStates.size) ?: return
+            controller.closeOtherTabs(tab)
+        }
+
+        override fun openNewTab() {
+            host.openInNewTab(host.settingsModel.homePage, controller.tabsStates.size)
+        }
+
+        override fun toggleIncognitoMode() = host.toggleIncognitoMode()
+    }
+
+    /**
+     * Tells that the tab is closed and gives it back when the user taps Undo. Nothing is shown for a private
+     * tab: it is not kept as closed.
+     */
+    private fun showUndoClosedTab(url: String) {
+        val closed = controller.closedTabs.value.firstOrNull { it.url == url } ?: return
+        vb.vSnackbar.show(R.drawable.ic_close, activity.getString(R.string.tab_closed, closed.title), null,
+            activity.getString(R.string.undo)) { controller.reopenClosedTab(closed) }
+    }
+
+    private val downloadsModel = ActiveModelsRepository.get(DownloadsModel::class, activity)
+    private val downloadDevice = DeviceDownloads(activity)
+
+    private val downloadsCallback = object : DownloadsNavigator.ShellCallback {
+        override val downloads get() = downloadsModel.downloads
+        override val downloadCommands get() = host.downloadCommands
+        override val downloadDevice get() = this@PhoneShell.downloadDevice
+
+        override fun showMessage(icon: Int, message: String) {
+            NotificationView.show(vb.rlRoot, icon, message)
+        }
+
+        override fun confirmClearAll(request: DownloadsNavigator.ClearAllRequest, onConfirm: (Boolean) -> Unit) =
+            ClearDownloadsDialog.show(activity, request, onConfirm)
+    }
+
+    private val syncSettings = SyncSettings(activity, AppContext.provideConfig().prefs)
+    private val syncDiscovery = SyncDiscovery(activity)
+    private val syncClient = SyncClient(syncSettings, { TVBro.container.data.pairedDevices }, syncDiscovery::find)
+
+    /** Callbacks waiting for the answer of the user about the local network */
+    private var localNetworkCallbacks: MutableList<() -> Unit>? = null
+
+    private val syncHost = object : PhoneSyncNavigator.Host {
+        override fun render(screen: PhoneSyncNavigator.Screen, busy: PhoneSyncNavigator.Busy?) = vb.vSync.render(screen, busy)
+
+        override fun showMessage(message: String) {
+            NotificationView.show(if (vb.vSync.isOpen) vb.vSync else vb.rlRoot, R.drawable.ic_tv, message)
+        }
+
+        override fun ensureLocalNetworkAccess(onGranted: () -> Unit) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.CINNAMON_BUN || ContextCompat.checkSelfPermission(activity,
+                    Manifest.permission.ACCESS_LOCAL_NETWORK) == PackageManager.PERMISSION_GRANTED) {
+                onGranted()
+                return
+            }
+            localNetworkCallbacks?.let {
+                it += onGranted
+                return
+            }
+            val callbacks = mutableListOf(onGranted)
+            localNetworkCallbacks = callbacks
+            activity.launchForResult(ActivityResultContracts.RequestPermission(), Manifest.permission.ACCESS_LOCAL_NETWORK) { granted ->
+                localNetworkCallbacks = null
+                if (granted) {
+                    callbacks.forEach { it() }
+                } else {
+                    showMessage(activity.getString(R.string.sync_local_network_needed))
+                }
+            }
+        }
+
+        override fun confirmBookmarks(title: String, changes: BookmarksReplacer.Changes, onConfirm: () -> Unit) {
+            var message = activity.getString(R.string.sync_bookmarks_preview, changes.added, changes.updated, changes.removed)
+            if (changes.removedTitles.isNotEmpty()) {
+                message += "\n\n" + activity.getString(R.string.sync_bookmarks_will_be_deleted) + "\n" +
+                    changes.removedTitles.joinToString("\n") { "• $it" }
+            }
+            AlertDialog.Builder(activity)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(R.string.sync_update) { _, _ -> onConfirm() }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+
+        //the home page shows the bookmarks of its folder
+        override fun onBookmarksChanged() {
+            controller.modelScope.launch { controller.homePageLinks.load() }
+        }
+
+        override fun confirmForget(tv: PairedDevice, onConfirm: () -> Unit) {
+            AlertDialog.Builder(activity)
+                .setMessage(activity.getString(R.string.sync_forget_tv_confirm, tv.name))
+                .setPositiveButton(R.string.sync_forget) { _, _ -> onConfirm() }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+
+        /** The tabs with web pages */
+        override fun tabs(): Pair<List<SyncTab>, Int> {
+            val tabs = controller.tabsStates.filter { SyncRequests.isAllowedUrl(it.url) }
+            return tabs.map { SyncTab(it.url, it.title) } to tabs.indexOf(controller.currentTab.value)
+        }
+
+        override fun pickFiles(onPicked: (List<Uri>) -> Unit) {
+            try {
+                activity.launchForResult(ActivityResultContracts.OpenMultipleDocuments(), arrayOf("*/*")) { uris ->
+                    if (uris.isNotEmpty()) onPicked(uris)
+                }
+            } catch (e: ActivityNotFoundException) {
+                showMessage(activity.getString(R.string.sync_no_file_picker))
+            }
+        }
+
+        override fun keepScreenOn(on: Boolean) {
+            //the setting keeps it on anyway
+            if (on) {
+                activity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            } else if (!host.settingsModel.keepScreenOn.value) {
+                activity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
+        }
+
+        override fun close() = vb.vSync.hide()
+    }
+
+    private val syncNavigator = PhoneSyncNavigator(activity, syncClient, TVBro.container.data.pairedDevices,
+        TVBro.container.data.favorites,
+        LocalBookmarks({ TVBro.container.data }, BookmarksBackup(activity.filesDir), activity.getString(R.string.home_page)),
+        activity.lifecycleScope, syncHost)
+
+    /** The link of the QR code of a TV: pairs with it */
+    override fun handleSyncLink(link: SyncLink?): Boolean {
+        if (link != null && syncSettings.isUsedPairingLink(link)) return true
+        showPage()
+        vb.vSync.show()
+        if (link == null) {
+            syncHost.showMessage(activity.getString(R.string.sync_pairing_failed))
+        } else {
+            syncNavigator.pair(link) { syncSettings.markPairingLinkUsed(link) }
+        }
+        return true
+    }
+
+    /** The snackbar tells when a download ends, with the action OK would do on its row */
+    private fun onDownloadEvent(event: DownloadEvent) {
+        if (vb.vDownloads.isOpen) return
+        val item = event.item
+        when (event) {
+            is DownloadEvent.Completed -> {
+                val apk = DownloadFileActions.isApk(item.toDownload())
+                vb.vSnackbar.show(R.drawable.ic_check, activity.getString(R.string.download_complete), item.filename,
+                    activity.getString(if (apk) R.string.install else R.string.open)) {
+                    if (apk) downloadDevice.install(item) else downloadDevice.open(item)
+                }
+            }
+            is DownloadEvent.Failed -> vb.vSnackbar.show(R.drawable.ic_error,
+                activity.getString(R.string.download_failed_named, item.filename), null,
+                activity.getString(R.string.show)) { vb.vDownloads.show(item.id) }
+        }
+    }
+
+    /**
+     * The site settings of the site sheet and of the menu sheet keep the sheet open: changing ad blocking
+     * or the site view reloads the page under it. The site header of the menu sheet opens the site sheet.
+     */
+    private val siteSettingsCallback = object : SiteSettingsView.Callback {
+        override fun toggleAdBlock() = host.toggleSiteAdBlock()
+
+        override fun choosePopupBlockLevel() = host.choosePopupBlockLevel()
+
+        override fun chooseSiteView() = host.chooseSiteView()
+
+        override fun clearSiteData() = host.clearSiteData()
+
+        override fun openSiteSettings() = showSiteSheet()
+    }
+
+    /** Find in page: the find bar in the place of the bar */
+    private val findInPage: FindInPageController = FindInPageController(activity.lifecycleScope, object : FindInPageController.Host {
+        override fun currentEngine() = controller.currentTab.value?.webEngine?.findInPage
+
+        override fun render(state: FindInPageController.State?) {
+            vb.vFindBar.render(state)
+            findBackCallback.isEnabled = state != null
+            if (!fullscreen) vb.vPhoneBar.visibility = if (state != null) View.INVISIBLE else View.VISIBLE
+            //the find bar does not slide away
+            if (state != null) scrollAwayBar.show(animate = false)
+        }
+    })
+
+    private val findBarCallback = object : PhoneFindBar.Callback {
+        override fun onQueryChanged(text: String) = findInPage.setQuery(text)
+
+        override fun next() = findInPage.next()
+
+        override fun previous() = findInPage.previous()
+
+        override fun close() = findInPage.close()
+    }
+
+    /** Back closes the find bar (a first Back hides the keyboard) */
+    private val findBackCallback: OnBackPressedCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() = findInPage.close()
+    }
+
+    override fun showFindInPage() {
+        if (fullscreen) return
+        vb.vPhoneBar.stopEditing()
+        if (!findInPage.open()) return
+        vb.vFindBar.focusField()
+    }
+
+    /** The suggestions of the history above the bar while the address is edited */
+    private val addressSuggestions = AddressSuggestions(TVBro.container.data.history, activity.lifecycleScope,
+        object : AddressSuggestions.Host {
+            override fun render(rows: List<AddressSuggestions.Row>) = vb.vAddressSuggestions.render(rows)
+        })
+
+    //after the callbacks: properties are initialized in their order
+    init {
+        vb.vPhoneBar.callback = barCallback
+        vb.vAddressSuggestions.rowLayout = R.layout.view_phone_address_suggestion_row
+        vb.vAddressSuggestions.bestAtBottom = true
+        vb.vPhoneBar.setSuggestions(addressSuggestions, vb.vAddressSuggestions)
+        vb.vFindBar.callback = findBarCallback
+        vb.vMenuSheet.callback = menuCallback
+        vb.vMenuSheet.siteSettings.callback = siteSettingsCallback
+        vb.vSiteSheet.siteSettings.callback = siteSettingsCallback
+        vb.vTabSwitcher.bind(controller)
+        vb.vTabSwitcher.callback = tabSwitcherCallback
+        vb.vBookmarks.attach(activity.lifecycleScope, vb.vActionsSheet, bookmarksCallback)
+        vb.vDownloads.attach(activity.lifecycleScope, vb.vActionsSheet, downloadsCallback)
+        vb.vHistory.attach(activity.lifecycleScope, vb.vActionsSheet, historyCallback)
+        vb.vSync.attach(syncNavigator)
+        vb.vSettings.attach(activity.lifecycleScope, vb.vActionsSheet, settingsCallback)
+        activity.lifecycleScope.launch { downloadsModel.events.collect(::onDownloadEvent) }
+        controller.tabsStates.subscribe(activity, observer = { vb.vPhoneBar.setTabCount(it.size) })
+    }
+
+    /** Lowest priority: back in the page, or out of the app (to the launcher) when it has no history */
+    private val pageBackCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (!controller.goBack()) {
+                onNoBackHistory()
+            }
+        }
+    }
+
+    override fun registerBackCallbacks(dispatcher: OnBackPressedDispatcher, fullscreen: OnBackPressedCallback) {
+        //the enabled callback added last goes first
+        dispatcher.addCallback(activity, pageBackCallback)
+        dispatcher.addCallback(activity, editingBackCallback)
+        dispatcher.addCallback(activity, findBackCallback)
+        dispatcher.addCallback(activity, vb.vMenuSheet.backCallback)
+        dispatcher.addCallback(activity, vb.vSiteSheet.backCallback)
+        dispatcher.addCallback(activity, vb.vTabSwitcher.backCallback)
+        dispatcher.addCallback(activity, vb.vBookmarks.backCallback)
+        dispatcher.addCallback(activity, vb.vDownloads.backCallback)
+        dispatcher.addCallback(activity, vb.vHistory.backCallback)
+        dispatcher.addCallback(activity, vb.vSync.backCallback)
+        dispatcher.addCallback(activity, vb.vSettings.backCallback)
+        dispatcher.addCallback(activity, vb.vActionsSheet.backCallback)
+        dispatcher.addCallback(activity, fullscreen)
+        //the voice input of the bookmarks search: Back cancels it
+        dispatcher.addCallback(activity, bookmarksVoiceSearch.backCallback)
+    }
+
+    /** Videos are mostly wide: fullscreen turns the screen to landscape (either way, whatever the rotation lock) */
+    override fun onFullscreenChanged(fullscreen: Boolean) {
+        this.fullscreen = fullscreen
+        if (fullscreen) {
+            findInPage.close()
+            vb.vPhoneBar.stopEditing()
+            vb.vMenuSheet.hide()
+            vb.vSiteSheet.hide()
+            vb.vTabSwitcher.hide()
+            vb.vActionsSheet.hide()
+            vb.vBookmarks.hide()
+            vb.vDownloads.hide()
+            vb.vHistory.hide()
+            vb.vSync.hide()
+            vb.vSettings.hide()
+            vb.vSnackbar.hide()
+            scrollAwayBar.show(animate = false)
+        }
+        vb.vPhoneBar.visibility = if (fullscreen) View.GONE else View.VISIBLE
+        activity.requestedOrientation =
+            if (fullscreen) ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE else screenOrientation
+        ViewCompat.requestApplyInsets(vb.root)
+    }
+
+    override fun showBusy(busy: Boolean) {
+        vb.progressBarGeneric.visibility = if (busy) View.VISIBLE else View.GONE
+    }
+
+    override fun onTabsLoaded() {}
+
+    /** Touch only: the page gets the touches, the virtual cursor is never shown */
+    override fun onTabViewCreated(tab: BrowserTab) {
+        tab.webEngine.virtualCursor?.setVirtualCursorMode(false)
+    }
+
+    override fun render(state: CurrentTabState) {
+        findInPage.onPage(state.tabIdentity, state.url, state.loading)
+        //another tab or page, or the page starts loading
+        if (state.url != renderedUrl || (state.loading && !renderedLoading)) {
+            scrollAwayBar.show()
+        }
+        renderedUrl = state.url
+        renderedLoading = state.loading
+        vb.vPhoneBar.render(state)
+        vb.vMenuSheet.render(state)
+        vb.vSiteSheet.render(state)
+    }
+
+    /**
+     * Only scrolling by the user moves the bar: the page also scrolls by itself (when it is laid out
+     * again after a rotation, restores its position or jumps to an anchor)
+     */
+    override fun onPageScrolled(scrollY: Int, dy: Int) {
+        if (fullscreen || editingBackCallback.isEnabled || findInPage.isOpen || !vb.flWebViewContainer.isTouchedRecently) return
+        scrollAwayBar.onPageScrolled(scrollY, dy)
+    }
+
+    override fun onUiEvent(event: BrowserUiEvent) {
+        when (event) {
+            is BrowserUiEvent.Progress -> {
+                vb.progressBar.visibility = if (event.value < 100) View.VISIBLE else View.GONE
+                vb.progressBar.progress = event.value
+            }
+            is BrowserUiEvent.PopupBlocked -> {
+                val msg = activity.getString(if (event.newTab) R.string.new_tab_blocked else R.string.popup_dialog_blocked)
+                NotificationView.show(vb.rlRoot, R.drawable.ic_block_popups, msg)
+            }
+            else -> {}
+        }
+    }
+
+    /** Phones have the system Back and Home: no history leaves the app without closing it */
+    override fun onNoBackHistory() {
+        activity.moveTaskToBack(true)
+    }
+
+    override fun showMessage(icon: Int, message: String) {
+        NotificationView.show(vb.rlRoot, icon, message)
+    }
+
+    override fun showPage() {
+        vb.vSync.hide()
+        vb.vSettings.hide()
+        vb.vPhoneBar.stopEditing()
+        vb.vMenuSheet.hide()
+        vb.vSiteSheet.hide()
+        vb.vTabSwitcher.hide()
+        vb.vActionsSheet.hide()
+        vb.vBookmarks.hide()
+        vb.vDownloads.hide()
+        vb.vHistory.hide()
+    }
+
+    override fun onDownloadStarted(download: Download) {
+        vb.vSnackbar.show(R.drawable.ic_downloads, activity.getString(R.string.downloading_named_file, download.filename),
+            null, activity.getString(R.string.show)) { vb.vDownloads.show(download.id) }
+    }
+
+    override fun showAllDownloads(focusId: Long?) {
+        vb.vMenuSheet.hide()
+        vb.vDownloads.show(focusId)
+    }
+
+    /** A long press on a link: the actions for the link (there is no cursor menu) */
+    override fun showContextMenu(
+        tab: BrowserTab, uiHost: EngineUiHost, cursorDrawer: CursorDrawerDelegate,
+        baseUri: String?, linkUri: String?, srcUri: String?,
+        title: String?, altText: String?, textContent: String?, x: Int, y: Int
+    ) {
+        uiHost.suggestActionsForLink(baseUri, linkUri, srcUri, title, altText, textContent, x, y)
+    }
+}

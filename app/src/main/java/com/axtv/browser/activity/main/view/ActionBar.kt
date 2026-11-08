@@ -1,0 +1,359 @@
+package com.axtv.browser.activity.main.view
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.AttributeSet
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.View.OnTouchListener
+import android.view.ViewTreeObserver
+import android.view.View.OnFocusChangeListener
+import android.view.View.OnKeyListener
+import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.axtv.browser.AppContext
+import com.axtv.browser.Config
+import com.axtv.browser.R
+import com.axtv.browser.activity.main.AddressSuggestions
+import com.axtv.browser.browser.DownloadsModel
+import com.axtv.browser.browser.SiteConnection
+import com.axtv.browser.databinding.ViewActionbarBinding
+import com.axtv.browser.utils.Utils
+import com.axtv.browser.utils.activemodel.ActiveModelsRepository
+import kotlinx.coroutines.launch
+
+class ActionBar @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
+) : LinearLayout(context, attrs) {
+
+    private val vb = ViewActionbarBinding.inflate( LayoutInflater.from(context),this)
+    var callback: Callback? = null
+    private var downloadsModel = ActiveModelsRepository.get(DownloadsModel::class, context)
+    /**
+     * The address is edited: the field is selected and its text has the focus. Otherwise the address
+     * is a focus stop (focused, not edited), so Left and Right move between the bar buttons
+     * (the site button and the mic at the ends of the field are focus stops of their own).
+     */
+    private var editing = false
+    private var textBeforeEditing = ""
+
+    interface Callback {
+        fun closeWindow()
+        fun navigateBack()
+        fun navigateForward()
+        /** Stops the page if it is loading, reloads it otherwise */
+        fun reloadOrStop()
+        fun showDownloads()
+        /** The panel of the videos of the page other apps can play */
+        fun showPageVideos()
+        fun showFavorites()
+        /** The menu of the less used functions (History, Phone sync, Settings) */
+        fun showMoreMenu()
+        fun initiateVoiceSearch()
+        fun search(text: String)
+        /** Opens the [url] as it is (a suggestion of the history) */
+        fun openUrl(url: String)
+        fun onUrlInputDone()
+        fun toggleIncognitoMode()
+        fun showSitePanel()
+    }
+
+    private val etUrlFocusChangeListener = OnFocusChangeListener { _, focused ->
+        //leaving the text (to the tabs, or the bar is hidden) cancels the editing
+        if (!focused && editing) {
+            stopEditing(submitted = false)
+        }
+    }
+
+    /**
+     * While the address is edited, Down and Up choose a suggestion under it (the focus stays in the field),
+     * OK and Enter open the chosen one; Left and Right go back to the text
+     */
+    private val etUrlKeyListener = OnKeyListener { view, i, keyEvent ->
+        val list = suggestionsView
+        val chosen = list?.highlightedUrl
+        when (keyEvent.keyCode) {
+            KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
+                if (keyEvent.action == KeyEvent.ACTION_UP) {
+                    if (chosen != null) {
+                        openSuggestion(chosen)
+                    } else {
+                        submit()
+                    }
+                }
+                return@OnKeyListener true
+            }
+            KeyEvent.KEYCODE_DPAD_CENTER -> if (chosen != null) {
+                if (keyEvent.action == KeyEvent.ACTION_UP) openSuggestion(chosen)
+                return@OnKeyListener true
+            }
+            KeyEvent.KEYCODE_DPAD_DOWN -> if (editing && list != null && list.rows.isNotEmpty()) {
+                if (keyEvent.action == KeyEvent.ACTION_DOWN) list.moveHighlight(down = true)
+                return@OnKeyListener true
+            }
+            KeyEvent.KEYCODE_DPAD_UP -> if (chosen != null) {
+                if (keyEvent.action == KeyEvent.ACTION_DOWN) list.moveHighlight(down = false)
+                return@OnKeyListener true
+            }
+            KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT -> list?.clearHighlight()
+        }
+        false
+    }
+
+    /** The field is submitted: the address it completed inline, else its text (an address or a search) */
+    private fun submit() {
+        val text = vb.etUrl.text.toString()
+        val url = inlineCompletion?.urlFor(text)
+        stopEditing(submitted = true)
+        if (url != null) callback?.openUrl(url) else callback?.search(text)
+        callback?.onUrlInputDone()
+    }
+
+    /** Opens a suggestion of the history (a row of the list chosen or clicked) */
+    fun openSuggestion(url: String) {
+        if (!editing) return
+        stopEditing(submitted = true)
+        callback?.openUrl(url)
+        callback?.onUrlInputDone()
+    }
+
+    private var suggestions: AddressSuggestions? = null
+    private var suggestionsView: AddressSuggestionsView? = null
+    private var inlineCompletion: InlineAddressCompletion? = null
+
+    /** The suggestions of the history follow the address typed, in the [view] under it */
+    fun setSuggestions(suggestions: AddressSuggestions, view: AddressSuggestionsView) {
+        this.suggestions = suggestions
+        this.suggestionsView = view
+        inlineCompletion = InlineAddressCompletion(vb.etUrl, suggestions::inlineCompletion, suggestions::query)
+        view.onOpen = ::openSuggestion
+    }
+
+    /** The address field, which the suggestions are under */
+    val addressField: View get() = vb.llAddress
+
+    /** Typing on a keyboard while the field is focused starts the editing with the typed character */
+    private val addressFieldKeyListener = OnKeyListener { _, _, keyEvent ->
+        if (!editing && keyEvent.action == KeyEvent.ACTION_DOWN && keyEvent.isPrintingKey) {
+            startEditing(selectAllLater = false)
+            vb.etUrl.selectAll()
+            vb.etUrl.dispatchKeyEvent(keyEvent)
+            return@OnKeyListener true
+        }
+        false
+    }
+
+    /** The field was clicked by a mouse (or a touch) while edited: the user placed the cursor or selected text */
+    private var pointerInEditing = false
+
+    /**
+     * A mouse (or a touch) on the text: the text is an EditText, which takes the touches even while it is not
+     * focusable, so they go to the address around it, which starts the editing as OK of a remote does.
+     * Remotes and game controllers send keys, never touches, so this changes nothing for them.
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    private val etUrlTouchListener = OnTouchListener { _, event ->
+        if (editing) {
+            if (event.actionMasked == MotionEvent.ACTION_DOWN) pointerInEditing = true
+            return@OnTouchListener false
+        }
+        vb.flUrl.onTouchEvent(event)
+        true
+    }
+
+    init {
+        init()
+    }
+
+    fun init() {
+        orientation = HORIZONTAL
+
+        if (isInEditMode) return
+
+        val incognitoMode = AppContext.provideConfig().incognitoMode
+
+        vb.ibMenu.setOnClickListener { callback?.closeWindow() }
+        vb.ibBack.setOnClickListener { callback?.navigateBack() }
+        vb.ibForward.setOnClickListener { callback?.navigateForward() }
+        vb.ibRefresh.setOnClickListener { callback?.reloadOrStop() }
+        vb.ibDownloads.setOnClickListener { callback?.showDownloads() }
+        vb.ibVideos.setOnClickListener { callback?.showPageVideos() }
+        setPageVideoCount(0)
+        vb.ibFavorites.setOnClickListener { callback?.showFavorites() }
+        vb.ibIncognito.setOnClickListener { callback?.toggleIncognitoMode() }
+        vb.ibMore.setOnClickListener { callback?.showMoreMenu() }
+
+        //the groups and the address field clip their buttons to the rounded border
+        vb.llNavigation.clipToOutline = true
+        vb.llFunctions.clipToOutline = true
+        vb.llAddress.clipToOutline = true
+
+        if (Utils.isFireTV(context)) {
+            vb.ibVoiceSearch.visibility = GONE
+            vb.vVoiceSearchDivider.visibility = GONE
+        } else {
+            vb.ibVoiceSearch.setOnClickListener { callback?.initiateVoiceSearch() }
+        }
+
+        vb.ibIncognito.isActivated = incognitoMode
+
+        vb.ibSite.setOnClickListener { callback?.showSitePanel() }
+        vb.flUrl.setOnClickListener { startEditing(selectAllLater = true) }
+        vb.flUrl.setOnKeyListener(addressFieldKeyListener)
+        vb.etUrl.onFocusChangeListener = etUrlFocusChangeListener
+        vb.etUrl.setOnKeyListener(etUrlKeyListener)
+        vb.etUrl.setOnTouchListener(etUrlTouchListener)
+
+
+        (context as AppCompatActivity).lifecycleScope.launch {
+            downloadsModel.activeCount.collect { count ->
+                vb.tvDownloadsBadge.visibility = if (count > 0) VISIBLE else GONE
+                vb.tvDownloadsBadge.text = count.toString()
+                vb.ibDownloads.contentDescription = if (count > 0) {
+                    resources.getQuantityString(R.plurals.downloads_in_progress, count, count)
+                } else {
+                    context.getString(R.string.downloads)
+                }
+            }
+        }
+    }
+
+    /**
+     * Back and Forward stay focusable when they can not be used and are only dimmed, so the number
+     * of presses to each button never changes. Refresh becomes Stop while the page loads.
+     */
+    fun setNavigationState(canGoBack: Boolean, canGoForward: Boolean, loading: Boolean) {
+        vb.ibBack.imageAlpha = if (canGoBack) OPAQUE else DIMMED
+        vb.ibForward.imageAlpha = if (canGoForward) OPAQUE else DIMMED
+        vb.ibRefresh.setImageResource(if (loading) R.drawable.ic_stop else R.drawable.ic_refresh)
+        vb.ibRefresh.contentDescription = context.getString(if (loading) R.string.stop_loading else R.string.refresh_page)
+    }
+
+    /** The field shows the state of the address, whether the address or its text has the focus */
+    private val focusListener = ViewTreeObserver.OnGlobalFocusChangeListener { _, _ ->
+        vb.llAddress.addressFocused = vb.flUrl.hasFocus()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        viewTreeObserver.addOnGlobalFocusChangeListener(focusListener)
+    }
+
+    override fun onDetachedFromWindow() {
+        viewTreeObserver.removeOnGlobalFocusChangeListener(focusListener)
+        super.onDetachedFromWindow()
+    }
+
+    /**
+     * The number of videos of the page other apps can play: on the badge; without videos the button stays
+     * focusable (the number of presses to each button never changes) but is dimmed
+     */
+    fun setPageVideoCount(count: Int) {
+        vb.tvVideosBadge.visibility = if (count > 0) VISIBLE else GONE
+        vb.tvVideosBadge.text = count.toString()
+        vb.ibVideos.imageAlpha = if (count > 0) OPAQUE else DIMMED
+        vb.ibVideos.contentDescription = if (count > 0) {
+            resources.getQuantityString(R.plurals.videos_on_page_count, count, count)
+        } else {
+            context.getString(R.string.videos_on_page)
+        }
+    }
+
+    /** The panel of the videos opens under it, and gives the focus back to it */
+    val videosButton: View get() = vb.ibVideos
+
+    /** The site panel opens under it, and gives the focus back to it */
+    val siteButton: View get() = vb.ibSite
+
+    /** The bookmarks panel opens under the star, its end under the end of the group of the star */
+    val favoritesButton: View get() = vb.ibFavorites
+    val downloadsButton: View get() = vb.ibDownloads
+    /** Its menu opens under it, and gives the focus back to it */
+    val moreButton: View get() = vb.ibMore
+    val functionsGroup: View get() = vb.llFunctions
+
+    /**
+     * @param host "" if the page has no site: the button stays focusable but is dimmed
+     * @param connection a page without a secure connection shows the warning sign instead of the sliders
+     */
+    fun setSiteState(host: String, connection: SiteConnection) {
+        vb.ibSite.showSiteConnection(host, connection)
+        vb.ibSite.imageAlpha = if (host.isNotEmpty()) OPAQUE else DIMMED
+    }
+
+    fun setAddressBoxText(text: String) {
+        val newText = if (text == Config.HOME_PAGE_URL) "" else text
+        if (vb.etUrl.text.toString() != newText) {
+            vb.etUrl.setText(newText)
+        }
+    }
+
+    /** The user is editing the address */
+    fun isEditingAddress(): Boolean = editing
+
+    /**
+     * @param selectAllLater select the address after the keyboard is shown (some Android TV keyboards
+     * drop a selection made before)
+     */
+    private fun startEditing(selectAllLater: Boolean) {
+        if (editing) return
+        editing = true
+        pointerInEditing = false
+        textBeforeEditing = vb.etUrl.text.toString()
+        vb.llAddress.isActivated = true
+        vb.etUrl.isFocusable = true
+        vb.etUrl.isFocusableInTouchMode = true
+        vb.etUrl.requestFocus()
+        suggestions?.start(textBeforeEditing)
+        inlineCompletion?.start()
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(vb.etUrl, InputMethodManager.SHOW_IMPLICIT)
+        if (selectAllLater) {
+            //not once the user typed: that would select what was completed inline too;
+            //nor once a mouse placed the cursor or selected text
+            postDelayed({
+                if (editing && !pointerInEditing && vb.etUrl.text.toString() == textBeforeEditing) vb.etUrl.selectAll()
+            }, 500)
+        }
+    }
+
+    /**
+     * Ends the editing; the field keeps the focus if the text had it.
+     * @param submitted false to bring back the address that was there before
+     */
+    private fun stopEditing(submitted: Boolean) {
+        if (!editing) return
+        editing = false
+        inlineCompletion?.stop()
+        suggestions?.stop()
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(vb.etUrl.windowToken, 0)
+        if (!submitted) {
+            vb.etUrl.setText(textBeforeEditing)
+        }
+        vb.llAddress.isActivated = false
+        if (vb.etUrl.hasFocus()) {
+            vb.flUrl.requestFocus()
+        }
+        vb.etUrl.isFocusable = false
+        vb.etUrl.isFocusableInTouchMode = false
+    }
+
+    /** Stops editing the address without using it */
+    fun cancelEditing() = stopEditing(submitted = false)
+
+    /** The bar opens with the focus on the address */
+    fun catchFocus() {
+        vb.flUrl.requestFocus()
+    }
+
+    companion object {
+        private const val OPAQUE = 255
+        /** Disabled icons are drawn at 40% */
+        private const val DIMMED = 102
+    }
+}

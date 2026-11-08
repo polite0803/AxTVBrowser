@@ -1,0 +1,16 @@
+A web browser for Android TVs, built around the TV remote: D-pad navigation with a virtual cursor, or direct navigation without one. The same app also has a touch interface for phones and tablets, and a phone can send its open tabs, bookmarks and files to a paired TV over the local network.
+
+Features:
+- tabs, with page state and thumbnails restored on start
+- bookmarks in folders, export and import of the Chrome, Firefox and Edge bookmarks file
+- browsing history with search and multi-select delete, address suggestions from it, find in page
+- voice search and user configurable keyboard and remote shortcuts
+- ad blocking with an engine written for TV hardware (EasyList, EasyPrivacy, a regional list, your own list) and element hiding of ads
+- a built-in video player for HLS, DASH and files, with qualities, audio tracks, subtitles, playback speed, picture in picture and frame-rate matching, plus a list of the videos a page plays
+- a download manager with resumable downloads, a custom folder and its own process, so downloads go on while the browser restarts
+- desktop or mobile site view per site, per-site ad blocking, popup blocking and player choice
+- HTTP and SOCKS5 proxy, with a login
+- Android TV home screen channels of bookmarks, open tabs and finished downloads
+- 16 interface languages
+
+There are two apps here, differing only in the engine that renders pages: this one uses the system WebView of the device, which is the light choice for a weak TV; the other one bundles GeckoView and has its own tracking protection. The engine of an installed app can not be changed.

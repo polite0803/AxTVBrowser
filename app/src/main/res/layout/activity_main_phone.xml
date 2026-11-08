@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+The phone screen: the page and the bar under it, between the system bars and the keyboard (the shell
+applies their insets as the padding of the content), and the menu sheet, the tab switcher, the
+bookmarks and the downloads over the whole window.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/flRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/tbColorDsBgChrome">
+
+    <RelativeLayout
+        android:id="@+id/rlRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- it tells the bar whether the page scrolls by the user's touch -->
+        <com.axtv.browser.activity.main.view.TouchTrackingFrameLayout
+            android:id="@+id/flWebViewContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/vPhoneBar" />
+
+        <com.axtv.browser.activity.main.view.PhoneBar
+            android:id="@+id/vPhoneBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:elevation="4dp" />
+
+        <!-- Find in page, in the place of the bar (it is invisible meanwhile) -->
+        <com.axtv.browser.activity.main.view.PhoneFindBar
+            android:id="@+id/vFindBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:elevation="4dp" />
+
+        <!-- the suggestions of the history above the bar while the address is edited, the best next to it -->
+        <com.axtv.browser.activity.main.view.AddressSuggestionsView
+            android:id="@+id/vAddressSuggestions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/vPhoneBar"
+            android:background="?attr/tbColorDsSurface"
+            android:elevation="4dp"
+            android:visibility="gone" />
+
+        <!-- along the top edge of the page -->
+        <ProgressBar
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:progressTint="?attr/tbColorProgress"
+            android:progressBackgroundTint="@android:color/transparent"
+            android:visibility="gone" />
+
+        <!-- tells about downloads, above the bar -->
+        <com.axtv.browser.activity.main.view.PhoneSnackbar
+            android:id="@+id/vSnackbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/vPhoneBar"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/ds_phone_snackbar_margin"
+            android:elevation="@dimen/ds_phone_snackbar_elevation" />
+
+        <ProgressBar
+            android:id="@+id/progressBarGeneric"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <com.axtv.browser.activity.main.view.PhoneMenuSheet
+        android:id="@+id/vMenuSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="8dp" />
+
+    <!-- the settings of the current site, from the site button of the bar or the menu sheet -->
+    <com.axtv.browser.activity.main.view.PhoneSiteSheet
+        android:id="@+id/vSiteSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="8dp" />
+
+    <com.axtv.browser.activity.main.view.PhoneTabSwitcher
+        android:id="@+id/vTabSwitcher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="8dp" />
+
+    <com.axtv.browser.activity.main.view.PhoneBookmarksView
+        android:id="@+id/vBookmarks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="8dp" />
+
+    <com.axtv.browser.activity.main.view.PhoneDownloadsView
+        android:id="@+id/vDownloads"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="8dp" />
+
+    <com.axtv.browser.activity.main.view.PhoneHistoryView
+        android:id="@+id/vHistory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="8dp" />
+
+    <!-- sending tabs and bookmarks to TVs -->
+    <com.axtv.browser.activity.main.view.PhoneSyncView
+        android:id="@+id/vSync"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="8dp" />
+
+    <!-- the settings -->
+    <com.axtv.browser.activity.main.view.PhoneSettingsView
+        android:id="@+id/vSettings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="8dp" />
+
+    <!-- the actions of a bookmark, a download or a history item, and the options of a setting, above them -->
+    <com.axtv.browser.activity.main.view.PhoneActionsSheet
+        android:id="@+id/vActionsSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="9dp" />
+</FrameLayout>

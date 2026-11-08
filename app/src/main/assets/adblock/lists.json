@@ -1,0 +1,181 @@
+[
+  {
+    "id": "easylist",
+    "title": "EasyList",
+    "url": "https://easylist.to/easylist/easylist.txt",
+    "languages": []
+  },
+  {
+    "id": "easyprivacy",
+    "title": "EasyPrivacy",
+    "url": "https://easylist.to/easylist/easyprivacy.txt",
+    "languages": []
+  },
+  {
+    "id": "ruadlist",
+    "title": "RU AdList",
+    "url": "https://easylist-downloads.adblockplus.org/advblock.txt",
+    "languages": [
+      "ru",
+      "uk",
+      "be",
+      "kk",
+      "uz"
+    ]
+  },
+  {
+    "id": "easylistgermany",
+    "title": "EasyList Germany",
+    "url": "https://easylist.to/easylistgermany/easylistgermany.txt",
+    "languages": [
+      "de"
+    ]
+  },
+  {
+    "id": "listefr",
+    "title": "Liste FR",
+    "url": "https://easylist-downloads.adblockplus.org/liste_fr.txt",
+    "languages": [
+      "fr"
+    ]
+  },
+  {
+    "id": "easylistspanish",
+    "title": "EasyList Spanish",
+    "url": "https://easylist-downloads.adblockplus.org/easylistspanish.txt",
+    "languages": [
+      "es"
+    ]
+  },
+  {
+    "id": "easylistportuguese",
+    "title": "EasyList Portuguese",
+    "url": "https://easylist-downloads.adblockplus.org/easylistportuguese.txt",
+    "languages": [
+      "pt"
+    ]
+  },
+  {
+    "id": "easylistitaly",
+    "title": "EasyList Italy",
+    "url": "https://easylist-downloads.adblockplus.org/easylistitaly.txt",
+    "languages": [
+      "it"
+    ]
+  },
+  {
+    "id": "easylistdutch",
+    "title": "EasyList Dutch",
+    "url": "https://easylist-downloads.adblockplus.org/easylistdutch.txt",
+    "languages": [
+      "nl"
+    ]
+  },
+  {
+    "id": "easylistpolish",
+    "title": "EasyList Polish",
+    "url": "https://easylist-downloads.adblockplus.org/easylistpolish.txt",
+    "languages": [
+      "pl"
+    ]
+  },
+  {
+    "id": "easylistczechslovak",
+    "title": "EasyList Czech and Slovak",
+    "url": "https://easylist-downloads.adblockplus.org/easylistczechslovak.txt",
+    "languages": [
+      "cs",
+      "sk"
+    ]
+  },
+  {
+    "id": "bulgarianlist",
+    "title": "Bulgarian list",
+    "url": "https://easylist-downloads.adblockplus.org/bulgarian_list.txt",
+    "languages": [
+      "bg"
+    ]
+  },
+  {
+    "id": "easylistlithuania",
+    "title": "EasyList Lithuania",
+    "url": "https://easylist-downloads.adblockplus.org/easylistlithuania.txt",
+    "languages": [
+      "lt"
+    ]
+  },
+  {
+    "id": "latvianlist",
+    "title": "Latvian List",
+    "url": "https://easylist-downloads.adblockplus.org/latvianlist.txt",
+    "languages": [
+      "lv"
+    ]
+  },
+  {
+    "id": "easylisthebrew",
+    "title": "EasyList Hebrew",
+    "url": "https://easylist-downloads.adblockplus.org/israellist.txt",
+    "languages": [
+      "he",
+      "iw"
+    ]
+  },
+  {
+    "id": "listear",
+    "title": "Liste AR",
+    "url": "https://easylist-downloads.adblockplus.org/Liste_AR.txt",
+    "languages": [
+      "ar"
+    ]
+  },
+  {
+    "id": "easylistchina",
+    "title": "EasyList China",
+    "url": "https://easylist-downloads.adblockplus.org/easylistchina.txt",
+    "languages": [
+      "zh"
+    ]
+  },
+  {
+    "id": "koreanlist",
+    "title": "KoreanList",
+    "url": "https://easylist-downloads.adblockplus.org/koreanlist.txt",
+    "languages": [
+      "ko"
+    ]
+  },
+  {
+    "id": "abpvn",
+    "title": "ABPVN List",
+    "url": "https://easylist-downloads.adblockplus.org/abpvn.txt",
+    "languages": [
+      "vi"
+    ]
+  },
+  {
+    "id": "abpindo",
+    "title": "ABPindo",
+    "url": "https://easylist-downloads.adblockplus.org/abpindo.txt",
+    "languages": [
+      "id",
+      "in"
+    ]
+  },
+  {
+    "id": "indianlist",
+    "title": "IndianList",
+    "url": "https://easylist-downloads.adblockplus.org/indianlist.txt",
+    "languages": [
+      "hi",
+      "bn",
+      "ta",
+      "te",
+      "mr",
+      "gu",
+      "kn",
+      "ml",
+      "pa"
+    ]
+  }
+]

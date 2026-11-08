@@ -1,0 +1,10 @@
+* Major redesign of the interface
+* The GeckoView engine is now a separate app
+* Touch interface for phones, plus a phone companion that sends tabs and bookmarks to a TV
+* Mobile or desktop site view, per site
+* New ad blocker, built for TV hardware
+* Resumable downloads, a custom download folder
+* Bookmark folders, export and import
+* Built-in video player with qualities, subtitles and picture-in-picture
+* HTTP and SOCKS5 proxy
+* New languages, updated dependencies, recent Android versions

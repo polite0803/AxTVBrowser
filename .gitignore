@@ -1,0 +1,13 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+*.keystore
+*.jks
+*.hprof
+**/build/
+.kotlin/
+/tools/adblock-corpus/*.tsv

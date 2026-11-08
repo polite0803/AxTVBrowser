@@ -1,0 +1,39 @@
+package com.axtv.browser.service.downloads
+
+/**
+ * Commands of the browser processes (the main and the incognito one) to [DownloadService],
+ * which runs in its own process: [android.os.Message.what] values and the keys of their data.
+ * The state of the downloads goes back only through the database.
+ */
+object DownloadCommands {
+    /** Starts the download of the database row [KEY_ID] */
+    const val START = 1
+    /** Cancels the download [KEY_ID] and deletes its file */
+    const val CANCEL = 2
+    /** Stops the download [KEY_ID], keeping its file to resume it */
+    const val PAUSE = 3
+    /** Continues the paused download [KEY_ID] from the bytes it has */
+    const val RESUME = 4
+
+    const val KEY_ID = "id"
+    const val KEY_COOKIES = "cookies"
+    const val KEY_REFERER = "referer"
+    /**
+     * The proxy of the browser ([com.axtv.browser.net.ProxySettings.toBundle]), for [START] and
+     * [RESUME]: the downloads process does not see the settings the browser changes later
+     */
+    const val KEY_PROXY = "proxy"
+    /**
+     * The folder the user chose for downloads (a tree uri, see [com.axtv.browser.utils.DownloadFolder]),
+     * for [START] and [RESUME] (a resumed download whose file is gone gets a new one); absent for the Downloads
+     * directory. It goes with the command as [KEY_PROXY] does.
+     */
+    const val KEY_FOLDER = "folder"
+    /** Open the installer when the download completes */
+    const val KEY_INSTALL = "install"
+    /**
+     * The read end of a pipe with the contents of the file, for the downloads the web engine
+     * fetches itself (GeckoView responses, blobs): the engine cannot hand its stream to another process
+     */
+    const val KEY_STREAM = "stream"
+}

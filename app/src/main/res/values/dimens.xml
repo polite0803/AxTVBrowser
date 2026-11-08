@@ -1,0 +1,446 @@
+<resources>
+    <!-- Text sizes, used through the Widget.TVBro.Text.* styles (and directly by buttons) -->
+    <dimen name="text_size_headline">30sp</dimen>
+    <dimen name="text_size_title">20sp</dimen>
+    <dimen name="text_size_subtitle">18sp</dimen>
+    <dimen name="text_size_body">16sp</dimen>
+    <dimen name="text_size_caption">14sp</dimen>
+    <dimen name="text_size_badge">12sp</dimen>
+
+    <dimen name="list_item_padding_horizontal">15dp</dimen>
+    <dimen name="list_item_padding_vertical">10dp</dimen>
+    <dimen name="list_divider_height">1dp</dimen>
+
+    <dimen name="settings_content_padding">22dp</dimen>
+
+    <!--
+    The plate of voice input at the bottom of the window. The mic area is the 48dp circle with room for
+    the halo of the voice level (up to 62dp), so its margins are the plate padding (8dp) and the gutter
+    (16dp) less the 7dp the halo takes.
+    -->
+    <dimen name="ds_voice_plate_height">64dp</dimen>
+    <dimen name="ds_voice_plate_min_width">560dp</dimen>
+    <dimen name="ds_voice_plate_max_width">720dp</dimen>
+    <dimen name="ds_voice_plate_padding_end">24dp</dimen>
+    <dimen name="ds_voice_plate_elevation">4dp</dimen>
+    <dimen name="ds_voice_mic_area">62dp</dimen>
+    <dimen name="ds_voice_mic_area_margin">1dp</dimen>
+    <dimen name="ds_voice_text_margin">9dp</dimen>
+    <dimen name="ds_voice_mic_size">48dp</dimen>
+    <dimen name="ds_voice_mic_icon_padding">12dp</dimen>
+    <dimen name="ds_voice_ring_size">60dp</dimen>
+    <dimen name="ds_voice_progress_size">56dp</dimen>
+
+    <!--
+    Sizes of the design system and the redesign boards. TV boards are 1920x1080, so a board pixel is
+    half a dp. Text sizes are in sp like the other text sizes (sp = dp at the default font scale).
+    -->
+    <dimen name="ds_space_screen_x">16dp</dimen>
+    <dimen name="ds_space_screen_top">14dp</dimen>
+    <dimen name="ds_space_gutter">16dp</dimen>
+    <dimen name="ds_space_icon_text">12dp</dimen>
+    <dimen name="ds_space_menu_inset">18dp</dimen>
+    <dimen name="ds_space_tab_inset">12dp</dimen>
+    <dimen name="ds_size_chrome_control">49dp</dimen>
+    <dimen name="ds_size_toolbar_segment">56dp</dimen>
+    <dimen name="ds_size_tab_width">200dp</dimen>
+    <dimen name="ds_size_tab_height">42dp</dimen>
+    <dimen name="ds_size_tab_menu_width">210dp</dimen>
+    <dimen name="ds_size_menu_row">37dp</dimen>
+    <dimen name="ds_size_icon_toolbar">24dp</dimen>
+    <dimen name="ds_size_icon_menu">18dp</dimen>
+    <dimen name="ds_size_favicon_tab">24dp</dimen>
+    <dimen name="ds_size_badge_height">14dp</dimen>
+    <dimen name="ds_size_badge_min_width">16dp</dimen>
+    <dimen name="ds_size_toast_height">48dp</dimen>
+    <dimen name="ds_size_toast_min_width">370dp</dimen>
+    <dimen name="ds_radius_control">6dp</dimen>
+    <dimen name="ds_radius_lg">8dp</dimen>
+    <dimen name="ds_border_hairline">1dp</dimen>
+    <dimen name="ds_border_selected">1.5dp</dimen>
+    <!-- The outline of a focused control (the focused fills of the light theme are almost invisible) -->
+    <dimen name="ds_focus_outline">1.5dp</dimen>
+    <dimen name="ds_text_address">18sp</dimen>
+    <dimen name="ds_text_toast">18sp</dimen>
+    <dimen name="ds_text_menu_item">14sp</dimen>
+    <dimen name="ds_text_tab_title">12sp</dimen>
+    <dimen name="ds_text_badge">9sp</dimen>
+    <!-- Paddings that give icons of any intrinsic size the board size in fixed size buttons -->
+    <dimen name="ds_toolbar_icon_padding_horizontal">16dp</dimen>
+    <dimen name="ds_toolbar_icon_padding_vertical">12dp</dimen>
+    <dimen name="ds_close_icon_padding">10dp</dimen>
+    <dimen name="ds_field_icon_padding_horizontal">17dp</dimen>
+    <dimen name="ds_field_icon_padding_vertical">13dp</dimen>
+    <dimen name="ds_field_divider_height">28dp</dimen>
+    <dimen name="ds_space_field_inset">12dp</dimen>
+    <dimen name="ds_badge_margin_top">6dp</dimen>
+    <dimen name="ds_badge_margin_end">5dp</dimen>
+    <dimen name="ds_badge_padding_horizontal">4dp</dimen>
+    <dimen name="ds_site_panel_width">330dp</dimen>
+    <dimen name="ds_tab_menu_gap">-1dp</dimen>
+    <dimen name="ds_tab_hint_offset_x">40dp</dimen>
+    <dimen name="ds_tab_hint_offset_y">11dp</dimen>
+    <dimen name="ds_tab_hint_height">28dp</dimen>
+    <dimen name="ds_tab_hint_padding_start">8dp</dimen>
+    <dimen name="ds_tab_hint_padding_end">12dp</dimen>
+    <dimen name="ds_tab_hint_icon">16dp</dimen>
+    <dimen name="ds_tab_hint_icon_text">6dp</dimen>
+    <dimen name="ds_size_icon_toast">22dp</dimen>
+    <dimen name="ds_toast_padding_horizontal">24dp</dimen>
+    <dimen name="ds_toast_margin_bottom">30dp</dimen>
+    <!-- a toast over a video, at the top (its seek bar is at the bottom) -->
+    <dimen name="ds_toast_margin_top">36dp</dimen>
+    <dimen name="ds_toast_elevation">10dp</dimen>
+    <!-- The cursor menu: a round plate (a board pixel is half a dp) with four buttons around the grab button -->
+    <dimen name="ds_cursor_menu_size">170dp</dimen>
+    <dimen name="ds_cursor_menu_button">44dp</dimen>
+    <dimen name="ds_cursor_menu_inset">7dp</dimen>
+    <dimen name="ds_cursor_menu_icon_padding">11dp</dimen>
+    <dimen name="ds_cursor_menu_center_icon_padding">9dp</dimen>
+    <dimen name="ds_cursor_menu_elevation">4dp</dimen>
+
+    <!-- The phone UI (phone boards are 390x844, a board pixel is a dp). Touch targets are 44dp or more. -->
+    <dimen name="ds_phone_bar_padding_vertical">4dp</dimen>
+    <dimen name="ds_phone_bar_padding_horizontal">4dp</dimen>
+    <dimen name="ds_phone_bar_gap">4dp</dimen>
+    <dimen name="ds_phone_button_size">48dp</dimen>
+    <dimen name="ds_phone_button_icon_padding">12dp</dimen>
+    <dimen name="ds_phone_pill_height">44dp</dimen>
+    <dimen name="ds_phone_pill_button_width">40dp</dimen>
+    <dimen name="ds_phone_pill_icon_padding">11dp</dimen>
+    <dimen name="ds_phone_pill_text_inset">6dp</dimen>
+    <dimen name="ds_phone_pill_search_inset">12dp</dimen>
+    <dimen name="ds_phone_pill_search_icon">18dp</dimen>
+    <dimen name="ds_phone_tab_count_size">22dp</dimen>
+    <dimen name="ds_phone_tab_count_radius">4dp</dimen>
+    <dimen name="ds_phone_tab_count_stroke">2dp</dimen>
+    <dimen name="ds_text_phone_address">16sp</dimen>
+    <dimen name="ds_text_phone_tab_count">12sp</dimen>
+    <dimen name="ds_phone_sheet_radius">16dp</dimen>
+    <!-- sheets and the snackbar are no wider on tablets (phones are narrower) -->
+    <dimen name="ds_phone_sheet_max_width">640dp</dimen>
+    <dimen name="ds_phone_snackbar_max_width">560dp</dimen>
+    <dimen name="ds_phone_sheet_padding_horizontal">16dp</dimen>
+    <dimen name="ds_phone_sheet_padding_top">8dp</dimen>
+    <dimen name="ds_phone_sheet_padding_bottom">16dp</dimen>
+    <dimen name="ds_phone_sheet_handle_width">32dp</dimen>
+    <dimen name="ds_phone_sheet_handle_height">4dp</dimen>
+    <dimen name="ds_phone_sheet_handle_radius">2dp</dimen>
+    <dimen name="ds_phone_sheet_handle_margin">12dp</dimen>
+    <dimen name="ds_phone_sheet_section_gap">16dp</dimen>
+    <dimen name="ds_phone_quick_button_height">72dp</dimen>
+    <dimen name="ds_phone_quick_button_gap">8dp</dimen>
+    <dimen name="ds_phone_quick_button_icon">24dp</dimen>
+    <dimen name="ds_phone_quick_button_icon_text">6dp</dimen>
+    <dimen name="ds_phone_menu_row_height">48dp</dimen>
+    <dimen name="ds_phone_menu_row_padding">8dp</dimen>
+    <dimen name="ds_phone_menu_row_icon_text">16dp</dimen>
+    <dimen name="ds_text_phone_quick_button">12sp</dimen>
+    <dimen name="ds_text_phone_menu_item">16sp</dimen>
+    <dimen name="ds_phone_switcher_header_height">64dp</dimen>
+    <dimen name="ds_phone_switcher_padding">16dp</dimen>
+    <dimen name="ds_phone_switcher_grid_gap">12dp</dimen>
+    <dimen name="ds_phone_tab_card_height">220dp</dimen>
+    <!-- more columns of cards when they are at least this wide -->
+    <dimen name="ds_phone_tab_card_min_width">160dp</dimen>
+    <dimen name="ds_phone_tab_card_header_height">36dp</dimen>
+    <dimen name="ds_phone_tab_card_favicon">20dp</dimen>
+    <dimen name="ds_phone_tab_card_padding">8dp</dimen>
+    <dimen name="ds_phone_tab_card_close_padding">9dp</dimen>
+    <dimen name="ds_phone_tab_card_selected_stroke">2dp</dimen>
+    <dimen name="ds_phone_switcher_row_height">56dp</dimen>
+    <dimen name="ds_phone_text_button_padding">12dp</dimen>
+    <dimen name="ds_phone_new_tab_button_height">44dp</dimen>
+    <dimen name="ds_phone_new_tab_button_padding_start">14dp</dimen>
+    <dimen name="ds_phone_new_tab_button_padding_end">20dp</dimen>
+    <dimen name="ds_phone_new_tab_icon_text">8dp</dimen>
+    <dimen name="ds_text_phone_switcher_title">18sp</dimen>
+    <dimen name="ds_tab_strip_margin_top">15dp</dimen>
+    <dimen name="ds_new_tab_button_gap">8dp</dimen>
+    <dimen name="ds_new_tab_icon_padding">10dp</dimen>
+    <dimen name="ds_site_panel_gap">7dp</dimen>
+    <dimen name="ds_panel_row_height">54dp</dimen>
+    <dimen name="ds_panel_padding_vertical">12dp</dimen>
+    <dimen name="ds_panel_icon_text">16dp</dimen>
+    <dimen name="ds_panel_title_icon_text">10dp</dimen>
+    <dimen name="ds_panel_header_gap">3dp</dimen>
+    <!-- sets Clear site data apart in the site panel -->
+    <dimen name="ds_panel_section_divider">4dp</dimen>
+    <dimen name="ds_size_icon_connection">13dp</dimen>
+    <dimen name="ds_panel_connection_icon_text">6dp</dimen>
+    <dimen name="ds_panel_value_max_width">140dp</dimen>
+    <dimen name="ds_text_menu_caption">11sp</dimen>
+    <!-- the bookmarks panel of the TV bar -->
+    <dimen name="ds_bookmarks_panel_width">380dp</dimen>
+    <dimen name="ds_bookmarks_panel_margin_bottom">16dp</dimen>
+    <dimen name="ds_bookmarks_header_height">40dp</dimen>
+    <dimen name="ds_bookmarks_header_padding">4dp</dimen>
+    <dimen name="ds_bookmarks_empty_padding">24dp</dimen>
+    <!-- the search field in the header -->
+    <dimen name="ds_bookmarks_search_margin">6dp</dimen>
+    <dimen name="ds_bookmarks_search_button_margin">2dp</dimen>
+    <dimen name="ds_bookmarks_status_padding">7dp</dimen>
+    <dimen name="ds_bookmark_row_height">48dp</dimen>
+    <!-- around the texts of a row whose caption takes more lines -->
+    <dimen name="ds_bookmark_row_text_padding">6dp</dimen>
+    <dimen name="ds_bookmark_icon">24dp</dimen>
+    <dimen name="ds_bookmark_folder_indent">20dp</dimen>
+    <dimen name="ds_bookmark_options_margin">6dp</dimen>
+    <dimen name="ds_bookmark_menu_width">230dp</dimen>
+    <!-- downloads: the panel of the TV bar, the TV screen of all downloads, the phone page -->
+    <dimen name="ds_downloads_panel_width">380dp</dimen>
+    <dimen name="ds_videos_panel_width">440dp</dimen>
+    <dimen name="ds_download_row_height">48dp</dimen>
+    <dimen name="ds_download_icon">24dp</dimen>
+    <dimen name="ds_download_icon_padding">5dp</dimen>
+    <dimen name="ds_download_progress_height">4dp</dimen>
+    <dimen name="ds_download_progress_radius">2dp</dimen>
+    <dimen name="ds_download_progress_margin">4dp</dimen>
+    <dimen name="ds_download_hint_padding">12dp</dimen>
+    <dimen name="ds_downloads_screen_padding">24dp</dimen>
+    <dimen name="ds_downloads_screen_header_padding_bottom">14dp</dimen>
+    <dimen name="ds_downloads_screen_list_width">960dp</dimen>
+    <dimen name="ds_downloads_section_height">32dp</dimen>
+    <dimen name="ds_downloads_filter_padding">14dp</dimen>
+    <dimen name="ds_history_search_width">456dp</dimen>
+    <dimen name="ds_history_time_width">56dp</dimen>
+    <dimen name="ds_downloads_header_button_padding">14dp</dimen>
+    <dimen name="ds_downloads_header_icon_text">10dp</dimen>
+    <dimen name="ds_text_downloads_title">20sp</dimen>
+    <!-- the screen of the TV that pairs phones -->
+    <dimen name="ds_sync_qr_size">220dp</dimen>
+    <dimen name="ds_sync_qr_padding">12dp</dimen>
+    <dimen name="ds_sync_padding">24dp</dimen>
+    <dimen name="ds_sync_column_gap">40dp</dimen>
+    <dimen name="ds_sync_text_gap">12dp</dimen>
+    <dimen name="ds_sync_qr_column_width">360dp</dimen>
+    <dimen name="ds_phone_download_row_height">64dp</dimen>
+    <dimen name="ds_phone_download_icon">40dp</dimen>
+    <dimen name="ds_phone_download_icon_padding">9dp</dimen>
+    <dimen name="ds_phone_downloads_section_height">36dp</dimen>
+    <dimen name="ds_phone_chip_height">36dp</dimen>
+    <dimen name="ds_phone_chip_radius">18dp</dimen>
+    <dimen name="ds_phone_chip_padding">16dp</dimen>
+    <dimen name="ds_phone_chips_gap">8dp</dimen>
+    <dimen name="ds_phone_chips_padding_bottom">12dp</dimen>
+    <dimen name="ds_phone_snackbar_min_height">56dp</dimen>
+    <dimen name="ds_phone_snackbar_margin">12dp</dimen>
+    <dimen name="ds_phone_snackbar_padding">6dp</dimen>
+    <dimen name="ds_phone_snackbar_elevation">6dp</dimen>
+    <dimen name="ds_phone_snackbar_icon">22dp</dimen>
+    <dimen name="ds_panel_button_size">36dp</dimen>
+    <dimen name="ds_panel_button_icon_padding">9dp</dimen>
+    <dimen name="ds_panel_form_padding">16dp</dimen>
+    <dimen name="ds_panel_field_height">40dp</dimen>
+    <dimen name="ds_panel_field_padding">12dp</dimen>
+    <dimen name="ds_panel_field_gap">12dp</dimen>
+    <dimen name="ds_panel_label_gap">4dp</dimen>
+    <dimen name="ds_panel_text_button_height">36dp</dimen>
+    <dimen name="ds_panel_text_button_padding">16dp</dimen>
+    <dimen name="ds_panel_buttons_gap">12dp</dimen>
+    <!-- alert dialogs: the window is inset from the edges of the screen -->
+    <dimen name="ds_dialog_inset">16dp</dimen>
+    <!-- the bookmarks screen of the phone UI -->
+    <dimen name="ds_phone_bookmark_row_height">64dp</dimen>
+    <dimen name="ds_phone_bookmark_row_padding">16dp</dimen>
+    <dimen name="ds_phone_bookmark_icon_text">16dp</dimen>
+    <dimen name="ds_phone_this_page_height">56dp</dimen>
+    <dimen name="ds_phone_this_page_padding_vertical">12dp</dimen>
+    <dimen name="ds_phone_form_padding">16dp</dimen>
+    <dimen name="ds_phone_field_height">48dp</dimen>
+    <dimen name="ds_phone_field_label_gap">6dp</dimen>
+    <dimen name="ds_phone_save_button_height">40dp</dimen>
+    <dimen name="ds_phone_save_button_padding">20dp</dimen>
+    <dimen name="ds_phone_sheet_header_padding">8dp</dimen>
+    <!-- the site settings on the phone: the site sheet and the site section of the menu sheet -->
+    <dimen name="ds_phone_site_row_padding_start">16dp</dimen>
+    <dimen name="ds_phone_site_row_padding_end">8dp</dimen>
+    <dimen name="ds_phone_site_sheet_row_height">60dp</dimen>
+    <dimen name="ds_phone_site_sheet_gap">16dp</dimen>
+    <dimen name="ds_phone_site_sheet_icon">24dp</dimen>
+    <dimen name="ds_phone_site_sheet_header_padding">4dp</dimen>
+    <dimen name="ds_phone_site_connection_icon">16dp</dimen>
+    <dimen name="ds_phone_site_connection_icon_text">8dp</dimen>
+    <dimen name="ds_phone_site_chevron">20dp</dimen>
+    <dimen name="ds_phone_site_menu_row_height">56dp</dimen>
+    <dimen name="ds_phone_site_menu_gap">8dp</dimen>
+    <dimen name="ds_phone_site_menu_header_height">45dp</dimen>
+    <dimen name="ds_phone_site_menu_header_icon">20dp</dimen>
+    <dimen name="ds_phone_site_menu_header_icon_text">12dp</dimen>
+    <dimen name="ds_text_phone_site_host">18sp</dimen>
+    <dimen name="ds_text_phone_site_connection">14sp</dimen>
+    <dimen name="ds_text_phone_site_sheet_title">16sp</dimen>
+    <dimen name="ds_text_phone_site_menu_title">14sp</dimen>
+    <dimen name="ds_text_phone_site_caption">12sp</dimen>
+    <dimen name="ds_text_phone_site_value">14sp</dimen>
+    <dimen name="ds_phone_bookmarks_search_margin_end">8dp</dimen>
+    <dimen name="ds_phone_bookmarks_status_padding">10dp</dimen>
+    <dimen name="ds_text_phone_caption">13sp</dimen>
+
+    <!-- the settings screens: the TV screen (the sizes of rows are also theme attributes, see attrs.xml) -->
+    <dimen name="ds_settings_row_min_height">52dp</dimen>
+    <dimen name="ds_settings_row_padding">16dp</dimen>
+    <dimen name="ds_settings_row_margin">8dp</dimen>
+    <dimen name="ds_settings_row_gap">16dp</dimen>
+    <dimen name="ds_settings_row_vertical_padding">8dp</dimen>
+    <dimen name="ds_settings_key_row_min_height">44dp</dimen>
+    <dimen name="ds_settings_control_height">40dp</dimen>
+    <dimen name="ds_text_settings_title">14sp</dimen>
+    <dimen name="ds_text_settings_summary">12sp</dimen>
+    <dimen name="ds_text_settings_group">11sp</dimen>
+    <dimen name="ds_text_settings_card_title">18sp</dimen>
+    <dimen name="ds_text_settings_tag">11sp</dimen>
+    <dimen name="ds_settings_summary_gap">2dp</dimen>
+    <dimen name="ds_settings_group_padding_top">16dp</dimen>
+    <dimen name="ds_settings_group_padding_bottom">6dp</dimen>
+    <dimen name="ds_settings_group_padding_horizontal">24dp</dimen>
+    <dimen name="ds_settings_card_title_padding_top">20dp</dimen>
+    <dimen name="ds_settings_card_padding_bottom">8dp</dimen>
+    <dimen name="ds_settings_rail_width">212dp</dimen>
+    <dimen name="ds_settings_rail_row_height">44dp</dimen>
+    <dimen name="ds_settings_rail_row_padding">14dp</dimen>
+    <dimen name="ds_settings_rail_gap">2dp</dimen>
+    <dimen name="ds_settings_body_padding_bottom">16dp</dimen>
+    <dimen name="ds_settings_menu_width">220dp</dimen>
+    <dimen name="ds_settings_value_gap">6dp</dimen>
+    <dimen name="ds_settings_value_icon">16dp</dimen>
+    <dimen name="ds_settings_tag_height">18dp</dimen>
+    <dimen name="ds_settings_tag_padding">6dp</dimen>
+    <dimen name="ds_settings_tag_gap">8dp</dimen>
+    <dimen name="ds_settings_tag_radius">4dp</dimen>
+    <dimen name="ds_settings_segment_min_width">64dp</dimen>
+    <dimen name="ds_settings_segment_padding">14dp</dimen>
+    <dimen name="ds_settings_field_label_width">150dp</dimen>
+    <dimen name="ds_settings_field_width">260dp</dimen>
+    <dimen name="ds_settings_field_gap">10dp</dimen>
+    <dimen name="ds_settings_slider_width">200dp</dimen>
+    <dimen name="ds_settings_slider_value_width">48dp</dimen>
+    <dimen name="ds_settings_key_height">24dp</dimen>
+    <dimen name="ds_settings_key_padding">8dp</dimen>
+    <dimen name="ds_settings_switch_width">36dp</dimen>
+    <dimen name="ds_settings_switch_height">20dp</dimen>
+    <dimen name="ds_settings_switch_thumb">14dp</dimen>
+    <dimen name="ds_settings_switch_thumb_inset">3dp</dimen>
+    <dimen name="ds_settings_slider_thumb_focus">26dp</dimen>
+    <dimen name="ds_settings_slider_track">4dp</dimen>
+    <dimen name="ds_settings_slider_thumb_inset">4dp</dimen>
+    <dimen name="ds_settings_slider_thumb_ring">2dp</dimen>
+    <dimen name="ds_settings_slider_thumb_padding">13dp</dimen>
+    <dimen name="ds_settings_restart_padding_vertical">12dp</dimen>
+    <dimen name="ds_settings_restart_padding_start">24dp</dimen>
+    <dimen name="ds_settings_restart_padding_end">16dp</dimen>
+    <dimen name="ds_settings_badge_height">18dp</dimen>
+    <!-- the phone settings page -->
+    <dimen name="ds_phone_settings_row_min_height">64dp</dimen>
+    <dimen name="ds_phone_settings_row_padding">16dp</dimen>
+    <dimen name="ds_phone_settings_control_height">48dp</dimen>
+    <dimen name="ds_text_phone_settings_title">16sp</dimen>
+    <dimen name="ds_text_phone_settings_summary">13sp</dimen>
+    <dimen name="ds_text_phone_settings_group">12sp</dimen>
+    <dimen name="ds_phone_settings_card_margin">16dp</dimen>
+    <dimen name="ds_phone_settings_group_padding_top">20dp</dimen>
+    <dimen name="ds_phone_settings_group_padding_horizontal">32dp</dimen>
+    <dimen name="ds_phone_settings_cards_gap">16dp</dimen>
+    <dimen name="ds_phone_settings_badge">40dp</dimen>
+    <dimen name="ds_phone_settings_badge_icon_padding">9dp</dimen>
+    <dimen name="ds_phone_settings_block_padding">12dp</dimen>
+
+    <!--
+    The seek bar of a video (the video mode and the built-in player), across the bottom of the screen: a band of
+    video_osd_height under a gradient, its content video_osd_margin_x from the sides and video_osd_margin_bottom from the
+    bottom: the title, the caption, the row (the round glyph, the time, the progress, the duration) and what Up and Down do
+    -->
+    <dimen name="video_osd_height">300dp</dimen>
+    <dimen name="video_osd_margin_x">96dp</dimen>
+    <dimen name="video_osd_margin_bottom">48dp</dimen>
+    <dimen name="video_osd_caption_gap">3dp</dimen>
+    <dimen name="video_osd_gap">14dp</dimen>
+    <dimen name="video_osd_button_size">36dp</dimen>
+    <dimen name="video_osd_glyph_size">20dp</dimen>
+    <dimen name="video_osd_text_title">18sp</dimen>
+    <dimen name="video_osd_text_caption">13sp</dimen>
+    <dimen name="video_osd_text_time">18sp</dimen>
+    <!-- the progress: its line, the thumb while it plays, while paused, while a seek goes (with its ring), the mark of
+         where the video is -->
+    <dimen name="video_osd_progress_height">26dp</dimen>
+    <dimen name="video_osd_line_height">4dp</dimen>
+    <dimen name="video_osd_thumb_radius_playing">5dp</dimen>
+    <dimen name="video_osd_thumb_radius">7dp</dimen>
+    <dimen name="video_osd_thumb_radius_seek">10dp</dimen>
+    <dimen name="video_osd_thumb_ring">3dp</dimen>
+    <dimen name="video_osd_mark_radius">4dp</dimen>
+    <!-- the bubble over the thumb while a seek goes: where it goes and how far -->
+    <dimen name="video_osd_bubble_width">100dp</dimen>
+    <dimen name="video_osd_bubble_padding">6dp</dimen>
+    <dimen name="video_osd_bubble_gap">12dp</dimen>
+    <dimen name="video_osd_text_bubble_delta">13sp</dimen>
+    <!-- a live stream: its badge and the distance of a seek -->
+    <dimen name="video_osd_live_height">22dp</dimen>
+    <dimen name="video_osd_live_padding">8dp</dimen>
+    <dimen name="video_osd_live_dot">6dp</dimen>
+    <dimen name="video_osd_live_gap">5dp</dimen>
+    <dimen name="video_osd_text_live">12sp</dimen>
+    <dimen name="video_osd_text_delta">15sp</dimen>
+    <!-- what Up and Down do -->
+    <dimen name="video_osd_hint_gap">24dp</dimen>
+    <dimen name="video_osd_hint_key_gap">8dp</dimen>
+    <dimen name="video_osd_hint_text">16sp</dimen>
+
+    <!-- a key of the remote on a toast (the hint about videos) -->
+    <dimen name="ds_key_cap_height">24dp</dimen>
+    <dimen name="ds_key_cap_padding">8dp</dimen>
+    <dimen name="ds_key_cap_radius">5dp</dimen>
+    <dimen name="ds_key_cap_stroke">1dp</dimen>
+    <dimen name="ds_text_key_cap">13sp</dimen>
+
+    <!-- the hint about a found video that plays in the page, at the top end where the Videos button is -->
+    <dimen name="page_video_hint_padding_start">12dp</dimen>
+    <dimen name="page_video_hint_padding_end">10dp</dimen>
+    <!-- the find bar of the TV (Find in page), over the top end of the page -->
+    <dimen name="tv_find_bar_width">640dp</dimen>
+    <dimen name="tv_find_bar_padding">8dp</dimen>
+    <!-- "Playing on the page" on a row of the Videos panel: the title keeps most of the row -->
+    <dimen name="page_video_row_playing_max_width">140dp</dimen>
+
+    <!-- the built-in player: the error card, the spinner until the video plays -->
+    <dimen name="player_error_width">560dp</dimen>
+    <dimen name="player_error_padding">28dp</dimen>
+    <dimen name="player_error_icon_plate">44dp</dimen>
+    <dimen name="player_error_icon">22dp</dimen>
+    <dimen name="player_error_title_margin">16dp</dimen>
+    <dimen name="player_error_text_title">20sp</dimen>
+    <dimen name="player_error_text_reason">14sp</dimen>
+    <dimen name="player_error_buttons_margin">24dp</dimen>
+    <dimen name="player_error_button_gap">12dp</dimen>
+    <dimen name="player_button_height">40dp</dimen>
+    <dimen name="player_button_padding">20dp</dimen>
+    <dimen name="player_text_button">14sp</dimen>
+    <dimen name="player_spinner_size">52dp</dimen>
+    <!--
+    A panel at the end of the screen over a video (the video settings, the choice of a stream): a column of the full
+    height with a title and a caption, rows and what Back does
+    -->
+    <dimen name="player_panel_width">380dp</dimen>
+    <dimen name="player_panel_padding_top">28dp</dimen>
+    <dimen name="player_panel_padding_x">20dp</dimen>
+    <dimen name="player_panel_padding_bottom">24dp</dimen>
+    <dimen name="player_panel_header_padding">12dp</dimen>
+    <dimen name="player_panel_back_icon">20dp</dimen>
+    <dimen name="player_panel_rows_margin_top">16dp</dimen>
+    <dimen name="player_panel_row_gap">2dp</dimen>
+    <dimen name="player_panel_row_height">44dp</dimen>
+    <dimen name="player_panel_row_padding">12dp</dimen>
+    <dimen name="player_panel_row_padding_y">8dp</dimen>
+    <dimen name="player_panel_row_icon">18dp</dimen>
+    <dimen name="player_panel_chevron">16dp</dimen>
+    <dimen name="player_panel_divider_margin">8dp</dimen>
+    <dimen name="player_panel_badge_height">18dp</dimen>
+    <dimen name="player_panel_badge_padding">6dp</dimen>
+    <dimen name="player_panel_badge_gap">8dp</dimen>
+    <dimen name="player_panel_elevation">8dp</dimen>
+    <dimen name="player_panel_text_title">18sp</dimen>
+    <dimen name="player_panel_text_caption">13sp</dimen>
+    <dimen name="player_panel_text_row">14sp</dimen>
+    <dimen name="player_panel_text_row_caption">12sp</dimen>
+    <dimen name="player_panel_text_badge">11sp</dimen>
+</resources>

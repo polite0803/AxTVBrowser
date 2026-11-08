@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The TV site panel: the site settings under the site button of the bar -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.FrameLayout">
+
+  <com.axtv.browser.activity.main.view.SiteSettingsView
+      android:id="@+id/vSiteSettings"
+      android:layout_width="@dimen/ds_site_panel_width"
+      android:layout_height="wrap_content"
+      android:background="@drawable/ds_menu_bg"
+      android:elevation="4dp"
+      android:clickable="true" />
+</merge>

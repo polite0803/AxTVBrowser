@@ -1,0 +1,260 @@
+package com.axtv.browser.activity.main.view
+
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.util.AttributeSet
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.OvershootInterpolator
+import android.widget.CheckBox
+import android.widget.FrameLayout
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
+import com.axtv.browser.AppContext
+import com.axtv.browser.R
+import com.axtv.browser.databinding.ViewCursorMenuBinding
+import com.axtv.browser.utils.dip2px
+import com.axtv.browser.model.BrowserTab
+import com.axtv.browser.webengine.EngineUiHost
+import com.axtv.browser.webengine.virtualCursor
+import com.axtv.browser.widgets.cursor.CursorDrawerDelegate
+
+class CursorMenuView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+): FrameLayout(context, attrs, defStyleAttr) {
+
+    private var vb: ViewCursorMenuBinding =
+        ViewCursorMenuBinding.inflate(LayoutInflater.from(context), this, true)
+    private var menuContext: MenuContext? = null
+    private var handler = Handler(Looper.getMainLooper())
+    private var lastShowTime = 0L
+    private var openAnimator: ValueAnimator? = null
+
+    /** Closes the menu on Back while it is shown */
+    val backCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            close(CloseAnimation.ROTATE_OUT)
+        }
+    }
+
+    init {
+        vb.btnGrabMode.setOnClickListener {
+            menuContext?.cursorDrawerDelegate?.goToGrabMode()
+            close(CloseAnimation.EXPLODE_OUT)
+        }
+        vb.btnGrabMode.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && menuContext != null &&
+                !(vb.btnContextMenu.hasFocus() || vb.btnDPADMode.hasFocus() ||
+                        vb.btnZoomIn.hasFocus() || vb.btnZoomOut.hasFocus())){
+                handler.postDelayed({
+                    vb.btnGrabMode.requestFocus()
+                }, 100)
+            }
+        }
+        vb.btnContextMenu.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                postDelayed({
+                    menuContext?.let {
+                        with(it) {
+                            windowProvider.suggestActionsForLink(baseUri, linkUri, srcUri,
+                                title, altText, textContent, x, y)
+                        }
+                    }
+                    close(CloseAnimation.FADE_OUT)
+                }, 100)
+            }
+        }
+        vb.btnDPADMode.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                postDelayed({
+                    val mc = menuContext ?: return@postDelayed
+                    if (AppContext.provideConfig().directNavigationModeHintSuppress) {
+                        enterDirectNavigationMode(mc)
+                        close(CloseAnimation.FADE_OUT)
+                    } else {
+                        closeWithoutAnimation()
+                        post {
+                            showDirectNavigationModeDialog(mc)
+                        }
+                    }
+                }, 100)
+            }
+        }
+        vb.btnZoomIn.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                postDelayed({
+                    menuContext?.tab?.webEngine?.zoomIn()
+                    vb.btnGrabMode.requestFocus()
+                }, 100)
+            }
+        }
+        vb.btnZoomOut.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                postDelayed({
+                    menuContext?.tab?.webEngine?.zoomOut()
+                    vb.btnGrabMode.requestFocus()
+                }, 100)
+            }
+        }
+    }
+
+    fun show(
+        tab: BrowserTab,
+        windowProvider: EngineUiHost,
+        cursorDrawerDelegate: CursorDrawerDelegate,
+        baseUri: String?,
+        linkUri: String?,
+        srcUri: String?,
+        title: String?,
+        altText: String?,
+        textContent: String?,
+        x: Int,
+        y: Int
+    ) {
+        Log.d("CursorMenuView", "show: $baseUri, $linkUri, $srcUri, $title, $altText, $textContent, x=$x, y=$y")
+        val now = System.currentTimeMillis()
+        if (menuContext != null && now - lastShowTime < 1000) {
+            return
+        }
+        lastShowTime = now
+        this.menuContext = MenuContext(tab, windowProvider, cursorDrawerDelegate,
+            baseUri, linkUri, srcUri, title, altText, textContent, x, y)
+        visibility = VISIBLE
+        backCallback.isEnabled = true
+        handler.postDelayed( {
+            vb.btnGrabMode.requestFocus()
+            tab.webEngine.virtualCursor?.getCursorDrawerDelegate()?.hideCursor()
+        }, 100)
+        //set position
+        val params = layoutParams as ViewGroup.MarginLayoutParams
+        params.leftMargin = x - vb.root.width / 2
+        params.topMargin = y - vb.root.height / 2
+        layoutParams = params
+
+        //the plate grows from the cursor, the buttons slide out from under the grab button to their places
+        val buttons = arrayOf(vb.btnContextMenu, vb.btnZoomOut, vb.btnZoomIn, vb.btnDPADMode)
+        val centerX = vb.root.width * 0.5f
+        val centerY = vb.root.height * 0.5f
+        openAnimator?.cancel()
+        openAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = 500
+            interpolator = OvershootInterpolator()
+            addUpdateListener { valueAnimator ->
+                val animatedValue = valueAnimator.animatedValue as Float
+                vb.root.alpha = animatedValue.coerceIn(0f, 1f)
+                vb.root.scaleX = 0.6f + 0.4f * animatedValue
+                vb.root.scaleY = vb.root.scaleX
+                for (button in buttons) {
+                    button.translationX = (centerX - button.left - button.width * 0.5f) * (1 - animatedValue)
+                    button.translationY = (centerY - button.top - button.height * 0.5f) * (1 - animatedValue)
+                }
+            }
+            start()
+        }
+    }
+
+    /** Hides the menu immediately (no animation). Used before showing a dialog so focus does not re-trigger menu actions. */
+    private fun closeWithoutAnimation() {
+        Log.d("CursorMenuView", "closeWithoutAnimation")
+        openAnimator?.cancel()
+        menuContext = null
+        backCallback.isEnabled = false
+        visibility = GONE
+        vb.root.alpha = 1f
+        vb.root.rotation = 0f
+        vb.root.scaleX = 1f
+        vb.root.scaleY = 1f
+    }
+
+    fun close(animation: CloseAnimation = CloseAnimation.FADE_OUT) {
+        Log.d("CursorMenuView", "close")
+        openAnimator?.cancel()
+        menuContext = null
+        backCallback.isEnabled = false
+        val animator = ObjectAnimator.ofFloat(vb.root, "alpha", 1f, 0f)
+        animator.duration = 250
+        animator.interpolator = AccelerateInterpolator()
+        animator.addUpdateListener { valueAnimator ->
+            val animatedValue = valueAnimator.animatedValue as Float
+            vb.root.alpha = animatedValue
+            when (animation) {
+                CloseAnimation.FADE_OUT -> {
+                    //already handled, the same for all animations
+                }
+
+                CloseAnimation.ROTATE_OUT -> {
+                    vb.root.rotation = 90 * (1 - animatedValue)
+                    if (animatedValue == 0f) {
+                        visibility = GONE
+                        vb.root.rotation = 0f
+                    }
+                }
+
+                CloseAnimation.EXPLODE_OUT -> {
+                    vb.root.scaleX = 1 + 0.5f * (1 - animatedValue)
+                    vb.root.scaleY = 1 + 0.5f * (1 - animatedValue)
+                    if (animatedValue == 0f) {
+                        visibility = GONE
+                        vb.root.scaleX = 1f
+                        vb.root.scaleY = 1f
+                    }
+                }
+            }
+            if (animatedValue == 0f) {
+                visibility = GONE
+            }
+        }
+        animator.start()
+    }
+
+    enum class CloseAnimation {
+        FADE_OUT,
+        ROTATE_OUT,
+        EXPLODE_OUT
+    }
+
+    private fun enterDirectNavigationMode(mc: MenuContext) {
+        mc.tab.webEngine.virtualCursor?.setVirtualCursorMode(false)
+    }
+
+    private fun showDirectNavigationModeDialog(mc: MenuContext) {
+        val pad = 24.dip2px(context).toInt()
+        val checkBox = CheckBox(context).apply {
+            text = context.getString(R.string.don_t_show_again)
+        }
+        val container = FrameLayout(context).apply {
+            setPadding(pad, pad, pad, pad)
+            addView(checkBox)
+        }
+        AlertDialog.Builder(context)
+            .setTitle(R.string.direct_navigation_mode_title)
+            .setMessage(R.string.direct_navigation_mode_message)
+            .setView(container)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                if (checkBox.isChecked) {
+                    AppContext.provideConfig().directNavigationModeHintSuppress = true
+                }
+                enterDirectNavigationMode(mc)
+            }
+            .show()
+    }
+
+    private data class MenuContext (
+        val tab: BrowserTab,
+        val windowProvider: EngineUiHost,
+        val cursorDrawerDelegate: CursorDrawerDelegate,
+        val baseUri: String?,
+        val linkUri: String?,
+        val srcUri: String?,
+        val title: String?,
+        val altText: String?,
+        val textContent: String?,
+        val x: Int,
+        val y: Int
+    )
+}

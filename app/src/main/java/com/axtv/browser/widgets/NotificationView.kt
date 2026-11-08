@@ -1,0 +1,101 @@
+package com.axtv.browser.widgets
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
+import androidx.annotation.DrawableRes
+import com.axtv.browser.R
+import com.axtv.browser.databinding.ViewNotificationBinding
+
+open class NotificationView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
+) : FrameLayout(context, attrs) {
+    private var lastAnimator: ViewPropertyAnimator? = null
+    private var vb: ViewNotificationBinding
+
+    companion object {
+        const val DISAPPEARING_DELAY = 3000L
+        const val APPEARING_DURATION = 500L
+        const val DISAPPEARING_DURATION = 500L
+
+        private var lastView: NotificationView? = null
+
+        /**
+         * Shows a toast at the bottom center of [parent], or at the top center ([top]: over a video, whose seek bar
+         * is at the bottom); it replaces the toast shown before
+         */
+        fun show(parent: RelativeLayout, @DrawableRes icon: Int, message: String, top: Boolean = false): NotificationView {
+            val view = NotificationView(parent.context)
+            view.setIcon(icon)
+            view.setMessage(message)
+            view.atTop = top
+            val lp = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            lp.addRule(RelativeLayout.CENTER_HORIZONTAL)
+            if (top) {
+                lp.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+                lp.topMargin = parent.resources.getDimensionPixelSize(R.dimen.ds_toast_margin_top)
+            } else {
+                lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+                lp.bottomMargin = parent.resources.getDimensionPixelSize(R.dimen.ds_toast_margin_bottom)
+            }
+            //above the panels and screens over the page (all downloads covers the whole window)
+            view.elevation = parent.resources.getDimension(R.dimen.ds_toast_elevation)
+            parent.addView(view, lp)
+            val lv = lastView
+            if (lv != null && lv.isAttachedToWindow) {
+                val lvp = lv.parent
+                if (lvp != null && lvp is ViewGroup) {
+                    lvp.removeView(lv)
+                }
+                view.postDelayed({
+                    view.animateDisappearing()
+                }, DISAPPEARING_DELAY)
+            } else {
+                view.animateAppearing()
+            }
+            lastView = view
+            return view
+        }
+    }
+
+    /** It shows at the top: it goes away upwards */
+    private var atTop = false
+
+    init {
+        vb = ViewNotificationBinding.inflate(LayoutInflater.from(context), this, true)
+    }
+
+    private fun animateDisappearing() {
+        val away = if (atTop) -height.toFloat() else height.toFloat()
+        lastAnimator = animate().alpha(0f).translationY(away).setDuration(DISAPPEARING_DURATION).withEndAction {
+            val parent = parent
+            if (parent != null && parent is ViewGroup) {
+                parent.removeView(this)
+            }
+            lastView = null
+        }.also { it.start() }
+    }
+
+    fun setMessage(text: String) {
+        vb.tvMessage.text = text
+    }
+
+    fun setIcon(@DrawableRes icon: Int) {
+        vb.ivIcon.setImageResource(icon)
+    }
+
+    fun animateAppearing() {
+        alpha = 0f
+        lastAnimator = animate().alpha(1.0f).setDuration(APPEARING_DURATION).withEndAction {
+            alpha = 1f
+            translationY = 0f
+            postDelayed({
+                animateDisappearing()
+            }, DISAPPEARING_DELAY)
+        }.also { it.start() }
+    }
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A toast: an icon and one line -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/ds_size_toast_height"
+    android:minWidth="@dimen/ds_size_toast_min_width"
+    android:background="@drawable/ds_toast_bg"
+    android:elevation="4dp"
+    android:paddingStart="@dimen/ds_toast_padding_horizontal"
+    android:paddingEnd="@dimen/ds_toast_padding_horizontal"
+    android:gravity="center"
+    android:orientation="horizontal">
+    <ImageView android:id="@+id/ivIcon"
+        android:layout_width="@dimen/ds_size_icon_toast"
+        android:layout_height="@dimen/ds_size_icon_toast"
+        app:tint="?attr/tbColorDsOnToast"
+        android:importantForAccessibility="no"
+        tools:src="@drawable/ic_close"/>
+    <TextView android:id="@+id/tvMessage"
+        style="@style/Widget.TVBro.Text.Toast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/ds_space_icon_text"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="?attr/tbColorDsOnToast"
+        tools:text="Facebook tab closed"/>
+</LinearLayout>
