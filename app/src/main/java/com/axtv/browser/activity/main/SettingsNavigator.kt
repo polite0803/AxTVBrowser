@@ -349,8 +349,8 @@ class SettingsNavigator(
         const val URL_SUPPORT_AUTHOR = "https://donatello.to/truefedex"
         /** The project this one derives from: its license asks that the About screen links it */
         const val URL_UPSTREAM = "https://github.com/truefedex/tv-bro"
-        const val URL_LICENSE = "https://raw.githubusercontent.com/polite0803/AxTVBrowser/master/LICENSE.md"
-        const val URL_PRIVACY_POLICY = "https://raw.githubusercontent.com/polite0803/AxTVBrowser/master/PRIVACY.md"
+        const val URL_LICENSE = "https://github.com/polite0803/AxTVBrowser/blob/master/LICENSE.md"
+        const val URL_PRIVACY_POLICY = "https://github.com/polite0803/AxTVBrowser/blob/master/PRIVACY.md"
 
         /** The index of the custom search engine in the options of Search engine */
         val CUSTOM_SEARCH_ENGINE = Config.SearchEnginesURLs.size - 1
