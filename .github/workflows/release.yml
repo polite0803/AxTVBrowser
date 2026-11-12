@@ -15,6 +15,10 @@ on:
           - release
           - pre-release
 
+# the repository gives workflows a read-only token by default; the release and its tag need write
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest

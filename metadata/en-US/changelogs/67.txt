@@ -1,9 +1,0 @@
-* Contextual menu on long press
-* Direct navigation mode (activated by the new contextual menu)
-* Cursor speed, algorithmic darkening, ad-block list and remote debugging are now configurable
-* All dependencies updated
-* Target latest Android versions
-* Dropped Android 7.x support (GeckoView build only)
-* Improved Polish translation
-* Various bugfixes
-* v2.1.1-2.1.4 stabilization
