@@ -38,4 +38,15 @@ object UiModeSelector {
                 touchscreen == Configuration.TOUCHSCREEN_FINGER
         return if (touch) UiMode.PHONE else UiMode.TV
     }
+
+    /**
+     * Whether the phone interface needs a way back to the TV one: the user chose Phone on a TV, or
+     * Auto picked the phone interface on a TV the device detection did not see. The phone UI has no
+     * virtual cursor there, so it offers a button that goes back to the TV interface. A real phone
+     * or tablet never needs it.
+     */
+    fun phoneUiNeedsTvRecovery(
+        setting: Config.InterfaceMode, deviceMode: UiMode, systemTvMode: Boolean, fireTv: Boolean
+    ): Boolean = (setting == Config.InterfaceMode.PHONE || setting == Config.InterfaceMode.AUTO) &&
+            (deviceMode == UiMode.TV || systemTvMode || fireTv)
 }

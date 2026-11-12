@@ -179,7 +179,9 @@ open class MainActivity : AppCompatActivity(), BrowserShell.Host {
         uiMode = UiModeSelector.select(this, config.interfaceMode)
         shell = when (uiMode) {
             UiMode.TV -> TvShell(this)
-            UiMode.PHONE -> PhoneShell(this)
+            UiMode.PHONE -> PhoneShell(this,
+                UiModeSelector.phoneUiNeedsTvRecovery(config.interfaceMode, UiModeSelector.detect(this),
+                    Utils.isTV(this), Utils.isFireTV(this)))
         }
         requestedOrientation = shell.screenOrientation
         setContentView(shell.root)

@@ -382,6 +382,11 @@
     <item quantity="other">已从列表中移除 %d 个下载</item>
   </plurals>
   <string name="interface_mode">界面</string>
+  <string name="settings_interface_summary_phone_warning">当前为手机模式，遥控器操作受限，建议切换回电视模式</string>
+  <string name="restore_tv_mode">恢复电视模式</string>
+  <string name="restore_tv_mode_summary">切换回电视界面并重启应用</string>
+  <string name="settings_group_restore">恢复</string>
+  <string name="apply">应用</string>
 
   <!-- sync of a phone with a TV: the TV side -->
   <string name="sync_connect_phone">连接手机</string>

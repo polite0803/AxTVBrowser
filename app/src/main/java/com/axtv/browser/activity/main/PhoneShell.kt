@@ -10,6 +10,7 @@ import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.axtv.browser.AppContext
+import com.axtv.browser.Config
 import com.axtv.browser.model.PairedDevice
 import com.axtv.browser.sync.BookmarksBackup
 import com.axtv.browser.sync.BookmarksReplacer
@@ -34,6 +35,7 @@ import com.axtv.browser.TVBro
 import com.axtv.browser.activity.main.view.ClearDownloadsDialog
 import com.axtv.browser.activity.main.view.PhoneBar
 import com.axtv.browser.activity.main.view.PhoneFindBar
+import com.axtv.browser.activity.main.view.PhoneModeRecoveryToast
 import com.axtv.browser.activity.main.view.PhoneMenuSheet
 import com.axtv.browser.activity.main.view.PhoneTabSwitcher
 import com.axtv.browser.activity.main.view.PopupMenuView
@@ -60,7 +62,10 @@ import kotlinx.coroutines.launch
 /**
  * The phone look: touch only (no virtual cursor), the page between the system bars, any orientation.
  */
-class PhoneShell(private val host: BrowserShell.Host) : BrowserShell {
+class PhoneShell(
+    private val host: BrowserShell.Host,
+    private val tvModeRecoveryNeeded: Boolean
+) : BrowserShell {
     private val activity = host.activity
     /** Recognizes speech for the bookmarks search (not for the search of the bar, which shows the page) */
     private val bookmarksVoiceSearch = VoiceSearchHelper(activity, ::showMessage)
@@ -75,6 +80,16 @@ class PhoneShell(private val host: BrowserShell.Host) : BrowserShell {
     private var fullscreen = false
     /** The bar slides away while the page scrolls down */
     private val scrollAwayBar = ScrollAwayBar(vb.vPhoneBar, vb.flWebViewContainer)
+    /** On a TV: offers the TV interface back with a button the remote can press */
+    private val tvModeRecovery = object : PhoneModeRecoveryToast.Callback {
+        override fun restoreTvInterface() {
+            AppContext.provideConfig().interfaceMode = Config.InterfaceMode.TV
+            settingsCallback.restart()
+        }
+    }
+    private val phoneModeRecovery = vb.vPhoneModeRecovery.also { view ->
+        view.setCallbacks(tvModeRecovery)
+    }
     /** The page and its loading state shown last: a new page or a new load shows the bar */
     private var renderedUrl: String? = null
     private var renderedLoading = false
@@ -532,6 +547,9 @@ class PhoneShell(private val host: BrowserShell.Host) : BrowserShell {
     }
 
     override fun registerBackCallbacks(dispatcher: OnBackPressedDispatcher, fullscreen: OnBackPressedCallback) {
+        if (tvModeRecoveryNeeded) {
+            phoneModeRecovery.show()
+        }
         //the enabled callback added last goes first
         dispatcher.addCallback(activity, pageBackCallback)
         dispatcher.addCallback(activity, editingBackCallback)
@@ -553,6 +571,7 @@ class PhoneShell(private val host: BrowserShell.Host) : BrowserShell {
     /** Videos are mostly wide: fullscreen turns the screen to landscape (either way, whatever the rotation lock) */
     override fun onFullscreenChanged(fullscreen: Boolean) {
         this.fullscreen = fullscreen
+        if (fullscreen) phoneModeRecovery.hide()
         if (fullscreen) {
             findInPage.close()
             vb.vPhoneBar.stopEditing()

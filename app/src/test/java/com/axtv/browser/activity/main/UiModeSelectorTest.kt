@@ -1,7 +1,10 @@
 package com.axtv.browser.activity.main
 
 import android.content.res.Configuration
+import com.axtv.browser.Config
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class UiModeSelectorTest {
@@ -35,5 +38,31 @@ class UiModeSelectorTest {
     @Test
     fun televisionUiModeWithATouchScreenGetsTheTvUi() {
         assertEquals(UiMode.TV, detect(uiModeType = Configuration.UI_MODE_TYPE_TELEVISION))
+    }
+
+    @Test
+    fun phoneInterfaceChosenOnATvOffersTheWayBack() {
+        assertTrue(UiModeSelector.phoneUiNeedsTvRecovery(
+            Config.InterfaceMode.PHONE, UiMode.TV, systemTvMode = true, fireTv = false))
+    }
+
+    @Test
+    fun autoPickedPhoneOnATvOffersTheWayBack() {
+        assertTrue(UiModeSelector.phoneUiNeedsTvRecovery(
+            Config.InterfaceMode.AUTO, UiMode.PHONE, systemTvMode = true, fireTv = false))
+    }
+
+    @Test
+    fun phoneInterfaceOnARealPhoneDoesNotOfferTheTvUi() {
+        assertFalse(UiModeSelector.phoneUiNeedsTvRecovery(
+            Config.InterfaceMode.PHONE, UiMode.PHONE, systemTvMode = false, fireTv = false))
+    }
+
+    @Test
+    fun tabletFirmwareOnATvStillOffersTheWayBack() {
+        assertTrue(UiModeSelector.phoneUiNeedsTvRecovery(
+            Config.InterfaceMode.PHONE, UiMode.PHONE, systemTvMode = true, fireTv = false))
+        assertTrue(UiModeSelector.phoneUiNeedsTvRecovery(
+            Config.InterfaceMode.PHONE, UiMode.PHONE, systemTvMode = false, fireTv = true))
     }
 }

@@ -74,6 +74,17 @@ bookmarks and the downloads over the whole window.
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:visibility="gone" />
+
+        <!-- a TV stuck in the phone interface: it offers to go back to the TV interface -->
+        <com.axtv.browser.activity.main.view.PhoneModeRecoveryToast
+            android:id="@+id/vPhoneModeRecovery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/ds_phone_snackbar_margin"
+            android:elevation="@dimen/ds_phone_snackbar_elevation"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <com.axtv.browser.activity.main.view.PhoneMenuSheet

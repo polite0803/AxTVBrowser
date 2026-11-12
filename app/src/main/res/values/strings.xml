@@ -387,6 +387,9 @@
     <string name="theme">Theme</string>
     <string name="interface_mode">Interface</string>
     <!-- the order of Config.InterfaceMode -->
+    <string name="settings_interface_summary_phone_warning">Phone interface: the remote is limited. Choose TV to restore full control.</string>
+    <string name="restore_tv_mode">Restore TV interface</string>
+    <string name="restore_tv_mode_summary">Switch back to the TV interface and restart the app</string>
     <string name="web_engine_debug_warning_message">Enabling web engine debugging can expose page content, cookies, and sensitive session data to anyone with device debugging access. Enable only on trusted devices for troubleshooting.</string>
     <array name="themes">
         <item>System</item>
@@ -713,6 +716,8 @@
     <string name="settings_interface_tv">TV</string>
     <string name="settings_interface_phone">Phone</string>
     <string name="settings_interface_summary">Auto: the phone interface on touch phones</string>
+    <string name="settings_group_restore">Restore</string>
+    <string name="apply">Apply</string>
     <string name="settings_theme_summary">System follows the night mode of the device</string>
     <string name="settings_darken_pages">Darken web pages</string>
     <string name="settings_darken_pages_summary">Pages without a dark look get one in the dark theme</string>

@@ -794,6 +794,10 @@ class SettingsNavigator(
                 Key.SITE_PICKER -> chooseSite()
                 Key.DEFAULT_BROWSER -> host.askDefaultBrowser { render() }
                 Key.UPDATE -> if (updates?.newVersion != null) host.startUpdate()
+                Key.INTERFACE -> {
+                    store.interfaceMode = Config.InterfaceMode.TV
+                    restart()
+                }
                 else -> {}
             }
         }
@@ -1256,7 +1260,12 @@ class SettingsNavigator(
 
     private fun appearanceSections(): List<Section> {
         val ui = arrayListOf<Row>(
-            Row.Choice(Key.INTERFACE, string(R.string.interface_mode), string(R.string.settings_interface_summary),
+            Row.Choice(Key.INTERFACE, string(R.string.interface_mode),
+                string(if (store.interfaceMode == Config.InterfaceMode.PHONE) {
+                    R.string.settings_interface_summary_phone_warning
+                } else {
+                    R.string.settings_interface_summary
+                }),
                 interfaceOptions(), store.interfaceMode.ordinal, segmented = true, restart = true),
             Row.Choice(Key.THEME, string(R.string.theme), string(R.string.settings_theme_summary),
                 themeOptions(), store.theme.ordinal, segmented = true, restart = true)
@@ -1273,8 +1282,14 @@ class SettingsNavigator(
             screen += Row.Toggle(Key.MATCH_FRAME_RATE, string(R.string.settings_match_frame_rate),
                 string(R.string.settings_match_frame_rate_summary), store.matchFrameRate)
         }
+        // Add restore TV mode option when current mode is not TV (helps users recover from accidental phone mode)
+        val restoreRow = Row.Action(Key.INTERFACE, string(R.string.restore_tv_mode),
+            string(R.string.restore_tv_mode_summary), string(R.string.apply))
+        val restoreSection = if (store.interfaceMode != Config.InterfaceMode.TV) {
+            listOf(Section(string(R.string.settings_group_restore), listOf(restoreRow)))
+        } else emptyList()
         return listOf(Section(string(R.string.settings_group_interface), ui),
-            Section(string(R.string.settings_group_screen), screen))
+            Section(string(R.string.settings_group_screen), screen)) + restoreSection
     }
 
     private fun remoteSections(): List<Section> {
