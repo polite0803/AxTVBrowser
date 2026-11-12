@@ -99,14 +99,18 @@ class HomePageLinks(
         // data used in corresponding home html page where them useful for debug
         return try {
             val jsonArray = JSONArray("""[
-        {"title": "Wikipedia - the free encyclopedia", "url":"https://www.wikipedia.org", "favicon": "https://ru.wikipedia.org/static/apple-touch/wikipedia.png"},
-        {"title": "Reddit - Dive into anything", "url":"https://www.reddit.com", "favicon": "https://www.redditstatic.com/desktop2x/img/favicon/apple-icon-120x120.png"},
-        {"title": "My Tuner", "url":"https://mytuner-radio.com/", "favicon": "https://static2.mytuner.mobi/static/icons/apple-touch-icon-120x120-precomposed.png"},
-        {"title": "Instagram", "url":"https://www.instagram.com"},
-        {"title": "IMDb", "url":"https://www.imdb.com/", "favicon": "https://m.media-amazon.com/images/G/01/imdb/images-ANDW73HA/favicon_iPhone_retina_180x180._CB1582158069_UX60_.png"},
-        {"title": "eBay", "url":"https://www.ebay.com/", "favicon": "https://www.ebay.com/apple-touch-icon.png"},
-        {"title": "Itch.io", "url":"https://itch.io/games/input-gamepad/platform-web", "favicon": "https://itch.io/static/images/itchio-square-144.png"},
-        {"title": "BBC News", "url":"https://www.bbc.com/news", "favicon": "https://www.bbc.com/apple-touch-icon-120x120-precomposed.png"}
+        {"title": "今日头条", "url":"https://www.toutiao.com"},
+        {"title": "抖音", "url":"https://www.douyin.com"},
+        {"title": "哔哩哔哩", "url":"https://www.bilibili.com"},
+        {"title": "腾讯视频", "url":"https://v.qq.com"},
+        {"title": "爱奇艺", "url":"https://www.iqiyi.com"},
+        {"title": "优酷", "url":"https://www.youku.com"},
+        {"title": "百度", "url":"https://www.baidu.com"},
+        {"title": "微博", "url":"https://weibo.com"},
+        {"title": "知乎", "url":"https://www.zhihu.com"},
+        {"title": "腾讯新闻", "url":"https://news.qq.com"},
+        {"title": "网易新闻", "url":"https://news.163.com"},
+        {"title": "澎湃新闻", "url":"https://www.thepaper.cn"}
     ]""")
             val result = mutableListOf<FavoriteItem>()
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)

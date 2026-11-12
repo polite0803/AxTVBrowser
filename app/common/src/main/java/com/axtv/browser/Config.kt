@@ -83,6 +83,9 @@ class Config(val prefs: SharedPreferences, private val credentialsPrefs: SharedP
             "https://yandex.com/search/?text=[query]", "https://www.startpage.com/sp/search?query=[query]", "")
         const val HOME_PAGE_URL = "https://tvbro.phlox.dev/appcontent/home/"
         //const val HOME_PAGE_URL = "http://10.0.2.2:5000/appcontent/home/"
+
+        /** The engine the address bar and the voice search use until the user picks another one */
+        val DefaultSearchEngineURL = SearchEnginesURLs[SearchEnginesNames.indexOf("bing")]
     }
 
     enum class Theme {
@@ -258,7 +261,7 @@ class Config(val prefs: SharedPreferences, private val credentialsPrefs: SharedP
             prefs.edit().putString(HOME_PAGE_KEY, value).apply()
         }
 
-    var searchEngineURL = ObservableStringPreference(SearchEnginesURLs[0], SEARCH_ENGINE_URL_PREF_KEY)
+    var searchEngineURL = ObservableStringPreference(DefaultSearchEngineURL, SEARCH_ENGINE_URL_PREF_KEY)
 
     var allowAutoplayMedia: Boolean
         get() = prefs.getBoolean(ALLOW_AUTOPLAY_MEDIA, false)
