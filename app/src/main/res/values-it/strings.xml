@@ -700,4 +700,22 @@
     <string name="settings_default_browser_change">Cambia</string>
     <string name="settings_default_browser_failed">Questo dispositivo non consente alle app di diventare il browser predefinito</string>
     <string name="settings_based_on_tv_bro">Basato sul codice di TV Bro</string>
+  <!-- Added for the phone interface, the privacy counters and the restore group -->
+  <string name="settings_interface_summary_phone_warning">Interfaccia telefono: il telecomando è limitato. Scegli TV per ripristinare il controllo completo.</string>
+  <string name="restore_tv_mode">Ripristina interfaccia TV</string>
+  <string name="restore_tv_mode_summary">Torna all’interfaccia TV e riavvia l’app</string>
+  <string name="settings_group_restore">Ripristino</string>
+  <string name="apply">Applica</string>
+  <plurals name="privacy_visits_removed">
+    <item quantity="one">%d visita rimossa</item>
+    <item quantity="other">%d visite rimosse</item>
+  </plurals>
+  <plurals name="privacy_sites_cleared">
+    <item quantity="one">%d sito cancellato</item>
+    <item quantity="other">%d siti cancellati</item>
+  </plurals>
+  <plurals name="privacy_sites_count">
+    <item quantity="one">%d sito su questo dispositivo</item>
+    <item quantity="other">%d siti su questo dispositivo</item>
+  </plurals>
 </resources>

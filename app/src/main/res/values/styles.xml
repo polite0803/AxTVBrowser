@@ -35,14 +35,15 @@
         <item name="tint">?attr/tbColorDsIcon</item>
     </style>
 
-    <!-- A round button around the cursor in the cursor menu -->
-    <style name="Widget.TVBro.ImageButton.Ds.CursorMenu">
+    <!-- A round button around the cursor in the cursor menu (the API 26 attribute is in values-v26) -->
+    <style name="Widget.TVBro.ImageButton.Ds.CursorMenu.Base" parent="Widget.TVBro.ImageButton.Ds">
         <item name="android:layout_width">@dimen/ds_cursor_menu_button</item>
         <item name="android:layout_height">@dimen/ds_cursor_menu_button</item>
         <item name="android:background">@drawable/ds_cursor_menu_button_bg</item>
         <item name="android:padding">@dimen/ds_cursor_menu_icon_padding</item>
-        <item name="android:defaultFocusHighlightEnabled">false</item>
     </style>
+
+    <style name="Widget.TVBro.ImageButton.Ds.CursorMenu" parent="Widget.TVBro.ImageButton.Ds.CursorMenu.Base" />
 
     <!-- The grab button in the middle of the cursor menu -->
     <style name="Widget.TVBro.ImageButton.Ds.CursorMenu.Center">
@@ -606,15 +607,16 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <!-- A text field in a row of the settings -->
-    <style name="Widget.TVBro.SettingsField" parent="Widget.TVBro.Field.Ds">
+    <!-- A text field in a row of the settings (the API 26 attribute is in values-v26) -->
+    <style name="Widget.TVBro.SettingsField.Base" parent="Widget.TVBro.Field.Ds">
         <item name="android:layout_height">?attr/tbSettingsControlHeight</item>
         <item name="android:textSize">?attr/tbSettingsTitleSize</item>
         <item name="android:textColorHint">?attr/tbColorDsInkFaint</item>
         <item name="android:inputType">textUri</item>
         <item name="android:imeOptions">actionDone</item>
-        <item name="android:importantForAutofill">no</item>
     </style>
+
+    <style name="Widget.TVBro.SettingsField" parent="Widget.TVBro.SettingsField.Base" />
 
     <!-- The switch of a row: the row toggles it, so it takes no focus or clicks -->
     <style name="Widget.TVBro.SettingsSwitch" parent="">

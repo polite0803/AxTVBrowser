@@ -717,4 +717,28 @@
     <string name="settings_default_browser_change">Zmień</string>
     <string name="settings_default_browser_failed">To urządzenie nie pozwala aplikacjom zostać domyślną przeglądarką</string>
     <string name="settings_based_on_tv_bro">Oparte na źródłach TV Bro</string>
+  <!-- Added for the phone interface, the privacy counters and the restore group -->
+  <string name="settings_interface_summary_phone_warning">Interfejs telefonu: pilot jest ograniczony. Wybierz TV, aby przywrócić pełną kontrolę.</string>
+  <string name="restore_tv_mode">Przywróć interfejs TV</string>
+  <string name="restore_tv_mode_summary">Wróć do interfejsu TV i uruchom aplikację ponownie</string>
+  <string name="settings_group_restore">Przywracanie</string>
+  <string name="apply">Zastosuj</string>
+  <plurals name="privacy_visits_removed">
+    <item quantity="one">%d odwiedziny usunięto</item>
+    <item quantity="few">%d odwiedziny usunięto</item>
+    <item quantity="many">%d odwiedzin usunięto</item>
+    <item quantity="other">%d odwiedzin usunięto</item>
+  </plurals>
+  <plurals name="privacy_sites_cleared">
+    <item quantity="one">%d witrynę wyczyszczono</item>
+    <item quantity="few">%d witryny wyczyszczono</item>
+    <item quantity="many">%d witryn wyczyszczono</item>
+    <item quantity="other">%d witryny wyczyszczono</item>
+  </plurals>
+  <plurals name="privacy_sites_count">
+    <item quantity="one">%d witryna na tym urządzeniu</item>
+    <item quantity="few">%d witryny na tym urządzeniu</item>
+    <item quantity="many">%d witryn na tym urządzeniu</item>
+    <item quantity="other">%d witryny na tym urządzeniu</item>
+  </plurals>
 </resources>

@@ -26,6 +26,7 @@ import com.axtv.browser.webengine.PageVideo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import androidx.media3.common.util.UnstableApi
 
 /**
  * The built-in player of the videos of pages ([PageVideo]), on ExoPlayer (Media3), without views: it requests
@@ -35,6 +36,7 @@ import kotlinx.coroutines.flow.asStateFlow
  * the picture-in-picture window and back ([PictureInPicturePlayback]). It takes the audio focus: the sound of another
  * app pauses it.
  */
+@androidx.annotation.OptIn(markerClass = [UnstableApi::class])
 class NativePlayer(context: Context) {
     private val context = context.applicationContext
 

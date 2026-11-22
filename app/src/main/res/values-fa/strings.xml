@@ -313,7 +313,7 @@
     <item quantity="other">%d بارگیری از فهرست حذف می‌شوند.</item>
   </plurals>
   <plurals name="clear_all_downloads_active">
-    <item quantity="one">بارگیری در حال انجام یا متوقف‌شده می‌ماند.</item>
+    <item quantity="one">%d بارگیری در حال انجام یا متوقف‌شده می‌ماند.</item>
     <item quantity="other">%d بارگیری در حال انجام یا متوقف‌شده می‌مانند.</item>
   </plurals>
   <string name="also_delete_files">پرونده‌ها هم حذف شوند</string>
@@ -683,4 +683,22 @@
     <string name="settings_default_browser_change">تغییر</string>
     <string name="settings_default_browser_failed">این دستگاه اجازه نمی‌دهد برنامه‌ها مرورگر پیش‌فرض شوند</string>
     <string name="settings_based_on_tv_bro">بر پایه کدهای TV Bro</string>
+  <!-- Added for the phone interface, the privacy counters and the restore group -->
+  <string name="settings_interface_summary_phone_warning">رابط تلفن: کنترل از راه دور محدود است. برای بازگرداندن کنترل کامل، TV را انتخاب کنید.</string>
+  <string name="restore_tv_mode">بازگرداندن رابط TV</string>
+  <string name="restore_tv_mode_summary">بازگشت به رابط TV و راه‌اندازی دوباره برنامه</string>
+  <string name="settings_group_restore">بازگردانی</string>
+  <string name="apply">اعمال</string>
+  <plurals name="privacy_visits_removed">
+    <item quantity="one">%d بازدید حذف شد</item>
+    <item quantity="other">%d بازدید حذف شد</item>
+  </plurals>
+  <plurals name="privacy_sites_cleared">
+    <item quantity="one">داده %d سایت پاک شد</item>
+    <item quantity="other">داده %d سایت پاک شد</item>
+  </plurals>
+  <plurals name="privacy_sites_count">
+    <item quantity="one">%d سایت در این دستگاه</item>
+    <item quantity="other">%d سایت در این دستگاه</item>
+  </plurals>
 </resources>

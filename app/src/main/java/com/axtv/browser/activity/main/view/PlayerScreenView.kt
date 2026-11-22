@@ -34,6 +34,7 @@ import com.axtv.browser.webengine.MediaCommand
 import com.axtv.browser.webengine.PageVideo
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import androidx.media3.common.util.UnstableApi
 
 /**
  * The built-in player on TV (AxTVBrowser player), over the whole window ([NativePlayer]), in the dark tokens of
@@ -56,6 +57,7 @@ import kotlinx.coroutines.launch
  * remotes hand the playing video to a picture-in-picture window over the browser ([enterPictureInPicture],
  * [PictureInPicturePlayback]), and it comes back here when the window is expanded ([adopt]).
  */
+@androidx.annotation.OptIn(markerClass = [UnstableApi::class])
 class PlayerScreenView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs) {

@@ -16,6 +16,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.RandomAccessFile
+import androidx.annotation.RequiresApi
 
 /**
  * The channels of the app on the Android TV home screen (Android 8+, preview channels of TvProvider): the
@@ -74,7 +75,9 @@ object HomeChannels {
      */
     suspend fun sync(context: Context, kinds: Collection<ChannelKind> = ChannelKind.entries,
                      mode: Mode = Mode.FULL): Map<ChannelKind, Long> {
-        if (!isSupported(context)) return emptyMap()
+        // 频道 API 是 API 26：isSupported 在低版本恒为 false，这里再显式判一次，
+        // 让静态检查看到下面的 API 26 调用点确实在版本守卫之内
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !isSupported(context)) return emptyMap()
         val appContext = context.applicationContext
         return withContext(Dispatchers.IO) {
             mutex.withLock {
@@ -90,10 +93,10 @@ object HomeChannels {
 
     /** The user let the channel show on the home screen; null if there is no such channel */
     suspend fun isBrowsable(context: Context, kind: ChannelKind): Boolean? {
-        if (!isSupported(context)) return null
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !isSupported(context)) return null
         return withContext(Dispatchers.IO) {
             try {
-                ChannelPublisher(context.contentResolver).find(kind)?.browsable
+                browsableOf(context, kind)
             } catch (e: Exception) {
                 Log.e(TAG, "isBrowsable", e)
                 null
@@ -101,6 +104,8 @@ object HomeChannels {
         }
     }
 
+    // 频道 API 是 API 26：唯一调用点 sync 已在 SDK_INT >= O 分支内
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun syncLocked(context: Context, kinds: Collection<ChannelKind>, mode: Mode): Map<ChannelKind, Long> {
         val publisher = ChannelPublisher(context.contentResolver)
         val config = AppContext.provideConfig()
@@ -140,6 +145,11 @@ object HomeChannels {
         }
         return result
     }
+
+    // ChannelPublisher 查询 TvProvider，是 API 26：调用点 isBrowsable 已在 SDK_INT >= O 分支内
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun browsableOf(context: Context, kind: ChannelKind): Boolean? =
+        ChannelPublisher(context.contentResolver).find(kind)?.browsable
 
     /** One sync at a time in all processes of the app (the mutex covers the threads of this one) */
     private inline fun <T> withProcessLock(context: Context, block: () -> T): T {

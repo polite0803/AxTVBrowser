@@ -22,6 +22,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.resume
+import androidx.annotation.RequiresApi
 
 /**
  * The bookmarks files of [BookmarksNavigator] on the device. They are saved in the public Downloads
@@ -67,6 +68,8 @@ class DeviceBookmarkFiles(private val activity: ComponentActivity) : BookmarksNa
     }
 
     /** @return the name the file got (MediaStore renames it if the name is taken) and its uri */
+    // MediaStore.Downloads 是 API 29：唯一调用点 saveToDownloads 在 SDK_INT >= R 分支内
+    @RequiresApi(Build.VERSION_CODES.R)
     private fun saveToMediaStore(name: String, bytes: ByteArray): Pair<String, String>? {
         val resolver = activity.contentResolver
         val collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
@@ -122,6 +125,8 @@ class DeviceBookmarkFiles(private val activity: ComponentActivity) : BookmarksNa
 
     private fun isHtml(name: String) = name.endsWith(".html", ignoreCase = true) || name.endsWith(".htm", ignoreCase = true)
 
+    // MediaStore.Downloads 是 API 29：唯一调用点 listDownloads 在 SDK_INT >= R 分支内
+    @RequiresApi(Build.VERSION_CODES.R)
     private fun listMediaStore(): List<BookmarksNavigator.FileInfo> {
         val collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
         val columns = arrayOf(MediaStore.Downloads._ID, MediaStore.Downloads.DISPLAY_NAME,

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Android 8 起才有的样式属性。低版本系统会忽略它们，但按资源限定符拆开才是
+         「声明即正确」：基础样式在 values/styles.xml，这里只补 API 26 的属性。 -->
+
+    <!-- A round button around the cursor in the cursor menu -->
+    <style name="Widget.TVBro.ImageButton.Ds.CursorMenu" parent="Widget.TVBro.ImageButton.Ds.CursorMenu.Base">
+        <item name="android:defaultFocusHighlightEnabled">false</item>
+    </style>
+
+    <!-- A text field in a row of the settings -->
+    <style name="Widget.TVBro.SettingsField" parent="Widget.TVBro.SettingsField.Base">
+        <item name="android:importantForAutofill">no</item>
+    </style>
+
+</resources>

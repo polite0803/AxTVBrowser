@@ -717,4 +717,28 @@
     <string name="settings_default_browser_change">Изменить</string>
     <string name="settings_default_browser_failed">Это устройство не позволяет приложениям стать браузером по умолчанию</string>
     <string name="settings_based_on_tv_bro">На основе исходников TV Bro</string>
+  <!-- Added for the phone interface, the privacy counters and the restore group -->
+  <string name="settings_interface_summary_phone_warning">Интерфейс телефона: пульт ограничен. Выберите ТВ, чтобы вернуть полное управление.</string>
+  <string name="restore_tv_mode">Вернуть ТВ-интерфейс</string>
+  <string name="restore_tv_mode_summary">Вернуться к ТВ-интерфейсу и перезапустить приложение</string>
+  <string name="settings_group_restore">Восстановление</string>
+  <string name="apply">Применить</string>
+  <plurals name="privacy_visits_removed">
+    <item quantity="one">%d посещение удалено</item>
+    <item quantity="few">%d посещения удалены</item>
+    <item quantity="many">%d посещений удалено</item>
+    <item quantity="other">%d посещения удалено</item>
+  </plurals>
+  <plurals name="privacy_sites_cleared">
+    <item quantity="one">%d сайт очищен</item>
+    <item quantity="few">%d сайта очищено</item>
+    <item quantity="many">%d сайтов очищено</item>
+    <item quantity="other">%d сайта очищено</item>
+  </plurals>
+  <plurals name="privacy_sites_count">
+    <item quantity="one">%d сайт на этом устройстве</item>
+    <item quantity="few">%d сайта на этом устройстве</item>
+    <item quantity="many">%d сайтов на этом устройстве</item>
+    <item quantity="other">%d сайта на этом устройстве</item>
+  </plurals>
 </resources>

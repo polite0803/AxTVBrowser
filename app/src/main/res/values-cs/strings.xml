@@ -718,4 +718,28 @@
     <string name="settings_default_browser_change">Změnit</string>
     <string name="settings_default_browser_failed">Toto zařízení nedovoluje aplikacím stát se výchozím prohlížečem</string>
     <string name="settings_based_on_tv_bro">Založeno na zdrojích TV Bro</string>
+  <!-- Added for the phone interface, the privacy counters and the restore group -->
+  <string name="settings_interface_summary_phone_warning">Rozhraní telefonu: dálkový ovladač je omezený. Zvolte TV pro obnovení plného ovládání.</string>
+  <string name="restore_tv_mode">Obnovit rozhraní TV</string>
+  <string name="restore_tv_mode_summary">Přepnout zpět na rozhraní TV a restartovat aplikaci</string>
+  <string name="settings_group_restore">Obnovení</string>
+  <string name="apply">Použít</string>
+  <plurals name="privacy_visits_removed">
+    <item quantity="one">%d návštěva odebrána</item>
+    <item quantity="few">%d návštěvy odebrány</item>
+    <item quantity="many">%d návštěvy odebrány</item>
+    <item quantity="other">%d návštěv odebráno</item>
+  </plurals>
+  <plurals name="privacy_sites_cleared">
+    <item quantity="one">%d web byl vymazán</item>
+    <item quantity="few">%d weby byly vymazány</item>
+    <item quantity="many">%d webu bylo vymazáno</item>
+    <item quantity="other">%d webů bylo vymazáno</item>
+  </plurals>
+  <plurals name="privacy_sites_count">
+    <item quantity="one">%d web v tomto zařízení</item>
+    <item quantity="few">%d weby v tomto zařízení</item>
+    <item quantity="many">%d webu v tomto zařízení</item>
+    <item quantity="other">%d webů v tomto zařízení</item>
+  </plurals>
 </resources>

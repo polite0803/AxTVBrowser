@@ -37,6 +37,7 @@ import com.axtv.browser.player.PlayerMediaSession
 import com.axtv.browser.utils.ExternalVideoPlayer
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import androidx.media3.common.util.UnstableApi
 
 /**
  * The built-in player in a picture-in-picture window over the browser and other apps: it shows the player the screen
@@ -46,6 +47,7 @@ import kotlinx.coroutines.launch
  * is; closed, the player is released. The window has one control: play or pause. A media session tells the system
  * the title and takes the media keys of the remote while the window floats over another app ([PlayerMediaSession]).
  */
+@androidx.annotation.OptIn(markerClass = [UnstableApi::class])
 open class PictureInPictureActivity : AppCompatActivity() {
     companion object {
         private val TAG = PictureInPictureActivity::class.java.simpleName
@@ -145,6 +147,13 @@ open class PictureInPictureActivity : AppCompatActivity() {
 
     private fun enter() {
         if (handedBack || !lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) return
+        // 画中画是 API 26：低版本上没有等价窗口，退回页面内播放（handBack 关闭本页回到浏览器），
+        // 而不是静默留在用户无法退出的播放器里
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            Log.i(TAG, "No picture-in-picture below Android 8, back to the page")
+            handBack()
+            return
+        }
         val inWindow = try {
             enterPictureInPictureMode(params(player?.state?.value))
         } catch (e: Exception) {

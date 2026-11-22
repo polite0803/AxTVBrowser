@@ -15,6 +15,8 @@ import java.net.URLConnection
 object HomePageHelper {
     private val TAG = HomePageHelper::class.java.simpleName
 
+    // WebView 在非 UI 线程回调 shouldInterceptRequest；内部 runBlocking + Bitmap.compress 都是阻塞/后台操作
+    @androidx.annotation.WorkerThread
     fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
         Log.d(TAG, "shouldInterceptRequest: " + request.url)
         //check is scheme is favicon

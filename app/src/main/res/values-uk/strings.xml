@@ -717,4 +717,28 @@
     <string name="settings_default_browser_change">Змінити</string>
     <string name="settings_default_browser_failed">Цей пристрій не дозволяє застосункам стати браузером за замовчуванням</string>
     <string name="settings_based_on_tv_bro">На основі джерел TV Bro</string>
+  <!-- Added for the phone interface, the privacy counters and the restore group -->
+  <string name="settings_interface_summary_phone_warning">Інтерфейс телефона: пульт обмежений. Виберіть ТБ, щоб повернути повне керування.</string>
+  <string name="restore_tv_mode">Повернути ТБ-інтерфейс</string>
+  <string name="restore_tv_mode_summary">Повернутися до ТБ-інтерфейсу та перезапустити застосунок</string>
+  <string name="settings_group_restore">Відновлення</string>
+  <string name="apply">Застосувати</string>
+  <plurals name="privacy_visits_removed">
+    <item quantity="one">%d відвідування видалено</item>
+    <item quantity="few">%d відвідування видалено</item>
+    <item quantity="many">%d відвідувань видалено</item>
+    <item quantity="other">%d відвідування видалено</item>
+  </plurals>
+  <plurals name="privacy_sites_cleared">
+    <item quantity="one">%d сайт очищено</item>
+    <item quantity="few">%d сайти очищено</item>
+    <item quantity="many">%d сайтів очищено</item>
+    <item quantity="other">%d сайти очищено</item>
+  </plurals>
+  <plurals name="privacy_sites_count">
+    <item quantity="one">%d сайт на цьому пристрої</item>
+    <item quantity="few">%d сайти на цьому пристрої</item>
+    <item quantity="many">%d сайтів на цьому пристрої</item>
+    <item quantity="other">%d сайти на цьому пристрої</item>
+  </plurals>
 </resources>

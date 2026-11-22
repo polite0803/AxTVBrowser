@@ -7,12 +7,14 @@ import androidx.media3.common.TrackGroup
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
 import java.util.Locale
+import androidx.media3.common.util.UnstableApi
 
 /**
  * The choices of the menu of the built-in player, from the tracks of the video (Media3 [Tracks]) and the
  * selection the user made ([TrackSelectionParameters]): the qualities (Auto, the adaptive choice of the player,
  * then each quality from the highest), the audio tracks and the subtitles (Off, then each language).
  */
+@androidx.annotation.OptIn(markerClass = [UnstableApi::class])
 object PlayerTracks {
     /**
      * The texts the options need (localized by the caller); [captions]: a caption channel of the video itself

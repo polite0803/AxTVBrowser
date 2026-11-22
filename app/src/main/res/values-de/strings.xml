@@ -682,4 +682,22 @@
     <string name="settings_default_browser_change">Ändern</string>
     <string name="settings_default_browser_failed">Dieses Gerät erlaubt Apps nicht, Standardbrowser zu werden</string>
     <string name="settings_based_on_tv_bro">Basiert auf den Quellen von TV Bro</string>
+  <!-- Added for the phone interface, the privacy counters and the restore group -->
+  <string name="settings_interface_summary_phone_warning">Telefon-Oberfläche: die Fernbedienung ist eingeschränkt. Wähle TV, um die volle Steuerung zurückzubekommen.</string>
+  <string name="restore_tv_mode">TV-Oberfläche wiederherstellen</string>
+  <string name="restore_tv_mode_summary">Zur TV-Oberfläche zurückkehren und die App neu starten</string>
+  <string name="settings_group_restore">Wiederherstellen</string>
+  <string name="apply">Anwenden</string>
+  <plurals name="privacy_visits_removed">
+    <item quantity="one">%d Besuch entfernt</item>
+    <item quantity="other">%d Besuche entfernt</item>
+  </plurals>
+  <plurals name="privacy_sites_cleared">
+    <item quantity="one">%d Website gelöscht</item>
+    <item quantity="other">%d Websites gelöscht</item>
+  </plurals>
+  <plurals name="privacy_sites_count">
+    <item quantity="one">%d Website auf diesem Gerät</item>
+    <item quantity="other">%d Websites auf diesem Gerät</item>
+  </plurals>
 </resources>

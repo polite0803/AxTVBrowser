@@ -666,4 +666,19 @@
     <string name="settings_default_browser_change">Thay đổi</string>
     <string name="settings_default_browser_failed">Thiết bị này không cho phép ứng dụng trở thành trình duyệt mặc định</string>
     <string name="settings_based_on_tv_bro">Dựa trên mã nguồn TV Bro</string>
+  <!-- Added for the phone interface, the privacy counters and the restore group -->
+  <string name="settings_interface_summary_phone_warning">Giao diện điện thoại: điều khiển từ xa bị hạn chế. Chọn TV để khôi phục điều khiển đầy đủ.</string>
+  <string name="restore_tv_mode">Khôi phục giao diện TV</string>
+  <string name="restore_tv_mode_summary">Quay lại giao diện TV và khởi động lại ứng dụng</string>
+  <string name="settings_group_restore">Khôi phục</string>
+  <string name="apply">Áp dụng</string>
+  <plurals name="privacy_visits_removed">
+    <item quantity="other">Đã xóa %d lượt truy cập</item>
+  </plurals>
+  <plurals name="privacy_sites_cleared">
+    <item quantity="other">Đã xóa dữ liệu %d trang</item>
+  </plurals>
+  <plurals name="privacy_sites_count">
+    <item quantity="other">%d trang trên thiết bị này</item>
+  </plurals>
 </resources>

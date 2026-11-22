@@ -403,7 +403,9 @@ open class WebViewEx(context: Context, val callback: Callback, val jsInterface: 
                             relativePath = "index.html"
                         }
                         val assetsPath = "pages/home/$relativePath"
-                        val response = HomePageHelper.getWebResourceResponseFromAssets(view.context, assetsPath)
+                        // 不用 view.context：View 的成员都要求 UI 线程，而这是个后台回调；
+                        // init 的构造参数 context 是同一个 Context，且这里只做线程无关的使用
+                        val response = HomePageHelper.getWebResourceResponseFromAssets(context, assetsPath)
                         if (response != null) {
                             Log.d(TAG, "shouldInterceptRequest url: ${request.url} -> $assetsPath")
                             return response

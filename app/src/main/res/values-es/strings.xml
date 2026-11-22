@@ -701,4 +701,22 @@
     <string name="settings_default_browser_change">Cambiar</string>
     <string name="settings_default_browser_failed">Este dispositivo no permite que las apps sean el navegador predeterminado</string>
     <string name="settings_based_on_tv_bro">Basado en el código de TV Bro</string>
+  <!-- Added for the phone interface, the privacy counters and the restore group -->
+  <string name="settings_interface_summary_phone_warning">Interfaz de teléfono: el mando tiene funciones limitadas. Elige TV para recuperar el control completo.</string>
+  <string name="restore_tv_mode">Restaurar interfaz de TV</string>
+  <string name="restore_tv_mode_summary">Volver a la interfaz de TV y reiniciar la aplicación</string>
+  <string name="settings_group_restore">Restaurar</string>
+  <string name="apply">Aplicar</string>
+  <plurals name="privacy_visits_removed">
+    <item quantity="one">%d visita eliminada</item>
+    <item quantity="other">%d visitas eliminadas</item>
+  </plurals>
+  <plurals name="privacy_sites_cleared">
+    <item quantity="one">%d sitio borrado</item>
+    <item quantity="other">%d sitios borrados</item>
+  </plurals>
+  <plurals name="privacy_sites_count">
+    <item quantity="one">%d sitio en este dispositivo</item>
+    <item quantity="other">%d sitios en este dispositivo</item>
+  </plurals>
 </resources>

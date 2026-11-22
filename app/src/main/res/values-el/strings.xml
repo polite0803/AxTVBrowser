@@ -684,4 +684,22 @@
     <string name="settings_default_browser_change">Αλλαγή</string>
     <string name="settings_default_browser_failed">Αυτή η συσκευή δεν επιτρέπει σε εφαρμογές να γίνουν προεπιλεγμένο πρόγραμμα περιήγησης</string>
     <string name="settings_based_on_tv_bro">Βασίζεται στον κώδικα του TV Bro</string>
+  <!-- Added for the phone interface, the privacy counters and the restore group -->
+  <string name="settings_interface_summary_phone_warning">Διεπαφή τηλεφώνου: το τηλεχειριστήριο είναι περιορισμένο. Επιλέξτε TV για πλήρη έλεγχο.</string>
+  <string name="restore_tv_mode">Επαναφορά διεπαφής TV</string>
+  <string name="restore_tv_mode_summary">Επιστροφή στη διεπαφή TV και επανεκκίνηση της εφαρμογής</string>
+  <string name="settings_group_restore">Επαναφορά</string>
+  <string name="apply">Εφαρμογή</string>
+  <plurals name="privacy_visits_removed">
+    <item quantity="one">Αφαιρέθηκε %d επίσκεψη</item>
+    <item quantity="other">Αφαιρέθηκαν %d επισκέψεις</item>
+  </plurals>
+  <plurals name="privacy_sites_cleared">
+    <item quantity="one">Διαγράφηκε %d ιστότοπος</item>
+    <item quantity="other">Διαγράφηκαν %d ιστότοποι</item>
+  </plurals>
+  <plurals name="privacy_sites_count">
+    <item quantity="one">%d ιστότοπος σε αυτή τη συσκευή</item>
+    <item quantity="other">%d ιστότοποι σε αυτή τη συσκευή</item>
+  </plurals>
 </resources>
