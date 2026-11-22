@@ -34,6 +34,14 @@ Gradle (Kotlin DSL) with JDK 21. On Windows use `gradlew.bat` / `.\gradlew`.
 它把 Gradle **启动器** 钉在 JDK 17 并断言 `java.specification.version`，构建 JVM 仍由 `gradle/gradle-daemon-jvm.properties` 决定（当前 21，与 CI 一致）；
 每个门禁子命令开跑前都会在 Gradle 进程内部实测一次构建 JVM，不等于 21 直接 exit 1（`env` 同样打印），用错 JDK 当场暴露。直接敲 `./gradlew` 仍按该文件选 21，但不带启动器锁定。
 
+### 待验证：API 24/25 的画中画降级路径（尚未在真机执行）
+
+- **影响代码**：`app/src/main/java/com/axtv/browser/activity/PictureInPictureActivity.kt:152`（`enter()` 中 `SDK_INT < VERSION_CODES.O` 的降级分支：不建画中画窗口，直接 `handBack()`）、`:93`（`onCreate` 在低版本直接 `finish()`）、`:222`（`updateParams` 的低版本早退）。`minSdk = 24`，这三条在 API 24/25 上是真实可走的路径，不是死代码。
+- **影响场景**：API 24/25 设备进入画中画时不会得到悬浮窗口，而是 handBack 回浏览器内置播放器继续播放。需要在真机确认：没有黑屏或卡死、Activity 没有泄漏、媒体键控制回到浏览器、从内置播放器能正常退出。
+- **需要什么环境才能验**：API 24 或 25 的真机，或 API 24 的 AVD + system-image。本机没有 emulator / AVD / system-image，**不要为这一项专门安装**（装不动且收益低），留到有设备时补测。
+- **当前证据**：只有静态守卫（上述三处 `SDK_INT` 判断）加 `lint` 通过，没有运行时证据。这是本仓目前唯一的低版本运行时验证缺口，**不得据此判定低版本画中画已验证**。
+- **门禁命令**（Windows 侧一次 SSH，禁止逐条 ssh）：`ssh -o BatchMode=yes wsl 'bash /home/polit/projects/AxTVBrowser/scripts/axtvbrowser-dev.sh <env|test|lint|assembleDebug>'`；脚本自带 JDK 17 启动器锁定 + 构建 JVM 21 实测断言，失败即非 0 退出。
+
 Variants combine two flavor dimensions with the build type: `appstore` = `generic` | `google` | `foss`, and `webengine` = `geckoIncluded` (the GeckoView app) | `geckoExcluded` (the WebView app). Examples:
 
 ```bash
