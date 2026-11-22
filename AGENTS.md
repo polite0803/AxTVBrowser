@@ -32,7 +32,7 @@ Gradle (Kotlin DSL) with JDK 21. On Windows use `gradlew.bat` / `.\gradlew`.
 
 本机 WSL 的统一门禁入口是 `scripts/axtvbrowser-dev.sh`（`env` / `test` / `lint` / `assembleDebug` / `install` / `adb` / `gradle` / `sh` / `clean`）。
 它把 Gradle **启动器** 钉在 JDK 17 并断言 `java.specification.version`，构建 JVM 仍由 `gradle/gradle-daemon-jvm.properties` 决定（当前 21，与 CI 一致）；
-`env` 子命令会把 Gradle 实际 fork 出来的构建 JVM 路径打印出来复检，而不是只读配置。直接敲 `./gradlew` 仍按该文件选 21，但不带启动器锁定。
+每个门禁子命令开跑前都会在 Gradle 进程内部实测一次构建 JVM，不等于 21 直接 exit 1（`env` 同样打印），用错 JDK 当场暴露。直接敲 `./gradlew` 仍按该文件选 21，但不带启动器锁定。
 
 Variants combine two flavor dimensions with the build type: `appstore` = `generic` | `google` | `foss`, and `webengine` = `geckoIncluded` (the GeckoView app) | `geckoExcluded` (the WebView app). Examples:
 

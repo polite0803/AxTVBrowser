@@ -57,6 +57,37 @@ unset JAVA_TOOL_OPTIONS _JAVA_OPTIONS GRADLE_OPTS 2>/dev/null || true
 [ "$(command -v java)" = "$JDK/bin/java" ] || \
   { echo "错误：PATH 上的 java 不是 $JDK/bin/java（实际 $(command -v java)）" >&2; exit 2; }
 
+# 【构建 JVM 断言】启动器锁 17 不代表构建跑在 17：本仓库的构建 JVM 由
+# gradle/gradle-daemon-jvm.properties 锁定为 21。门禁开跑前用临时 init 脚本
+# 在 Gradle 进程内部读 java.specification.version 实测一次，不等于 21 直接 exit 1。
+REQUIRED_BUILD_JVM=21
+build_jvm_probe() {  # $1 = Gradle 根目录
+  local probe out
+  probe=$(mktemp /tmp/axtvb-jvmprobe.XXXXXX.gradle)
+  cat > "$probe" <<'GRADLE'
+gradle.rootProject { p ->
+  p.tasks.register("gateJvmProbe") {
+    doLast {
+      println "GATE_BUILD_JVM_VER=" + System.getProperty("java.specification.version")
+      println "GATE_BUILD_JVM_HOME=" + System.getProperty("java.home")
+    }
+  }
+}
+GRADLE
+  out=$(cd "$1" && ./gradlew --no-daemon -q --console=plain -I "$probe" gateJvmProbe 2>&1)
+  rm -f "$probe"
+  echo "$out" | sed -n 's/^GATE_BUILD_JVM_VER=//p' | head -1
+}
+assert_build_jvm() {  # $1 = Gradle 根目录, $2 = 期望大版本
+  local ver
+  echo "启动器 JDK: $(java -version 2>&1 | head -1)"
+  ver=$(build_jvm_probe "$1")
+  [ -n "$ver" ] || { echo "错误：无法取得构建 JVM 版本 —— 门禁中止" >&2; exit 1; }
+  echo "构建 JVM  : $ver  (期望 $2, criteria $(sed -n 's/^toolchainVersion=//p' "$1/gradle/gradle-daemon-jvm.properties" 2>/dev/null || echo 无))"
+  [ "$ver" = "$2" ] || \
+    { echo "错误：构建 JVM 是 $ver，不是 $2 —— 门禁不可信，已中止" >&2; exit 1; }
+}
+
 # 平台检查跟着 gradle/libs.versions.toml 的 compileSdk / compileSdkMinor 走
 toml_value() { awk -F'"' -v k="$1" '$1 ~ "^"k" *=" {print $2; exit}' "$ROOT/gradle/libs.versions.toml"; }
 API_LEVEL=$(toml_value android-compileSdk)
@@ -70,8 +101,8 @@ done
 [ "$PLATFORM_OK" = 1 ] || \
   { echo "错误：缺少 android-$API_LEVEL${API_MINOR:+.x} 平台（compileSdk=$API_LEVEL${API_MINOR:+.$API_MINOR}）" >&2; exit 2; }
 
-# 统一入口：始终走项目自带 wrapper，并显式带上被锁定的启动器 JDK
-gradle() { cd "$ROOT" && ./gradlew --no-daemon "$@"; }
+# 统一入口：先断言实际构建 JVM，再走项目自带 wrapper（--no-daemon 便于逐次复检）
+gradle() { assert_build_jvm "$ROOT" "$REQUIRED_BUILD_JVM"; cd "$ROOT" && ./gradlew --no-daemon "$@"; }
 
 usage() {
   cat <<'USAGE'
@@ -98,14 +129,8 @@ case "$cmd" in
     java -version 2>&1 | head -3 | sed 's/^/  /'
     GRADLE_VERSION=$(cd "$ROOT" && ./gradlew --version 2>/dev/null | awk '/^Gradle /{print $2; exit}')
     echo "Gradle    = ${GRADLE_VERSION:-未知}"
-    # 抓 Gradle 实际 fork 出来的 java 路径（构建 JVM），而不是只读配置
-    ACTUAL_JVM=$(cd "$ROOT" && ./gradlew --no-daemon --info help 2>&1 \
-      | awk '/Command: /{for(i=1;i<=NF;i++) if ($i ~ /\/bin\/java$/) {print $i; exit}}')
-    if [ -n "$ACTUAL_JVM" ] && [ -x "$ACTUAL_JVM" ]; then
-      echo "build JVM = $(jdk_major "$ACTUAL_JVM") ($ACTUAL_JVM)"
-    else
-      echo "build JVM = 同启动器 ${LAUNCHER_MAJOR}（无 daemon 重定向）"
-    fi
+    # 在 Gradle 进程内部实测构建 JVM，而不是只读配置/推断
+    echo "构建 JVM  = $(build_jvm_probe "$ROOT")  (期望 $REQUIRED_BUILD_JVM)"
     echo "criteria  = $(sed -n 's/^toolchainVersion=//p' "$ROOT/gradle/gradle-daemon-jvm.properties" 2>/dev/null || echo 无)"
     echo "SDK       = $ANDROID_HOME"
     echo "platforms = $(ls -1 "$ANDROID_HOME/platforms" | tr '\n' ' ')"
@@ -123,7 +148,14 @@ case "$cmd" in
            :app:gecko:testDebugUnitTest \
            :adblock:testDebugUnitTest "$@"
     ;;
-  lint)        gradle lintGenericGeckoExcludedDebug "$@" ;;
+  lint)
+    # 与 CI 同一任务（lintGenericGeckoExcludedDebug）；库内无 baseline，且 CI 该 job 是
+    # continue-on-error，所以既存 findings 一直没暴露。这里不掩盖：失败即非 0 退出。
+    gradle lintGenericGeckoExcludedDebug "$@" || {
+      echo "提示：lint 失败来自既存 findings（仓库无 lint baseline）。报告：app/build/reports/lint-results-*.html" >&2
+      exit 1
+    }
+    ;;
   assembleDebug|build)
                gradle assembleGenericGeckoExcludedDebug assembleGenericGeckoIncludedDebug "$@" ;;
   install)
