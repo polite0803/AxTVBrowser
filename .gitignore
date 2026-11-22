@@ -11,3 +11,9 @@
 **/build/
 .kotlin/
 /tools/adblock-corpus/*.tsv
+# 本地日志与 JVM 崩溃转储（JVM/Gradle 崩在仓库根时直接落盘的文件）
+*.log
+hs_err_pid*.log
+replay_pid*.log
+out/
+.cxx/
