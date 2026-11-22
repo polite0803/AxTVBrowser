@@ -710,13 +710,16 @@
   <plurals name="privacy_visits_removed">
     <item quantity="one">%d visite supprimée</item>
     <item quantity="other">%d visites supprimées</item>
+    <item quantity="many">%d de visites supprimées</item>
   </plurals>
   <plurals name="privacy_sites_cleared">
     <item quantity="one">%d site effacé</item>
     <item quantity="other">%d sites effacés</item>
+    <item quantity="many">%d de sites effacés</item>
   </plurals>
   <plurals name="privacy_sites_count">
     <item quantity="one">%d site sur cet appareil</item>
     <item quantity="other">%d sites sur cet appareil</item>
+    <item quantity="many">%d de sites sur cet appareil</item>
   </plurals>
 </resources>

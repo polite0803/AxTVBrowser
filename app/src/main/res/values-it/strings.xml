@@ -709,13 +709,16 @@
   <plurals name="privacy_visits_removed">
     <item quantity="one">%d visita rimossa</item>
     <item quantity="other">%d visite rimosse</item>
+    <item quantity="many">%d di visite rimosse</item>
   </plurals>
   <plurals name="privacy_sites_cleared">
     <item quantity="one">%d sito cancellato</item>
     <item quantity="other">%d siti cancellati</item>
+    <item quantity="many">%d di siti cancellati</item>
   </plurals>
   <plurals name="privacy_sites_count">
     <item quantity="one">%d sito su questo dispositivo</item>
     <item quantity="other">%d siti su questo dispositivo</item>
+    <item quantity="many">%d di siti su questo dispositivo</item>
   </plurals>
 </resources>

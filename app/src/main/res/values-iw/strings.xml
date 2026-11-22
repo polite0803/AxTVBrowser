@@ -726,19 +726,16 @@
   <plurals name="privacy_visits_removed">
     <item quantity="one">ביקור %d הוסר</item>
     <item quantity="two">%d ביקורים הוסרו</item>
-    <item quantity="many">%d ביקורים הוסרו</item>
     <item quantity="other">%d ביקורים הוסרו</item>
   </plurals>
   <plurals name="privacy_sites_cleared">
     <item quantity="one">אתר %d נוקה</item>
     <item quantity="two">%d אתרים נוקו</item>
-    <item quantity="many">%d אתרים נוקו</item>
     <item quantity="other">%d אתרים נוקו</item>
   </plurals>
   <plurals name="privacy_sites_count">
     <item quantity="one">אתר %d במכשיר זה</item>
     <item quantity="two">%d אתרים במכשיר זה</item>
-    <item quantity="many">%d אתרים במכשיר זה</item>
     <item quantity="other">%d אתרים במכשיר זה</item>
   </plurals>
 </resources>
